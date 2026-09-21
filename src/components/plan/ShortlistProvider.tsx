@@ -2,9 +2,13 @@
 
 import { createContext, useContext, useState, type ReactNode } from 'react';
 
-/** Seeded so the "Plan with friends" prototype has something to vote on right away. */
+/**
+ * Seeded so the "Plan with friends" prototype has something to vote on right away.
+ * The 4 friends shown as "joined" on /plan have each already cast one vote, so these
+ * sum to 4; your own vote is the 5th, on top of theirs.
+ */
 const initialShortlist = ['yaki-da', 'standup', 'tradgarn'];
-const initialVotes: Record<string, number> = { 'yaki-da': 3, standup: 2, tradgarn: 4 };
+const initialVotes: Record<string, number> = { 'yaki-da': 1, standup: 0, tradgarn: 3 };
 
 type ShortlistContextValue = {
   shortlist: string[];
@@ -19,7 +23,7 @@ const ShortlistContext = createContext<ShortlistContextValue | null>(null);
 
 /**
  * Shared shortlist and vote tally for the "plan with friends" prototype.
- * In-memory only — no invitations, accounts or real-time sync, per the prototype scope.
+ * In-memory only: no invitations, accounts or real-time sync, per the prototype scope.
  */
 export function ShortlistProvider({ children }: { children: ReactNode }) {
   const [shortlist, setShortlist] = useState<string[]>(initialShortlist);
