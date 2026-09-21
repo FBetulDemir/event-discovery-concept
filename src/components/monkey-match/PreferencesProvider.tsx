@@ -9,6 +9,8 @@ type PreferencesContextValue = {
   setPreferences: Dispatch<SetStateAction<Preferences>>;
   completed: boolean;
   setCompleted: Dispatch<SetStateAction<boolean>>;
+  /** Clears the draft back to defaults — for entry points that start a brand-new search, as opposed to editing the current one. */
+  resetPreferences: () => void;
 };
 
 const PreferencesContext = createContext<PreferencesContextValue | null>(null);
@@ -18,8 +20,13 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
   const [preferences, setPreferences] = useState<Preferences>(defaultPreferences);
   const [completed, setCompleted] = useState(false);
 
+  function resetPreferences() {
+    setPreferences(defaultPreferences);
+    setCompleted(false);
+  }
+
   return (
-    <PreferencesContext.Provider value={{ preferences, setPreferences, completed, setCompleted }}>
+    <PreferencesContext.Provider value={{ preferences, setPreferences, completed, setCompleted, resetPreferences }}>
       {children}
     </PreferencesContext.Provider>
   );

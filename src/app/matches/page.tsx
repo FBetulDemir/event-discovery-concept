@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { PageContainer } from '@/components/layout/PageContainer';
-import { MatchesHandoff } from '@/components/monkey-match/MatchesHandoff';
+import { MatchResults } from '@/components/monkey-match/MatchResults';
 
-export const metadata: Metadata = { title: 'Dina val | Monkey Match' };
+export const metadata: Metadata = { title: 'Dina matchningar | Monkey Match' };
 
 export default function MatchesPage() {
-  return <PageContainer><MatchesHandoff /></PageContainer>;
+  return <PageContainer className="results-page"><MatchResults /></PageContainer>;
 }
