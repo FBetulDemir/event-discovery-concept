@@ -81,7 +81,6 @@ export function PreferenceFlow() {
           </div>
           {step > 0 && <button type="button" className="flow-skip" onClick={skip} disabled={submitting}>{step === 1 ? 'Hoppa över – jag är öppen för allt' : 'Hoppa över – ingen prisgräns'}</button>}
         </form>
-        <p className="flow-prototype-note">Designprototyp · Datum och event är fiktiva exempel.</p>
       </section>
     </div>
   );

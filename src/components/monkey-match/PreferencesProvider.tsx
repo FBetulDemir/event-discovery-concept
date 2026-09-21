@@ -9,7 +9,7 @@ type PreferencesContextValue = {
   setPreferences: Dispatch<SetStateAction<Preferences>>;
   completed: boolean;
   setCompleted: Dispatch<SetStateAction<boolean>>;
-  /** Clears the draft back to defaults — for entry points that start a brand-new search, as opposed to editing the current one. */
+  /** Clears the draft back to defaults: for entry points that start a brand-new search, as opposed to editing the current one. */
   resetPreferences: () => void;
 };
 

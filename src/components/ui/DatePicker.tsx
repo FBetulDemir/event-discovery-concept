@@ -44,6 +44,7 @@ export function DatePicker({ value, onChange }: Props) {
   const pendingRange = value.mode === 'range' && value.end === null;
   const weekend = upcomingWeekend(today);
   const weekendSelected = value.mode === 'range' && weekend.mode === 'range' && value.start === weekend.start && value.end === weekend.end;
+  const helpText = value.mode === 'flexible' ? null : pendingRange ? (value.start ? 'Välj slutdatum. Du kan också välja en tidigare dag.' : 'Välj startdatum och sedan slutdatum.') : value.mode === 'range' ? 'Välj en ny startdag för att ändra perioden.' : 'Välj den dag du vill gå ut.';
 
   function choose(selection: DateSelection) {
     onChange(selection);
@@ -98,8 +99,8 @@ export function DatePicker({ value, onChange }: Props) {
           <h3 id={`${id}-month`} aria-live="polite">{monthTitle}</h3>
           <button type="button" aria-label="Nästa månad" onClick={() => changeMonth(1)}><ChevronRight size={20} aria-hidden="true" /></button>
         </div>
-        <p id={`${id}-help`} className="calendar-help">{value.mode === 'flexible' ? 'Alla datum fungerar. Välj en dag om du vill precisera.' : pendingRange ? value.start ? 'Välj slutdatum. Du kan också välja en tidigare dag.' : 'Välj startdatum och sedan slutdatum.' : value.mode === 'range' ? 'Välj en ny startdag för att ändra perioden.' : 'Välj den dag du vill gå ut.'}</p>
-        <table ref={calendar} role="grid" aria-labelledby={`${id}-month`} aria-describedby={`${id}-help`} aria-multiselectable={value.mode === 'range'} className="calendar-grid">
+        {helpText && <p id={`${id}-help`} className="calendar-help">{helpText}</p>}
+        <table ref={calendar} role="grid" aria-labelledby={`${id}-month`} aria-describedby={helpText ? `${id}-help` : undefined} aria-multiselectable={value.mode === 'range'} className="calendar-grid">
           <thead><tr>{weekdays.map((day, index) => <th scope="col" key={day} aria-label={weekdayNames[index]}>{day}</th>)}</tr></thead>
           <tbody>{Array.from({ length: days.length / 7 }, (_, week) => <tr key={week}>{days.slice(week * 7, week * 7 + 7).map((day, index) => {
             if (!day) return <td key={`empty-${index}`} />;

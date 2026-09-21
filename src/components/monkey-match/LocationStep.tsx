@@ -11,12 +11,11 @@ export function LocationStep({ preferences, onChange }: Props) {
       <fieldset>
         <legend>När vill du gå ut?</legend>
         <DatePicker value={preferences.date} onChange={date => onChange({ date })} />
-        <p className="field-help">Exempelutbudet finns 25–26 september 2026. Andra datum kan ge färre eller inga träffar.</p>
+        <p className="field-help">Andra datum kan ge färre eller inga träffar.</p>
       </fieldset>
       <div className="location-field">
         <label htmlFor="match-location">Var börjar kvällen?</label>
-        <div className="location-input"><MapPin size={18} aria-hidden="true" /><input id="match-location" value={preferences.location} readOnly aria-describedby="location-help" /></div>
-        <p id="location-help" className="field-help">Den här prototypen har exempel från Göteborg.</p>
+        <div className="location-input"><MapPin size={18} aria-hidden="true" /><input id="match-location" value={preferences.location} readOnly /></div>
       </div>
       <fieldset>
         <legend>Hur långt vill du ta dig?</legend>

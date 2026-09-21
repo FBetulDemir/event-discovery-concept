@@ -30,7 +30,6 @@ export default function HomePage() {
       <MatchPromo />
       <footer className="discovery-footer">
         <span className="footer-wordmark">VIP MONKEY®</span><p>Fler kvällar att minnas.</p>
-        <small>Designprototyp · Alla event, priser och datum är fiktiva exempel.<br />Bilderna visar stämning, inte de angivna platserna. Avstånd räknas från centrum.</small>
       </footer>
     </PageContainer>
   );

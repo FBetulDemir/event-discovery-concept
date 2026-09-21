@@ -34,7 +34,7 @@ export function MatchResults() {
           <h1 id="results-title">Mindre kanske.<br /><span>Mer vi ses där.</span></h1>
           <p>{completed ? 'Du gav oss känslan. Här är kvällarna som passar.' : 'En första känsla för vad som finns. Anpassa dina val för personliga matchningar.'}</p>
         </div>
-        <div className="results-count" aria-hidden="true"><span>{now ? String(count).padStart(2, '0') : '—'}</span><p>UTVALDA FÖR<br />DIN KVÄLL <ArrowUpRight size={20} /></p></div>
+        <div className="results-count" aria-hidden="true"><span>{now ? String(count).padStart(2, '0') : '00'}</span><p>UTVALDA FÖR<br />DIN KVÄLL <ArrowUpRight size={20} /></p></div>
       </section>
 
       <section className="results-preferences" aria-label="Dina val">
@@ -57,7 +57,7 @@ export function MatchResults() {
             <Search size={32} aria-hidden="true" />
             <h3>Ingen perfekt kväll just här. Än.</h3>
             <p>Inga event passar alla dina val. Prova ett annat datum, en större radie eller en annan budget.</p>
-            <p className="field-help">Prototypens exempel finns 25–26 september 2026. Event som redan har börjat visas inte.</p>
+            <p className="field-help">Event som redan har börjat visas inte.</p>
             <Link href="/monkey-match" className="button button--primary"><SlidersHorizontal size={17} aria-hidden="true" />Ändra mina val</Link>
             <Link href="/" className="text-link">Utforska alla exempel<ArrowUpRight size={16} aria-hidden="true" /></Link>
           </div>
@@ -70,7 +70,7 @@ export function MatchResults() {
         <span className="results-together__arrow" aria-hidden="true"><ArrowUpRight size={30} /></span>
       </aside>}
 
-      <footer className="results-footnote"><Check size={15} aria-hidden="true" /><p>Sorterat efter känsla, tid, budget och avstånd. Inga sponsrade placeringar.<br /><span>Designprototyp · Fiktiva event och priser. Bilderna visar stämning, inte de angivna platserna.</span></p></footer>
+      <footer className="results-footnote"><Check size={15} aria-hidden="true" /><p>Sorterat efter känsla, tid, budget och avstånd. Inga sponsrade placeringar.</p></footer>
     </>
   );
 }

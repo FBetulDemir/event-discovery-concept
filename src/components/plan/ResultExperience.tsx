@@ -58,7 +58,7 @@ export function ResultExperience() {
           <h2>{event.venue}</h2>
           <p className="result-card__title">{event.title}</p>
           <EventMeta event={event} />
-          <p className="result-card__votes"><Trophy size={16} aria-hidden="true" />{count} {count === 1 ? 'röst' : 'röster'} — flest av alla</p>
+          <p className="result-card__votes"><Trophy size={16} aria-hidden="true" />{count} {count === 1 ? 'röst' : 'röster'}, flest av alla</p>
           <p>{event.description}</p>
           <dl className="event-detail__facts">
             <div><dt>Entré</dt><dd>{event.price ? `${event.price} kr / person` : 'Fri entré'}</dd></div>
@@ -69,7 +69,6 @@ export function ResultExperience() {
             <Button><Ticket size={18} aria-hidden="true" />Köp biljetter</Button>
             <Link href={`/events/${event.id}`} className="button button--secondary">Visa event</Link>
           </div>
-          <p className="field-help">Designprototyp · Biljettköp är inte kopplat till en riktig kassa.</p>
         </div>
       </article>
     </section>

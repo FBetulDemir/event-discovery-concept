@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Compass, Users } from 'lucide-react';
 import { usePreferences } from '@/components/monkey-match/PreferencesProvider';
 
-/** Mobile-only, sticky to the bottom — the header nav moves here below the tablet breakpoint. */
+/** Mobile-only, sticky to the bottom: the header nav moves here below the tablet breakpoint. */
 export function BottomNav() {
   const { resetPreferences } = usePreferences();
 
