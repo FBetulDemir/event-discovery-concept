@@ -59,3 +59,25 @@ Images are downloaded illustrative Unsplash photos. Source URLs are listed in pu
 - Keyboard: arrow keys move by day/week; Home/End move within the week; Page Up/Down change month; Shift + Page Up/Down change year; Enter/Space select.
 - Unfinished ranges disable Continue until an end date is selected. Reversed endpoints are sorted. Selections remain in the shared React draft.
 - Calendar tests: node --experimental-strip-types --test src/lib/dates.test.mjs
+
+## Transparent event matching
+
+`src/lib/matching.ts` exports `filterCompatibleEvents(events, preferences, options?)` and `matchEvents(events, preferences, options?)`. Both are pure and independent of React. No inputs are mutated and no system clock is read.
+
+```ts
+const recommendations = matchEvents(events, preferences, {
+  now: '2026-09-25T15:00:00Z',
+});
+// [{ event, reasons: ['Matchar Dansa', 'Inom din budget', '1,8 km bort', 'Ikväll'] }]
+const topThree = recommendations.slice(0, 3);
+```
+
+Compatibility requires availability, matching city, valid date/time/price/distance, an inclusive selected date or date range, and prices/distances within the user's limits. Incomplete ranges return no results. A null budget is unlimited; zero means free entry only. With an explicit `now`, already-started events are excluded, including overnight events whose start has passed. Relative labels use Europe/Stockholm. Without `now`, no past-event filtering or today/tonight claims are made. Invalid reference timestamps throw a RangeError.
+
+Ranking uses documented internal weights: mood/category relevance 60, earlier start time 20, budget headroom 10, proximity 10. Category-inferred and explicit mood matches are deduplicated. Skipped mood/budget preferences are neutral. Earlier starts are a discovery default, not an inferred preference for a particular hour. Ties resolve by date/time, distance, price, then event ID. Scores are not returned and are not confidence percentages. Every compatible result is returned so the caller can choose how many to show.
+
+```sh
+node --experimental-strip-types --test src/lib/matching.test.mjs
+```
+
+This step adds the matching engine only. The `/matches` route remains a selection summary until the results UI step.
