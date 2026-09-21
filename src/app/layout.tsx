@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
+import { BottomNav } from '@/components/layout/BottomNav';
 import { PreferencesProvider } from '@/components/monkey-match/PreferencesProvider';
 import { ShortlistProvider } from '@/components/plan/ShortlistProvider';
 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <ShortlistProvider>
             <Header />
             {children}
+            <BottomNav />
           </ShortlistProvider>
         </PreferencesProvider>
       </body>

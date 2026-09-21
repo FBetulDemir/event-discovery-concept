@@ -13,7 +13,7 @@ export function Header() {
       <div className="header-inner">
         <Link className="brand" href="/" aria-label="VIP Monkey startsida">
           <span className="brand-vip">VIP</span>
-          <span className="brand-monkey"><MonkeyMark className="brand-m" />ONKEY</span>
+          <span className="brand-monkey">M<MonkeyMark className="brand-o" />NKEY</span>
         </Link>
         <nav className="header-nav" aria-label="Huvudnavigation">
           <Link href="/">Upptäck</Link>
