@@ -1,4 +1,4 @@
-import { ArrowDownRight, ArrowUpRight, MapPin } from 'lucide-react';
+import { ArrowUpRight, MapPin } from 'lucide-react';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { EventDiscovery } from '@/components/discovery/EventDiscovery';
 import { MatchPromo } from '@/components/discovery/MatchPromo';
@@ -10,10 +10,6 @@ export default function HomePage() {
         <div>
           <p className="eyebrow"><MapPin size={14} aria-hidden="true" /> GÖTEBORG, VI SES UTE</p>
           <h1 id="discovery-heading">Bra kvällar.<br /><span>Ännu bättre minnen.</span></h1>
-        </div>
-        <div className="intro-aside">
-          <p>Dansgolv, livescener och nya favoriter.<br />Hitta något som gör kvällen till din.</p>
-          <a href="#event-list">Upptäck vad som händer <ArrowDownRight size={19} aria-hidden="true" /></a>
         </div>
       </section>
       <section className="discovery-hero" aria-labelledby="hero-heading">
