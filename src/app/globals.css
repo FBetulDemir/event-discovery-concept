@@ -198,17 +198,16 @@
   --hero-overlay: linear-gradient(90deg, rgb(0 0 0 / 88%) 0%, rgb(0 0 0 / 56%) 42%, rgb(0 0 0 / 8%) 100%);
   --color-image-label: rgb(18 18 18 / 90%);
   --color-promo: #202B25;
-  --brand-symbol-size: 2.25rem;
   --event-image-ratio: 1.5;
 }
 
 @layer components {
   .site-header { border-bottom: var(--border-width) solid var(--color-border-subtle); }
   .header-inner { max-width: var(--container-width); padding-inline: var(--container-gutter); margin-inline: auto; min-height: var(--header-height); display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); }
-  .brand { display: inline-flex; align-items: center; gap: var(--space-3); color: var(--color-text); font-size: var(--text-brand); font-weight: var(--font-weight-bold); letter-spacing: var(--tracking-heading); text-decoration: none; white-space: nowrap; }
-  .brand sup { font-size: var(--text-caption); margin-left: var(--space-1); }
-  .brand-symbol { width: var(--brand-symbol-size); height: var(--brand-symbol-size); border-radius: var(--radius-sm); background: var(--color-primary); color: var(--color-on-primary); display: grid; place-content: center; position: relative; font-size: var(--text-h3); font-weight: var(--font-weight-bold); }
-  .brand-symbol span { position: absolute; right: var(--space-1); top: calc(-1 * var(--space-2)); }
+  .brand { display: inline-flex; align-items: center; gap: 0.06em; color: var(--color-text); font-size: var(--text-brand); font-weight: var(--font-weight-bold); letter-spacing: var(--tracking-heading); text-decoration: none; white-space: nowrap; }
+  .brand-vip { margin-right: 0.14em; }
+  .brand-monkey { display: inline-flex; align-items: center; color: var(--color-primary); }
+  .brand-m { height: 1.3em; width: auto; margin-right: 0.02em; }
   .header-nav { display: flex; gap: var(--space-8); }
   .header-nav a { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--control-height); color: var(--color-text-muted); text-decoration: none; font-size: var(--text-sm); }
   .header-nav a:hover { color: var(--color-primary); }

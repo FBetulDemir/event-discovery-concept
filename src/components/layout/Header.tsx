@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { AudioLines, MapPin } from 'lucide-react';
 import { usePreferences } from '@/components/monkey-match/PreferencesProvider';
+import { MonkeyMark } from './MonkeyMark';
 
 export function Header() {
   const { resetPreferences } = usePreferences();
@@ -11,8 +12,8 @@ export function Header() {
     <header className="site-header">
       <div className="header-inner">
         <Link className="brand" href="/" aria-label="VIP Monkey startsida">
-          <span className="brand-symbol" aria-hidden="true">m<span>•</span></span>
-          <span>VIP MONKEY<sup>®</sup></span>
+          <span className="brand-vip">VIP</span>
+          <span className="brand-monkey"><MonkeyMark className="brand-m" />ONKEY</span>
         </Link>
         <nav className="header-nav" aria-label="Huvudnavigation">
           <Link href="/">Upptäck</Link>
