@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { Compass, Users } from 'lucide-react';
 import { usePreferences } from '@/components/monkey-match/PreferencesProvider';
-import { MonkeyAvatar } from './MonkeyAvatar';
 
 /** Mobile-only, sticky to the bottom — the header nav moves here below the tablet breakpoint. */
 export function BottomNav() {
@@ -16,7 +15,7 @@ export function BottomNav() {
       </Link>
       {/* Same reset-on-new-search behavior as the header's Monkey Match link. */}
       <Link href="/monkey-match" onClick={resetPreferences} className="bottom-nav__center" aria-label="Monkey Match">
-        <MonkeyAvatar className="bottom-nav__avatar" />
+        <img src="/images/monkey-logo.png" alt="" className="bottom-nav__avatar" width={64} height={64} />
       </Link>
       <Link href="/plan" className="bottom-nav__link" aria-label="Planera med vänner">
         <Users size={22} aria-hidden="true" />
