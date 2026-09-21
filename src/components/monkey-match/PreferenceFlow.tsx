@@ -12,6 +12,7 @@ import { MoodStep } from './MoodStep';
 import { BudgetStep } from './BudgetStep';
 import { MatchSummary } from './MatchSummary';
 import type { Preferences } from '@/types/preferences';
+import { dateSelectionComplete } from '@/lib/dates';
 
 const steps = [
   { label: 'När & var', title: 'Var börjar din kväll?', description: 'En plats och en dag. Resten hittar vi tillsammans.' },
@@ -38,7 +39,7 @@ export function PreferenceFlow() {
   }
 
   function advance() {
-    if (submitting) return;
+    if (submitting || (step === 0 && !dateSelectionComplete(preferences.date))) return;
     if (step < steps.length - 1) setStep(current => current + 1);
     else {
       setCompleted(true);
@@ -76,7 +77,7 @@ export function PreferenceFlow() {
           {step === 2 && <><BudgetStep budget={preferences.budget} onChange={budget => update({ budget })} /><details className="flow-review"><summary>Din kväll hittills</summary><MatchSummary preferences={preferences} /></details></>}
           <div className="flow-actions">
             {step === 0 ? <Link className="flow-back" href="/"><ArrowLeft size={17} aria-hidden="true" />Till event</Link> : <Button variant="secondary" onClick={() => setStep(current => current - 1)} disabled={submitting}><ArrowLeft size={17} aria-hidden="true" />Tillbaka</Button>}
-            <Button type="submit" disabled={submitting}>{submitting ? 'Öppnar…' : step === 2 ? 'Visa mina matchningar' : 'Fortsätt'}<ArrowRight size={17} aria-hidden="true" /></Button>
+            <Button type="submit" disabled={submitting || (step === 0 && !dateSelectionComplete(preferences.date))}>{submitting ? 'Öppnar…' : step === 2 ? 'Visa mina matchningar' : 'Fortsätt'}<ArrowRight size={17} aria-hidden="true" /></Button>
           </div>
           {step > 0 && <button type="button" className="flow-skip" onClick={skip} disabled={submitting}>{step === 1 ? 'Hoppa över – jag är öppen för allt' : 'Hoppa över – ingen prisgräns'}</button>}
         </form>

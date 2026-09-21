@@ -1,14 +1,8 @@
 import type { Preferences } from '@/types/preferences';
 
-// Fixed sample dates align with the fictional event catalogue, not today's date.
-export const dateOptions = [
-  { value: '2026-09-25', title: 'Fredag', description: '25 september 2026' },
-  { value: '2026-09-26', title: 'Lördag', description: '26 september 2026' },
-];
-
 export const defaultPreferences: Preferences = {
   location: 'Göteborg',
-  date: dateOptions[0].value,
+  date: { mode: 'flexible' },
   distance: 5,
   moods: [],
   budget: null,

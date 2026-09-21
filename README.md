@@ -50,4 +50,12 @@ Images are downloaded illustrative Unsplash photos. Source URLs are listed in pu
 - Progress, back/continue, optional skips, and a final review are included.
 - React context preserves selections between steps and client-side routes, including returning from /matches to edit. A full page reload resets this in-memory prototype session.
 - Skipping mood clears mood preferences; skipping budget selects no price limit. Zero means free entry and is distinct from no limit.
-- The prototype uses fixed sample dates and Göteborg as its location; no geolocation is requested.
+- The calendar supports any future date, date ranges, and flexible dates, using today in the Europe/Stockholm timezone. The event catalogue remains fictional and currently covers 25–26 September 2026. Göteborg is fixed; no geolocation is requested.
+
+## Flexible calendar
+
+- Single day, inclusive date range, or any date; shortcuts for today, tomorrow, and the remaining Friday–Sunday weekend.
+- Month arrows, past-day prevention, today outline, mint selected days, and a live selection summary.
+- Keyboard: arrow keys move by day/week; Home/End move within the week; Page Up/Down change month; Shift + Page Up/Down change year; Enter/Space select.
+- Unfinished ranges disable Continue until an end date is selected. Reversed endpoints are sorted. Selections remain in the shared React draft.
+- Calendar tests: node --experimental-strip-types --test src/lib/dates.test.mjs

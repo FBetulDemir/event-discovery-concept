@@ -1,5 +1,5 @@
-import { CalendarDays, MapPin } from 'lucide-react';
-import { dateOptions } from '@/data/match-options';
+import { MapPin } from 'lucide-react';
+import { DatePicker } from '@/components/ui/DatePicker';
 import { SelectionCard } from '@/components/ui/SelectionCard';
 import type { Preferences } from '@/types/preferences';
 
@@ -10,9 +10,8 @@ export function LocationStep({ preferences, onChange }: Props) {
     <div className="flow-fields">
       <fieldset>
         <legend>När vill du gå ut?</legend>
-        <div className="selection-grid">
-          {dateOptions.map(option => <SelectionCard key={option.value} type="radio" name="date" value={option.value} title={option.title} description={option.description} icon={CalendarDays} checked={preferences.date === option.value} onChange={() => onChange({ date: option.value })} />)}
-        </div>
+        <DatePicker value={preferences.date} onChange={date => onChange({ date })} />
+        <p className="field-help">Exempelutbudet finns 25–26 september 2026. Andra datum kan ge färre eller inga träffar.</p>
       </fieldset>
       <div className="location-field">
         <label htmlFor="match-location">Var börjar kvällen?</label>
