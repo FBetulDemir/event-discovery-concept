@@ -9,7 +9,7 @@ export function ProgressBar({ step, labels }: { step: number; labels: readonly s
       <ol className="flow-progress__labels">
         {labels.map((label, index) => (
           <li key={label} aria-current={index === step ? 'step' : undefined} className={index <= step ? 'is-complete' : ''}>
-            <span className="flow-progress__number" aria-hidden="true">{index < step ? <Check size={13} /> : index + 1}</span>{label}
+            <span className="flow-progress__number" aria-hidden="true">{index < step ? <Check size={14} /> : index + 1}</span>{label}
           </li>
         ))}
       </ol>

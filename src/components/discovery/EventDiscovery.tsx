@@ -38,7 +38,7 @@ export function EventDiscovery() {
     <section id="event-list" className="discovery-events" aria-labelledby="events-heading">
       <div className="search-row">
         <div className="search-field" role="search">
-          <Search size={20} aria-hidden="true" />
+          <Search size={18} aria-hidden="true" />
           <label htmlFor="event-search" className="sr-only">Sök event eller ställe</label>
           <input ref={searchInput} id="event-search" type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Sök event eller ställe…" autoComplete="off" aria-controls="event-results" />
           {query && <button type="button" className="clear-search" onClick={() => { setQuery(''); searchInput.current?.focus(); }} aria-label="Rensa sökning"><X size={18} aria-hidden="true" /></button>}
@@ -61,9 +61,9 @@ export function EventDiscovery() {
         <span className="result-count" role="status" aria-live="polite" aria-atomic="true">{filtered.length} event <ArrowDown size={14} aria-hidden="true" /></span>
       </SectionHeading>
       <div id="event-results">
-        {filtered.length ? <EventGrid events={filtered} /> : <div className="empty-state"><Search size={28} aria-hidden="true" /><h3>Ingen träff den här gången</h3><p>Testa ett annat sökord eller välj färre filter.</p><Button onClick={reset}>Visa alla event</Button></div>}
+        {filtered.length ? <EventGrid events={filtered} /> : <div className="empty-state"><Search size={32} aria-hidden="true" /><h3>Ingen träff den här gången</h3><p>Testa ett annat sökord eller välj färre filter.</p><Button onClick={reset}>Visa alla event</Button></div>}
       </div>
-      {hasFilters && filtered.length > 0 && <button type="button" className="reset-filters" onClick={reset}><X size={16} aria-hidden="true" />Rensa alla filter</button>}
+      {hasFilters && filtered.length > 0 && <button type="button" className="reset-filters" onClick={reset}><X size={17} aria-hidden="true" />Rensa alla filter</button>}
     </section>
   );
 }

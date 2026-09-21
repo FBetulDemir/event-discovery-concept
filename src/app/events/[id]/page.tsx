@@ -25,7 +25,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
           <p className="event-detail__date"><CalendarDays size={17} aria-hidden="true" /><time dateTime={event.date}>{date}</time></p>
           <p>{event.description}</p>
           <dl className="event-detail__facts"><div><dt>Entré</dt><dd>{event.price ? `${event.price} kr / person` : 'Fri entré'}</dd></div><div><dt>Åldersgräns</dt><dd>{event.ageRestriction} år</dd></div><div><dt>Från centrum</dt><dd>{event.distanceKm.toLocaleString('sv-SE')} km</dd></div></dl>
-          <Link href={`/plan?event=${event.id}`} className="button button--primary"><Users size={18} aria-hidden="true" />Planera med vänner</Link>
+          <Link href={`/plan?event=${event.id}`} className="button button--primary"><Users size={17} aria-hidden="true" />Planera med vänner</Link>
         </div>
       </article>
     </PageContainer>

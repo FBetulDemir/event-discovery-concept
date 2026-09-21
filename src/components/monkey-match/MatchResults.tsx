@@ -59,7 +59,7 @@ export function MatchResults() {
             <p>Inga event passar alla dina val. Prova ett annat datum, en större radie eller en annan budget.</p>
             <p className="field-help">Event som redan har börjat visas inte.</p>
             <Link href="/monkey-match" className="button button--primary"><SlidersHorizontal size={17} aria-hidden="true" />Ändra mina val</Link>
-            <Link href="/" className="text-link">Utforska alla exempel<ArrowUpRight size={16} aria-hidden="true" /></Link>
+            <Link href="/" className="text-link">Utforska alla exempel<ArrowUpRight size={17} aria-hidden="true" /></Link>
           </div>
         )}
       </section>
@@ -70,7 +70,7 @@ export function MatchResults() {
         <span className="results-together__arrow" aria-hidden="true"><ArrowUpRight size={30} /></span>
       </aside>}
 
-      <footer className="results-footnote"><Check size={15} aria-hidden="true" /><p>Sorterat efter känsla, tid, budget och avstånd. Inga sponsrade placeringar.</p></footer>
+      <footer className="results-footnote"><Check size={14} aria-hidden="true" /><p>Sorterat efter känsla, tid, budget och avstånd. Inga sponsrade placeringar.</p></footer>
     </>
   );
 }

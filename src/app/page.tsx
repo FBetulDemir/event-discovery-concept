@@ -8,7 +8,7 @@ export default function HomePage() {
     <PageContainer className="discovery-page">
       <section className="discovery-intro" aria-labelledby="discovery-heading">
         <div>
-          <p className="eyebrow"><MapPin size={14} aria-hidden="true" /> GÖTEBORG, VI SES UTE</p>
+          <p className="eyebrow"><MapPin size={16} aria-hidden="true" /> GÖTEBORG, VI SES UTE</p>
           <h1 id="discovery-heading">Bra kvällar.<br /><span>Ännu bättre minnen.</span></h1>
         </div>
       </section>
@@ -18,7 +18,7 @@ export default function HomePage() {
           <span className="hero-kicker">UT UR VARDAGEN. IN I KVÄLLEN.</span>
           <h2 id="hero-heading">Staden är vaken.<br />Är du?</h2>
           <p>Från första låten till sista dansen.<br />Upptäck Göteborg, en kväll i taget.</p>
-          <a className="button button--primary" href="#event-list">Hitta din kväll <ArrowUpRight size={18} aria-hidden="true" /></a>
+          <a className="button button--primary" href="#event-list">Hitta din kväll <ArrowUpRight size={17} aria-hidden="true" /></a>
         </div>
         <span className="hero-caption">GÖTEBORG AFTER HOURS <span aria-hidden="true">↗</span></span>
       </section>

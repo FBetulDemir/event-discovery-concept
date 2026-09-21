@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState, useTransition, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowRight, AudioLines, Check, Users } from 'lucide-react';
+import { ArrowLeft, ArrowRight, AudioLines, Check, ChevronDown, Users } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { usePreferences } from './PreferencesProvider';
@@ -57,7 +57,7 @@ export function PreferenceFlow() {
   return (
     <div className="match-layout">
       <aside className="match-story" aria-labelledby="match-intro-heading">
-        <p className="eyebrow"><AudioLines size={18} aria-hidden="true" /> MONKEY MATCH</p>
+        <p className="eyebrow"><AudioLines size={16} aria-hidden="true" /> MONKEY MATCH</p>
         <h2 id="match-intro-heading">Mindre scroll.<br /><span>Mer kväll.</span></h2>
         <p>Berätta vad du gillar. Hitta en kväll som känns som du.</p>
         <div className="match-story__image"><img src="/images/hero.jpg" width={600} height={400} alt="Vänner i en konsertpublik framför en upplyst scen" /><span><Users size={16} aria-hidden="true" /> Bättre tillsammans.</span></div>
@@ -74,7 +74,7 @@ export function PreferenceFlow() {
           </div>
           {step === 0 && <LocationStep preferences={preferences} onChange={update} />}
           {step === 1 && <MoodStep selected={preferences.moods} onChange={moods => update({ moods })} />}
-          {step === 2 && <><BudgetStep budget={preferences.budget} onChange={budget => update({ budget })} /><details className="flow-review"><summary>Din kväll hittills</summary><MatchSummary preferences={preferences} /></details></>}
+          {step === 2 && <><BudgetStep budget={preferences.budget} onChange={budget => update({ budget })} /><details className="flow-review"><summary>Din kväll hittills<ChevronDown size={16} aria-hidden="true" /></summary><MatchSummary preferences={preferences} /></details></>}
           <div className="flow-actions">
             {step === 0 ? <Link className="flow-back" href="/"><ArrowLeft size={17} aria-hidden="true" />Till event</Link> : <Button variant="secondary" onClick={() => setStep(current => current - 1)} disabled={submitting}><ArrowLeft size={17} aria-hidden="true" />Tillbaka</Button>}
             <Button type="submit" disabled={submitting || (step === 0 && !dateSelectionComplete(preferences.date))}>{submitting ? 'Öppnar…' : step === 2 ? 'Visa mina matchningar' : 'Fortsätt'}<ArrowRight size={17} aria-hidden="true" /></Button>

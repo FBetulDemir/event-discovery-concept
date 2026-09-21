@@ -25,7 +25,7 @@ export function PlanExperience() {
   return (
     <section className="plan-page">
       <Link href="/matches" className="text-link"><ArrowLeft size={17} aria-hidden="true" />Till matchningarna</Link>
-      <p className="eyebrow"><Users size={20} aria-hidden="true" /> 4 vänner har gått med</p>
+      <p className="eyebrow"><Users size={16} aria-hidden="true" /> 4 vänner har gått med</p>
       <h1>Fredag kväll</h1>
       <p className="plan-page__intro">Rösta på det ni ska göra tillsammans. Alla röster syns direkt.</p>
       {shortlisted.length ? (

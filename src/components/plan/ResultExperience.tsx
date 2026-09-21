@@ -66,7 +66,7 @@ export function ResultExperience() {
             <div><dt>Från centrum</dt><dd>{event.distanceKm.toLocaleString('sv-SE')} km</dd></div>
           </dl>
           <div className="result-card__actions">
-            <Button><Ticket size={18} aria-hidden="true" />Köp biljetter</Button>
+            <Button><Ticket size={17} aria-hidden="true" />Köp biljetter</Button>
             <Link href={`/events/${event.id}`} className="button button--secondary">Visa event</Link>
           </div>
         </div>
