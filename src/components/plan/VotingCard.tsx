@@ -18,7 +18,7 @@ export function VotingCard({ event, votes, isMine, onVote }: VotingCardProps) {
         <span className="event-category">{event.category}</span>
       </div>
       <div className="event-body">
-        <h3 id={`voting-title-${event.id}`}>{event.venue}</h3>
+        <h2 id={`voting-title-${event.id}`}>{event.venue}</h2>
         <div className="event-meta">
           <span><MapPin size={14} aria-hidden="true" />{event.city}</span>
           <span><Clock3 size={14} aria-hidden="true" />{event.time}</span>

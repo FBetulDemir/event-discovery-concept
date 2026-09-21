@@ -96,7 +96,7 @@ export function DatePicker({ value, onChange }: Props) {
       <div className="calendar-surface">
         <div className="calendar-toolbar">
           <button type="button" aria-label="Föregående månad" disabled={month <= today.slice(0, 7)} onClick={() => changeMonth(-1)}><ChevronLeft size={20} aria-hidden="true" /></button>
-          <h3 id={`${id}-month`} aria-live="polite">{monthTitle}</h3>
+          <h2 id={`${id}-month`} aria-live="polite">{monthTitle}</h2>
           <button type="button" aria-label="Nästa månad" onClick={() => changeMonth(1)}><ChevronRight size={20} aria-hidden="true" /></button>
         </div>
         {helpText && <p id={`${id}-help`} className="calendar-help">{helpText}</p>}
