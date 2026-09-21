@@ -1,10 +1,16 @@
-export default function DiscoveryPage() {
+import { Info } from 'lucide-react';
+import { PageContainer } from '@/components/layout/PageContainer';
+import { SectionHeading } from '@/components/ui/SectionHeading';
+
+export default function HomePage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col justify-center gap-6 px-6 py-16">
-      <p className="text-sm font-bold tracking-widest text-[var(--color-primary)]">VIP MONKEY</p>
-      <h1 className="text-5xl font-bold tracking-tight sm:text-7xl">Monkey Match</h1>
-      <p className="max-w-lg text-xl">Din nästa kväll börjar här.</p>
-      <p className="text-sm">Designprototyp · Event och datum är exempel.</p>
-    </main>
+    <PageContainer className="foundation-page">
+      <SectionHeading as="h1" eyebrow="VIP Monkey" title="Fler kvällar att minnas." />
+      <p className="foundation-copy">Grunden till en ny upplevelse.</p>
+      <p className="prototype-note">
+        <Info size={16} aria-hidden="true" />
+        Designprototyp under utveckling.
+      </p>
+    </PageContainer>
   );
 }

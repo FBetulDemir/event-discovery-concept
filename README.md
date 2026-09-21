@@ -1,13 +1,12 @@
-# Monkey Match
+# VIP Monkey prototype foundation
 
-A Swedish event-discovery and group-planning prototype for VIP Monkey.
+Next.js App Router, React, TypeScript, Tailwind CSS v4, and Lucide React.
+Requires Node.js 20.9 or newer.
 
 ## Development
 
-Requires Node.js 20.9 or newer.
-
 ```sh
-npm install
+npm ci
 npm run dev
 ```
 
@@ -16,20 +15,20 @@ Open http://localhost:3000.
 ## Validation
 
 ```sh
-npm run typecheck
 npm run build
+npm run typecheck
 ```
 
-Built with Next.js App Router, React, TypeScript, Tailwind CSS, and Lucide React.
-All event details and votes are prototype content. No backend, authentication, or database.
+## Foundation
 
-## Implementation sequence
+- `src/app/globals.css`: brand colors, typography, spacing, responsive container, control states, and accessibility styles. Brand tokens are also available as Tailwind utilities such as `bg-primary` and `text-muted`.
+- `Button`: native button with primary/secondary variants, defaults to `type="button"`, supports disabled state and native props.
+- `Chip`: controlled selection button with `selected` and `aria-pressed`. Manage its state in a consuming client component.
+- `PageContainer`: render once per route; provides the main landmark, responsive gutters, maximum width, and the skip-link target.
+- `SectionHeading`: title, optional eyebrow and trailing content; defaults to `h2`, with `h1` and `h3` supported for semantic heading order.
 
-1. Runnable application foundation and brand tokens.
-2. Typed sample events and client-side matching.
-3. Shared components and responsive discovery page.
-4. Preference flow and match results.
-5. Shortlisting, simulated voting, and winner.
-6. Event details and final accessibility checks.
+Use Lucide icons as named imports. Decorative icons should have `aria-hidden="true"`; icon-only controls need an accessible name.
 
-Each step is verified and committed separately.
+The app uses a local system font stack with no font downloads. Controls have a minimum 44px height, visible keyboard focus, disabled states, and reduced-motion support.
+
+Only the project foundation is implemented. Event discovery, matching, and planning are intentionally deferred. No backend, authentication, or database.
