@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
+import { PreferencesProvider } from '@/components/monkey-match/PreferencesProvider';
 
 export const metadata: Metadata = {
   title: 'VIP Monkey | Designprototyp',
@@ -13,8 +14,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="sv">
       <body>
         <a className="skip-link" href="#main-content">Hoppa till innehåll</a>
-        <Header />
-        {children}
+        <PreferencesProvider>
+          <Header />
+          {children}
+        </PreferencesProvider>
       </body>
     </html>
   );

@@ -31,7 +31,7 @@ Use Lucide icons as named imports. Decorative icons should have `aria-hidden="tr
 
 The app uses a local system font stack with no font downloads. Controls have a minimum 44px height, visible keyboard focus, disabled states, and reduced-motion support.
 
-The discovery page includes local event imagery, six fictional listings, live search, category/date/free-entry filters, expandable event descriptions, and a Monkey Match promotion. `/monkey-match` is a placeholder for the next implementation step. Matching and planning are not implemented. No backend, authentication, or database.
+The discovery page includes local event imagery, six fictional listings, live search, category/date/free-entry filters, expandable event descriptions, and a Monkey Match promotion. `/monkey-match` provides a three-step preference flow. `/matches` currently shows a selection summary; ranked results and planning are not implemented. No backend, authentication, or database.
 
 ## Discovery checks
 
@@ -42,3 +42,12 @@ node --experimental-strip-types --test src/lib/discovery.test.mjs
 ```
 
 Images are downloaded illustrative Unsplash photos. Source URLs are listed in public/images/SOURCES.md. Listings are fictional, distances are from central Göteborg, and imagery does not depict the named venues.
+
+## Monkey Match preferences
+
+- Three steps: date/location/distance, moods, and ticket budget per person.
+- Reusable native radio and checkbox selection cards support keyboard navigation and visible selected/focus states.
+- Progress, back/continue, optional skips, and a final review are included.
+- React context preserves selections between steps and client-side routes, including returning from /matches to edit. A full page reload resets this in-memory prototype session.
+- Skipping mood clears mood preferences; skipping budget selects no price limit. Zero means free entry and is distinct from no limit.
+- The prototype uses fixed sample dates and Göteborg as its location; no geolocation is requested.
