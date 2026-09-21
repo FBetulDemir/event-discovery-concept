@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { ArrowLeft, Users } from 'lucide-react';
+import { ArrowLeft, Trophy, Users } from 'lucide-react';
 import { events } from '@/data/events';
 import { useShortlist } from './ShortlistProvider';
 import { VotingCard } from './VotingCard';
@@ -43,6 +43,7 @@ export function PlanExperience() {
       ) : (
         <p>Välj ett event bland dina matchningar för att börja rösta.</p>
       )}
+      {shortlisted.length > 0 && <Link href="/plan/result" className="button button--secondary"><Trophy size={17} aria-hidden="true" />Se resultatet</Link>}
       <p className="foundation-copy">Designprototyp · Ingen chatt, inga profiler och inga riktiga inbjudningar än — det här visar bara hur delad röstning kan kännas.</p>
     </section>
   );
