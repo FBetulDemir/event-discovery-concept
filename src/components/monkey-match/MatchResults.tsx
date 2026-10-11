@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, AudioLines, Check, Search, SlidersHorizontal, Users } from 'lucide-react';
-import { events } from '@/data/events';
+import { useEvents } from '@/lib/useEvents';
 import { matchEvents } from '@/lib/matching';
 import { EventCard } from '@/components/events/EventCard';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -11,6 +11,7 @@ import { usePreferences } from './PreferencesProvider';
 import { MatchSummary } from './MatchSummary';
 
 export function MatchResults() {
+  const events = useEvents();
   const { preferences, completed } = usePreferences();
   const [now, setNow] = useState<string | null>(null);
 

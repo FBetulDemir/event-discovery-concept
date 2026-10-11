@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { events } from '../data/events.ts';
+import { eventTemplates } from '../data/events.ts';
+const events = eventTemplates.slice(0, 6);
 import { filterEvents } from './discovery.ts';
 
 const defaults = { query: '', category: 'Alla event', date: 'all', freeOnly: false };

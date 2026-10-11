@@ -1,7 +1,7 @@
 import type { Event } from '@/types/event';
 
 /** Fictional prototype listings. Photos illustrate atmosphere, not the named venues. */
-export const events: Event[] = [
+export const eventTemplates: Event[] = [
   {
     id: 'yaki-da', slug: 'yaki-da-all-night-long', title: 'All night long',
     image: '/images/club.jpg', imageAlt: 'En bartender blandar en drink i färgstarkt barljus',
@@ -51,3 +51,55 @@ export const events: Event[] = [
     description: 'Varm soul och nära till scenen. Låt lördagen ta sin tid med levande musik och skönt häng i Majorna.',
   },
 ];
+
+
+const weeklyTitles = [
+  ['Sunday disco', 'Söndagssoul', 'Söndagsskratt', 'Söndagshäng'],
+  ['Monday grooves', 'Akustisk måndag', 'Måndag på micken', 'Quiz & kompisar'],
+  ['Tisdag på dansgolvet', 'Jazz på tisdag', 'Nya röster', 'Spelkväll'],
+  ['Disco mitt i veckan', 'Onsdag unplugged', 'Lillördag med skratt', 'Vinyl & vänner'],
+  ['Thursday house', 'Torsdagsjam', 'Torsdagskomik', 'After work vid vattnet'],
+  ['Friday fever', 'Fredag live', 'Fredagens skrattfest', 'Fredag med vänner'],
+  ['Saturday beats', 'Lördag med soul', 'Lördag på scen', 'Lördagslounge'],
+];
+const weekdays = ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'];
+const categorySeeds = [eventTemplates[0], eventTemplates[1], eventTemplates[2], eventTemplates[4]];
+
+// Four additional fictional weekly series per day, with free and paid options.
+weeklyTitles.forEach((titles, weekday) => {
+  titles.forEach((title, categoryIndex) => {
+    const seed = categorySeeds[categoryIndex];
+    eventTemplates.push({
+      ...seed,
+      id: `weekly-${weekday}-${categoryIndex}`,
+      slug: `weekly-${weekday}-${categoryIndex}`,
+      title,
+      date: `2026-09-${String(20 + weekday).padStart(2, '0')}`,
+      time: ['22:00–03:00', '19:00–22:00', '20:00–22:00', '17:00–23:00'][categoryIndex],
+      price: categoryIndex === 3 || (weekday + categoryIndex) % 3 === 0 ? 0 : [120, 150, 95, 0][categoryIndex],
+      distanceKm: [0.8, 1.5, 2.5, 4][(weekday + categoryIndex) % 4],
+      ageRestriction: 18,
+      description: `${title} varje ${weekdays[weekday]}. ${seed.description}`,
+    });
+  });
+});
+
+/** Next weekly occurrence, evaluated at use time rather than at build/module load. */
+export function getEvents(now = new Date()): Event[] {
+  const parts = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Europe/Stockholm', year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+  }).formatToParts(now);
+  const part = (type: Intl.DateTimeFormatPartTypes) => parts.find(p => p.type === type)!.value;
+  const today = `${part('year')}-${part('month')}-${part('day')}`;
+  const clock = `${part('hour')}:${part('minute')}:${part('second')}`;
+  const base = new Date(`${today}T12:00:00Z`);
+  return eventTemplates.map(event => {
+    const weekday = new Date(`${event.date}T12:00:00Z`).getUTCDay();
+    let days = (weekday - base.getUTCDay() + 7) % 7;
+    if (days === 0 && `${event.time.slice(0, 5)}:00` <= clock) days = 7;
+    const next = new Date(base);
+    next.setUTCDate(next.getUTCDate() + days);
+    return { ...event, date: next.toISOString().slice(0, 10) };
+  }).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time) || a.id.localeCompare(b.id));
+}

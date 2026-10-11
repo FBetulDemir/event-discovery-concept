@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowLeft, PartyPopper, SlidersHorizontal, Ticket, Trophy } from 'lucide-react';
-import { events } from '@/data/events';
+import { useEvents } from '@/lib/useEvents';
 import { Button } from '@/components/ui/Button';
 import { EventMeta } from '@/components/events/EventMeta';
 import { useShortlist } from './ShortlistProvider';
@@ -16,6 +16,7 @@ const confettiPieces = Array.from({ length: 14 }, (_, i) => ({
 }));
 
 export function ResultExperience() {
+  const events = useEvents();
   const { shortlist, votes } = useShortlist();
 
   const shortlisted = shortlist

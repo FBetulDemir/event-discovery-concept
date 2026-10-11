@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { ArrowDown, AudioLines, CalendarDays, Check, Music2, Search, SlidersHorizontal, Smile, Wine, X } from 'lucide-react';
-import { events } from '@/data/events';
+import { useEvents } from '@/lib/useEvents';
 import { filterEvents } from '@/lib/discovery';
 import type { EventCategory } from '@/types/event';
 import { Chip } from '@/components/ui/Chip';
@@ -19,6 +19,7 @@ const categories = [
 ] as const;
 
 export function EventDiscovery() {
+  const events = useEvents();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<EventCategory | 'Alla event'>('Alla event');
   const [date, setDate] = useState('all');
@@ -48,8 +49,9 @@ export function EventDiscovery() {
           <label htmlFor="event-date" className="sr-only">Filtrera på datum</label>
           <select id="event-date" value={date} onChange={e => setDate(e.target.value)} aria-controls="event-results">
             <option value="all">Alla datum</option>
-            <option value="2026-09-25">Fre 25 september</option>
-            <option value="2026-09-26">Lör 26 september</option>
+            {[...new Set(events.map(event => event.date))].map(day => (
+              <option key={day} value={day}>{new Intl.DateTimeFormat('sv-SE', { weekday: 'short', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${day}T12:00:00Z`))}</option>
+            ))}
           </select>
         </div>
       </div>

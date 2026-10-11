@@ -4,11 +4,12 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, Trophy, Users } from 'lucide-react';
-import { events } from '@/data/events';
+import { useEvents } from '@/lib/useEvents';
 import { useShortlist } from './ShortlistProvider';
 import { VotingCard } from './VotingCard';
 
 export function PlanExperience() {
+  const events = useEvents();
   const eventId = useSearchParams().get('event');
   const { shortlist, votes, myVote, addToShortlist, vote } = useShortlist();
 

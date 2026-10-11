@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { matchEvents, filterCompatibleEvents } from './matching.ts';
-import { events } from '../data/events.ts';
+import { eventTemplates } from '../data/events.ts';
+const events = eventTemplates.slice(0, 6);
 
 const preferences = {
   location: 'Göteborg', date: { mode: 'single', start: '2026-09-25' },

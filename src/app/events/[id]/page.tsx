@@ -1,15 +1,15 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, CalendarDays, Users } from 'lucide-react';
-import { events } from '@/data/events';
+import { getEvents } from '@/data/events';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { EventMeta } from '@/components/events/EventMeta';
 
-export function generateStaticParams() { return events.map(event => ({ id: event.id })); }
+export const dynamic = 'force-dynamic';
 
 export default async function EventPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const event = events.find(candidate => candidate.id === id);
+  const event = getEvents().find(candidate => candidate.id === id);
   if (!event) notFound();
   const date = new Intl.DateTimeFormat('sv-SE', { dateStyle: 'full', timeZone: 'UTC' }).format(new Date(`${event.date}T12:00:00Z`));
 
@@ -23,6 +23,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
           <h1>{event.title}</h1>
           <EventMeta event={event} />
           <p className="event-detail__date"><CalendarDays size={17} aria-hidden="true" /><time dateTime={event.date}>{date}</time></p>
+          <p>Återkommer varje vecka · nästa tillfälle visas ovan.</p>
           <p>{event.description}</p>
           <dl className="event-detail__facts"><div><dt>Entré</dt><dd>{event.price ? `${event.price} kr / person` : 'Fri entré'}</dd></div><div><dt>Åldersgräns</dt><dd>{event.ageRestriction} år</dd></div><div><dt>Från centrum</dt><dd>{event.distanceKm.toLocaleString('sv-SE')} km</dd></div></dl>
           <Link href={`/plan?event=${event.id}`} className="button button--primary"><Users size={17} aria-hidden="true" />Planera med vänner</Link>
