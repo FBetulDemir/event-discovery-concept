@@ -88,10 +88,10 @@ Single product brand (Branded House). If more cities or products come, endorse t
 - Brand changes go through `docs/DECISIONS.md`.
 - Measurement later (needs data): unaided recall among Göteborg 20 to 35s, plan completion rate, invitee conversion, share of plans that end in a ticket click.
 
-## Decisions needed
+## Decisions
 
-1. **Name:** Gänget (recommended), Kvällsplan, Ikväll, or keep Monkey Match.
-2. **Palette:** A paper & signal (recommended), B tram blue, C night.
-3. **Mark:** ticket-notch wordmark (recommended), wordmark only, or a new character.
+- **Name: Gänget** (decided 2026-10-18). Still to do before launch: trademark search (PRV/EUIPO) and securing a domain; `gänget.se` appeared registered to someone else.
+- **Mark: wordmark with a ticket notch** (decided). No mascot, no monkey.
+- **Palette: open.** A paper & signal, B tram blue, C night shown as swatches; waiting for the choice.
 
-Then: write `docs/brand/GUIDELINES.md`, deal the full direction sheet with the new palette and type, generate tokens, and start the design-system build.
+Next: write `docs/brand/GUIDELINES.md` once the palette is chosen, deal the full direction sheet, generate tokens, start the design-system build.
