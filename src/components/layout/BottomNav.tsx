@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { AudioLines, Compass, Ticket } from 'lucide-react';
 import { usePreferences } from '@/components/match/PreferencesProvider';
 import { navItems } from './Header';
+import { useNotifications } from '@/components/notifications/NotificationsProvider';
 
 const icons = { '/': Compass, '/match': AudioLines, '/plan': Ticket } as const;
 
@@ -12,6 +13,7 @@ const icons = { '/': Compass, '/match': AudioLines, '/plan': Ticket } as const;
 export function BottomNav() {
   const { resetPreferences } = usePreferences();
   const pathname = usePathname();
+  const { total } = useNotifications();
 
   return (
     <nav className="bottom-nav" aria-label="Huvudnavigation">
@@ -26,6 +28,7 @@ export function BottomNav() {
           >
             <Icon size={22} aria-hidden="true" />
             <span>{item.label}</span>
+            {item.href === '/plan' && total > 0 && <span className="nav-badge nav-badge--dot" role="status" aria-label={`${total} ${total === 1 ? 'nyhet' : 'nyheter'}`}>{total}</span>}
           </Link>
         );
       })}

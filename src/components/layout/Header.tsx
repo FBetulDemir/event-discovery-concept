@@ -6,6 +6,7 @@ import { Logo } from '@/components/brand/Logo';
 import { usePreferences } from '@/components/match/PreferencesProvider';
 import { ThemeToggle } from './ThemeToggle';
 import { AccountLink } from './AccountLink';
+import { useNotifications } from '@/components/notifications/NotificationsProvider';
 
 export const navItems = [
   { href: '/', label: 'Utforska', match: (path: string) => path === '/' || path.startsWith('/events') },
@@ -16,6 +17,7 @@ export const navItems = [
 export function Header() {
   const { resetPreferences } = usePreferences();
   const pathname = usePathname();
+  const { total } = useNotifications();
 
   return (
     <header className="site-header">
@@ -32,6 +34,7 @@ export function Header() {
               aria-current={item.match(pathname) ? 'page' : undefined}
             >
               {item.label}
+              {item.href === '/plan' && total > 0 && <span className="nav-badge" role="status" aria-label={`${total} ${total === 1 ? 'nyhet' : 'nyheter'}`}>{total}</span>}
             </Link>
           ))}
         </nav>

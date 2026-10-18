@@ -19,11 +19,12 @@ Ekran görüntüleri gerçek tarayıcıda, gerçek Supabase veritabanı ve gerç
 | **Davetli akışı** | ✅ | Davetli planın adını, tarihini, kimlerin olduğunu ve **seçenekleri** görür; favorisini seçip adını yazınca katılır ve **oyu atılır**. |
 | **Plan odası** | ✅ | Üyeler ve **kimin oy verdiği**, kartlarda "Röstat av …", plan **tarihi**, odadan **etkinlik ekleme**, plan adı/tarihi düzenleme, karar sonrası "Så röstade ni", **gruba kopyalanabilir mesaj**. |
 | **Yorumlar** (FB tarzı) | ✅ | Plan ve etkinlik thread'i, **iki seviye cevap**, 5 tepki (ikonlarla), silme (yazar/organizatör), raporlama, hız sınırı, canlı güncelleme. |
-| **Giriş / hesap** | ⚠️ | `/konto` sayfası ve header'da "Logga in" var; e-postayla şifresiz giriş ve **misafiri hesaba yükseltme** (planlar ve oylar kalır) kodlandı. **E-postanın size ulaşması için Supabase panelinde 2 ayar gerekiyor** (aşağıda). Uçtan uca denenmedi. |
+| **Giriş / hesap** | ⚠️ | **E-posta + şifre** (e-posta linki bırakıldı). Misafir hesaba yükselince planlar/oylar kalır. Girişi denedim; **sıfırdan kayıt** sahte adreslerle denenemedi. Şifre sıfırlama yok (SMTP gerekir). |
+| Gizlilik sayfası (`/integritet`) | ✅ | Ne saklanıyor, Ticketmaster, silme; iletişim adresi hâlâ yer tutucu. |
 | Planlar listesi | ✅ | Küçük resim, tarih, kişi sayısı, "Du har röstat / Din röst saknas", oy sayısı. |
 | Katalog kalitesi | ✅ | Tekrar eden gösteriler tek kart (`+N datum`), 20 km dışı elendi, açıklamalardan URL temizlendi, uzak tarihler "31 dec" diye yazılır. |
-| Arkadaş listesi | ❌ | Yok. |
-| Bildirimler (oy verdi, plan kapandı) | ❌ | Yok (canlı güncelleme sadece sayfa açıkken). |
+| Arkadaş listesi (`/vanner`) | ✅ | Arkadaş linki/kodu, kodla ekleme, istek kabul/ret, silme, plan odasından **arkadaşı davet etme** (sadece hesaplı kullanıcılar). |
+| Bildirimler | ✅ | "Planer" menüsünde rozet (yeni oy/yorum/üye, davet, arkadaş isteği), plan listesinde "Nytt: …" satırı, "Inbjudningar" bölümü. Dakikada bir ve odaya dönünce güncellenir; e-posta/push yok. |
 | İngilizce + dil düğmesi | ❌ | Sıranın sonunda. |
 | Harici etkinlikler | ⚠️ | Sadece Ticketmaster; Göteborg & Co yok (anahtar yok). Fiyat yok. |
 | Güvenlik (RLS, RPC'ler) | ✅ | İki SQL testi geçti (plan kuralları + yorumlar). Anonim giriş açık, CAPTCHA yok. |
@@ -31,9 +32,9 @@ Ekran görüntüleri gerçek tarayıcıda, gerçek Supabase veritabanı ve gerç
 
 ### Sizin yapmanız gerekenler (kodla çözülemez)
 
-Supabase panelinde (`docs/BACKEND.md` → "Sign-in (email) setup"):
-1. **Authentication → URL Configuration:** Site URL ve Redirect URL'lere `http://localhost:3000/konto`, canlı adres `/konto` ekleyin.
-2. **Authentication → SMTP Settings:** kendi SMTP'nizi bağlayın. Varsayılan Supabase posta servisi **sadece proje ekibindeki adreslere** gönderir ve saatte birkaç e-postayla sınırlıdır; arkadaşlarınız bağlantıyı alamaz. Sadece siz test edecekseniz bu adım zorunlu değil.
+1. Supabase paneli → **Authentication → Sign In / Providers → Email → "Confirm email" KAPALI.** Açık kalırsa şifreyle kayıt e-posta göndermeye çalışır ve dışarıdan biri alamaz.
+2. Şifre sıfırlama için ileride kendi SMTP'niz gerekecek (`docs/BACKEND.md`).
+3. `/integritet` sayfasındaki iletişim adresini siz belirleyin (Ticketmaster kaldırma talepleri için).
 
 ## 3. Bu turda bulunan ve düzeltilen hatalar
 
@@ -62,10 +63,10 @@ Açık kalan küçük şeyler:
 |---|---|---|
 | 1 | Davetli akışı, ön sayfada plan eylemi | ✅ |
 | 2 | Plan odası zenginliği | ✅ |
-| 3 | Hesap | ⚠️ kod hazır, panel ayarları sizde |
+| 3 | Hesap | ✅ e-posta + şifre; "Confirm email" ayarı sizde |
 | 4 | İçerik kalitesi | ✅ ilk tur; ikinci kaynak ve fiyat dürüstlüğü açık |
-| 5 | Yorumlar | ✅; **bildirimler** açık |
-| 6 | Arkadaşlar | ❌ |
+| 5 | Yorumlar + bildirimler | ✅ |
+| 6 | Arkadaşlar | ✅ |
 | 7 | İngilizce + dil düğmesi | ❌ |
 
 ## 6. Senaryo
@@ -151,8 +152,15 @@ Giriş yapmamış: ![](review/15-konto-logga-in-desktop.jpg)
 
 Giriş yapmamışsa "Logga in" + e-posta alanı; misafirse "Spara dina planer"; hesap varsa e-posta ve "Logga ut". Header'da "Logga in" bağlantısı, girişten sonra baş harfin.
 
+### 16. Arkadaşlar (`/vanner`)
+İki hesapla uçtan uca denendi (giriş, isim, link, istek, kabul): ![](review/16-vanner-desktop.jpg)
+
+Plan odasında arkadaş listesi "Bjud in vänner" olarak görünür; davet edilen kişi **Planer** sayfasında "Inbjudningar" altında "Gå med / Avböj" görür, menüde rozet çıkar, katılınca rozet kaybolur. Mobilde rozet alt menüdeki "Planer" üstündedir. (Bu ekranların temiz bir görüntüsü alınamadı; animasyon ortasında yakalandı, o yüzden eklenmedi.)
+
 ## 8. Doğrulanmayan şeyler
 
+- Şifreyle **sıfırdan kayıt** (auth sunucusu sahte e-posta alanlarını reddediyor). Giriş, misafir→hesap yükseltmenin kod yolu ve veritabanı kuralları ayrıca test edildi.
+- Arkadaş/bildirim ekranlarının klavye-ekran okuyucu denemesi, açık temada `/vanner`.
 - **E-postanın gerçekten gelmesi** ve bağlantıyla dönüş (panel ayarları gerekiyor). Misafiri hesaba çevirme akışı kodlandı ama uçtan uca denenmedi.
 - Gerçek ikinci cihaz/tarayıcıda canlı güncelleme (aynı tarayıcıda farklı oturumlarla denendi).
 - Klavye ve ekran okuyucu ile uçtan uca gezinme.

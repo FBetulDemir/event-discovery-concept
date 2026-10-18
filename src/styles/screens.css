@@ -289,3 +289,30 @@ body { padding-bottom: 4.5rem; }
 .plan-card__title { font-weight: 600; font-size: var(--step-lead); line-height: 1.2; }
 .plan-card__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-1); }
 .plan-card__cover--empty { display: block; }
+
+/* ---- Legal / long text ---- */
+.legal { gap: var(--space-6); }
+.legal section { display: grid; gap: var(--space-3); max-width: var(--measure); }
+.legal ul { display: grid; gap: var(--space-2); padding-left: var(--space-5); list-style: disc; }
+.legal li::marker { color: var(--ink-muted); }
+
+/* ---- Notification badge ---- */
+.nav-badge { display: inline-grid; place-items: center; min-width: 1.4rem; height: 1.4rem; margin-left: var(--space-2); padding-inline: var(--space-1); background: var(--accent); color: var(--accent-ink); font-size: var(--step-small); font-weight: 600; line-height: 1; }
+.bottom-nav a { position: relative; }
+.nav-badge--dot { position: absolute; top: var(--space-2); left: calc(50% + 0.4rem); margin: 0; }
+
+/* ---- Plan news and invitations ---- */
+.plan-card__news { color: var(--accent); font-weight: 600; }
+.invitations { display: grid; gap: var(--space-4); margin-block-end: var(--space-8); }
+.invitations ul { display: grid; gap: var(--space-3); }
+.invitations li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-4); background: var(--surface-1); }
+.invitations__text { display: grid; gap: var(--space-1); }
+.invitations__actions { display: flex; gap: var(--space-2); }
+
+/* ---- Friends ---- */
+.friend-group { display: grid; gap: var(--space-3); margin-block: var(--space-6); }
+.friend-group ul { display: grid; gap: var(--space-2); }
+.friend-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) var(--space-4); background: var(--surface-1); }
+.friend-row__name { font-weight: 600; }
+.friend-row__actions { display: flex; align-items: center; gap: var(--space-2); }
+.friend-invite { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-4); background: var(--surface-2); margin-block: var(--space-4); }

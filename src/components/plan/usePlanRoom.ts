@@ -9,6 +9,8 @@ import {
 import type { Event } from '@/types/event';
 import { nextVote } from '@/lib/voting';
 import { rememberName } from '@/lib/plans/displayName';
+import { markPlanSeen } from '@/lib/social/api';
+import { useNotifications } from '@/components/notifications/NotificationsProvider';
 
 export type Room =
   | { status: 'loading' }
@@ -23,13 +25,20 @@ export function usePlanRoom(code: string) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<PlanError | null>(null);
   const userId = useRef<string | null>(null);
+  const notifications = useNotifications();
+  const refreshNews = useRef(notifications.refresh);
+  refreshNews.current = notifications.refresh;
 
   const refresh = useCallback(async () => {
     try {
       const user = await ensureUser();
       userId.current = user.id;
       const state = await loadPlan(code);
-      if (state) setRoom({ status: 'ready', state, userId: user.id });
+      if (state) {
+        setRoom({ status: 'ready', state, userId: user.id });
+        // Being in the room means having seen what is in it; clears the plan's badge.
+        void markPlanSeen(state.plan.id).then(() => refreshNews.current(), () => undefined);
+      }
       else setRoom({ status: 'preview', preview: await getPlanPreview(code) });
     } catch (error) {
       setRoom({ status: 'error', message: error instanceof Error ? error.message : 'Något gick fel' });

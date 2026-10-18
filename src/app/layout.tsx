@@ -7,6 +7,7 @@ import { BottomNav } from '@/components/layout/BottomNav';
 import { Footer } from '@/components/layout/Footer';
 import { PreferencesProvider } from '@/components/match/PreferencesProvider';
 import { RevealObserver } from '@/components/ui/Reveal';
+import { NotificationsProvider } from '@/components/notifications/NotificationsProvider';
 
 const anton = Anton({ weight: '400', subsets: ['latin', 'latin-ext'], variable: '--font-anton', display: 'swap' });
 const workSans = Work_Sans({ weight: ['400', '600'], subsets: ['latin', 'latin-ext'], variable: '--font-work-sans', display: 'swap' });
@@ -30,10 +31,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <a className="skip-link" href="#main-content">Hoppa till innehåll</a>
         <RevealObserver />
         <PreferencesProvider>
-          <Header />
-          {children}
-          <Footer />
-          <BottomNav />
+          <NotificationsProvider>
+            <Header />
+            {children}
+            <Footer />
+            <BottomNav />
+          </NotificationsProvider>
         </PreferencesProvider>
       </body>
     </html>

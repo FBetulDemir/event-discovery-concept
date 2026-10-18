@@ -110,3 +110,20 @@ Template:
 - Decision: events further than 20 km from the centre are left out; a repeating show is one card with `+N datum` and the other dates on its event page (`groupSeries`); raw URLs are stripped from seller descriptions. Dates further than a week away are labelled with the date, not a weekday.
 - Consequences: the catalogue is smaller but each card is a real choice. Revisit the 20 km limit when other cities are added.
 
+## D-018 — Accounts are email + password
+- Date: 2026-10-18 · Status: accepted · Deciders: Eralp
+- Context: The first build used an emailed magic link. Supabase's built-in mailer only reaches project team members, so every outsider would be stuck until custom SMTP exists.
+- Decision: plain email + password. A guest that signs up keeps its user id. With *Confirm email* off in the dashboard no email is sent at all.
+- Consequences: no password reset until SMTP is set up (a lost password means a new account). Sign-ups need CAPTCHA before launch. The password sign-up path was not run against a real inbox-less address in tests (the auth server rejects fake domains); it was exercised through sign-in with SQL-created users.
+
+## D-019 — Friends, invitations and notifications
+- Date: 2026-10-18 · Status: accepted · Deciders: Claude, to confirm with Eralp
+- Decision: friends and plan invitations need an account (a friend list needs a lasting identity); guests share the plan link. Friends are added by code/link and are mutual once accepted. Notifications are *computed* from `last_seen_at` per plan plus open invitations and friend requests, polled every 60 s and on focus; no push or email yet. All writes go through RPCs (`docs/CONTRACTS.md` §15).
+- Consequences: the nav badge can lag up to a minute outside the plan room. Email/push notifications are a later step and need SMTP or a push provider and a consent decision.
+
+## D-020 — Ticketmaster terms: what we store and show
+- Date: 2026-10-18 · Status: proposed (needs a decision) · Deciders: Eralp
+- Context: Ticketmaster's API terms limit how long event data may be kept, forbid earning revenue from the API data itself, and require removing content on request within about 24 hours. Plan rows keep an event snapshot so a plan survives the event leaving the feed.
+- Decision (proposed): keep snapshots only while the plan is open and shortly after the event date, purge them afterwards; no ads or paid placement next to API data (already a product promise); one named contact for takedowns (placeholder on `/integritet`); the privacy page states what is stored.
+- Consequences: a purge job is not built yet. Until then snapshots stay. Re-read the current terms before launch; this is a reading of them, not legal advice.
+

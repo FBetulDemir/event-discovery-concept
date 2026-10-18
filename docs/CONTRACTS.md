@@ -148,7 +148,14 @@ test: `supabase/tests/comments.test.sql`.
 
 ## 14. Accounts (`src/lib/supabase/auth.ts`, `/konto`)
 
-- Passwordless: an emailed link. A **guest that adds an email keeps its user id**, so its plans, memberships, votes and comments stay (Supabase converts the same user). Someone with no session just signs in; a first sign-in creates the account.
+- Plain **email + password** (min. 8 characters). No email is sent when *Confirm email* is switched off in the Supabase dashboard (Authentication → Sign In / Providers → Email); the code also handles the "needs confirmation" case if it is on.
+- A **guest that signs up keeps its user id** (`updateUser({ email, password })` on the anonymous user), so its plans, memberships, votes and comments stay. Someone with no session gets a normal sign-up; signing in is `signInWithPassword`.
 - If the email already belongs to an account, the guest is told so and may sign in there; the guest's own data stays with the guest on that device.
-- Requirements outside the code (see `docs/BACKEND.md`): redirect URLs in Supabase Auth settings, and custom SMTP (the built-in mailer only delivers to project team members and is heavily rate-limited).
+- No password reset yet: it needs custom SMTP (the built-in mailer only delivers to project team members). See `docs/BACKEND.md`.
 
+## 15. Notifications, friends and invitations (`supabase/migrations/*notifications_friends*`, `src/lib/social`, `src/components/notifications`, `/vanner`)
+
+- **Unread is computed, not stored per event.** `plan_members.last_seen_at` is set by `mark_plan_seen` when a member opens the plan room; `my_unread()` counts other people's votes, comments, options, joins and a decision after that time. Own activity never counts. The nav badge shows plans with news + open invitations + friend requests.
+- **Friends and invitations need an account** (`private.require_account()` rejects anonymous users). A guest shares the plan link instead. Everything is written through RPCs (`add_friend`, `respond_friend`, `remove_friend`, `invite_friend`, `accept_invite`, `decline_invite`); the tables are read-only to clients and RLS limits reads to the two people involved.
+- A friend is added by **code or link** (`/vanner?kod=…`); `friend_preview` shows only the display name. Adding someone who already asked you accepts the request. Only accepted friends can be invited; accepting an invitation joins the plan.
+- Notifications are polled (on focus and every 60 s), not pushed, and they fail quietly. There is no email or push delivery yet.

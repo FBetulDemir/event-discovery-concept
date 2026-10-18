@@ -1,85 +1,95 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import Link from 'next/link';
 import { isSupabaseConfigured } from '@/lib/supabase/client';
-import { sendSignInLink, signInExisting, signOut } from '@/lib/supabase/auth';
+import { AuthFailure, MIN_PASSWORD_LENGTH, signIn, signOut, signUp, type AuthProblem } from '@/lib/supabase/auth';
 import { useAuth } from '@/lib/useAuth';
 import { Button } from '@/components/ui/Button';
+import { Chip } from '@/components/ui/Chip';
 import { Field } from '@/components/ui/Field';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { BackendNotice } from '@/components/plan/BackendNotice';
 
-type Step = { kind: 'form' } | { kind: 'sent'; email: string } | { kind: 'taken'; email: string };
+type Mode = 'create' | 'login';
+
+const PROBLEMS: Record<AuthProblem, string> = {
+  bad_credentials: 'Fel e-post eller lösenord.',
+  weak_password: `Lösenordet måste vara minst ${MIN_PASSWORD_LENGTH} tecken.`,
+  invalid_email: 'Kontrollera e-postadressen.',
+  unknown: 'Något gick fel, försök igen.',
+};
 
 export function AccountPanel() {
   const auth = useAuth();
+  const [mode, setMode] = useState<Mode>('create');
   const [email, setEmail] = useState('');
-  const [step, setStep] = useState<Step>({ kind: 'form' });
+  const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   if (!isSupabaseConfigured) return <BackendNotice />;
   if (auth.status === 'loading') return <section className="page plan" aria-busy="true"><Skeleton className="skeleton--row" /></section>;
-
-  async function submit(event: FormEvent) {
-    event.preventDefault();
-    const address = email.trim();
-    if (!address) { setError('Skriv din e-postadress.'); return; }
-    setBusy(true); setError(null);
-    try {
-      setStep(await sendSignInLink(address) === 'email_taken' ? { kind: 'taken', email: address } : { kind: 'sent', email: address });
-    } catch {
-      setError('Det gick inte att skicka länken. Kontrollera adressen och försök igen.');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function loginExisting() {
-    if (step.kind !== 'taken') return;
-    setBusy(true); setError(null);
-    try { await signInExisting(step.email); setStep({ kind: 'sent', email: step.email }); }
-    catch { setError('Det gick inte att skicka länken. Försök igen.'); }
-    finally { setBusy(false); }
-  }
 
   if (auth.status === 'account') {
     return (
       <section className="page plan enter" aria-labelledby="account-title">
         <h1 id="account-title" className="head">Ditt konto</h1>
         <p className="lead muted">Du är inloggad som {auth.email}. Dina planer följer med på alla enheter.</p>
-        <Button variant="secondary" onClick={() => signOut()}>Logga ut</Button>
+        <div className="plan-organizer">
+          <Link href="/vanner" className="btn btn--secondary">Mina vänner</Link>
+          <Button variant="ghost" onClick={() => signOut()}>Logga ut</Button>
+        </div>
       </section>
     );
+  }
+
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    if (!email.trim() || !password) { setError('Fyll i e-post och lösenord.'); return; }
+    if (mode === 'create' && password.length < MIN_PASSWORD_LENGTH) { setError(PROBLEMS.weak_password); return; }
+    setBusy(true); setError(null); setNotice(null);
+    try {
+      if (mode === 'login') await signIn(email.trim(), password);
+      else {
+        const result = await signUp(email.trim(), password);
+        if (result === 'email_taken') { setMode('login'); setError('Den e-postadressen har redan ett konto. Logga in i stället.'); }
+        else if (result === 'needs_confirmation') setNotice(`Vi skickade en bekräftelselänk till ${email.trim()}. Öppna den, så är kontot klart.`);
+      }
+    } catch (cause) {
+      setError(PROBLEMS[cause instanceof AuthFailure ? cause.problem : 'unknown']);
+    } finally {
+      setBusy(false);
+    }
   }
 
   const guest = auth.status === 'guest';
   return (
     <section className="page plan enter" aria-labelledby="account-title">
-      <h1 id="account-title" className="head">{guest ? 'Spara dina planer' : 'Logga in'}</h1>
+      <h1 id="account-title" className="head">{guest ? 'Spara dina planer' : mode === 'login' ? 'Logga in' : 'Skapa konto'}</h1>
       <p className="lead muted measure">
         {guest
-          ? 'Du är gäst på den här enheten. Lägg till en e-postadress så följer dina planer och röster med dig, och du kan kommentera event.'
-          : 'Vi skickar en länk till din e-post. Inget lösenord. Första gången skapas ditt konto.'}
+          ? 'Du är gäst på den här enheten. Skapa ett konto så följer dina planer och röster med dig, och du kan kommentera event och lägga till vänner.'
+          : 'Med ett konto sparas dina planer på alla enheter, och du kan kommentera event och lägga till vänner.'}
       </p>
 
-      {step.kind === 'sent' ? (
-        <div className="plan-form" role="status">
-          <p className="lead">Kolla din e-post.</p>
-          <p className="muted">Vi skickade en länk till {step.email}. Öppna den på den här enheten, så är du inloggad. Hittar du den inte, titta i skräpposten.</p>
-          <Button variant="secondary" onClick={() => setStep({ kind: 'form' })}>Använd en annan adress</Button>
+      {!guest && (
+        <div className="design__row" role="group" aria-label="Konto">
+          <Chip selected={mode === 'create'} onClick={() => { setMode('create'); setError(null); }}>Skapa konto</Chip>
+          <Chip selected={mode === 'login'} onClick={() => { setMode('login'); setError(null); }}>Jag har redan ett</Chip>
         </div>
-      ) : step.kind === 'taken' ? (
-        <div className="plan-form">
-          <p className="lead">{step.email} har redan ett konto.</p>
-          <p className="muted">Logga in där i stället. Planer du gjort som gäst här följer inte med, de stannar på den här enheten som gäst.</p>
-          <Button disabled={busy} onClick={loginExisting}>Skicka inloggningslänk</Button>
-          {error && <p className="plan-notice" role="alert">{error}</p>}
-        </div>
+      )}
+
+      {notice ? (
+        <p className="lead" role="status">{notice}</p>
       ) : (
-        <form className="plan-form" onSubmit={submit}>
-          <Field label="E-post" type="email" value={email} onChange={e => setEmail(e.target.value)} autoComplete="email" placeholder="du@exempel.se" error={error} />
-          <Button type="submit" disabled={busy}>{busy ? 'Skickar…' : 'Skicka länk'}</Button>
+        <form className="plan-form" onSubmit={submit} noValidate>
+          <Field label="E-post" type="email" value={email} onChange={e => setEmail(e.target.value)} autoComplete="email" placeholder="du@exempel.se" />
+          <Field label="Lösenord" type="password" value={password} onChange={e => setPassword(e.target.value)}
+            autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+            hint={mode === 'create' ? `Minst ${MIN_PASSWORD_LENGTH} tecken.` : undefined} error={error} />
+          <Button type="submit" disabled={busy}>{busy ? 'Ett ögonblick…' : mode === 'login' && !guest ? 'Logga in' : 'Skapa konto'}</Button>
         </form>
       )}
     </section>

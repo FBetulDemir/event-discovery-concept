@@ -17,6 +17,7 @@ import { WinnerCard } from './WinnerCard';
 import { PlanMembers } from './PlanMembers';
 import { PlanSettings } from './PlanSettings';
 import { AddEventPanel } from './AddEventPanel';
+import { InviteFriends } from './InviteFriends';
 import { JoinPlan } from './JoinPlan';
 import { usePlanRoom } from './usePlanRoom';
 
@@ -69,6 +70,7 @@ export function PlanRoom({ code }: { code: string }) {
       <PlanMembers members={members} votes={votes} showVotes={!decided} />
 
       {!decided && <InviteBox code={plan.inviteCode} title={plan.title} />}
+      {!decided && <InviteFriends planId={plan.id} memberIds={members.map(member => member.userId)} />}
       {isOrganizer && !decided && <PlanSettings key={`${plan.title}|${plan.planDate}`} plan={plan} busy={busy} onSave={savePlan} />}
       {message && <p className="plan-notice" role="alert">{message}</p>}
 

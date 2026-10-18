@@ -17,9 +17,10 @@ function Notes() {
 
 function Credits() {
   return (
-    <p>
-      Foton: Matthew Skinner, Robin Röcker, Israel Sundseth, Riley Briggs via Unsplash.
-    </p>
+    <>
+      <p>Foton: Matthew Skinner, Robin Röcker, Israel Sundseth, Riley Briggs via Unsplash.</p>
+      <p><Link href="/integritet">Integritet och data</Link></p>
+    </>
   );
 }
 

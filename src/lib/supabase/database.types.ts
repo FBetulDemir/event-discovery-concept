@@ -35,9 +35,9 @@ export type Database = {
         ];
       };
       plan_members: {
-        Row: { joined_at: string; plan_id: string; role: string; user_id: string };
-        Insert: { joined_at?: string; plan_id: string; role?: string; user_id: string };
-        Update: { joined_at?: string; plan_id?: string; role?: string; user_id?: string };
+        Row: { joined_at: string; last_seen_at: string; plan_id: string; role: string; user_id: string };
+        Insert: { joined_at?: string; last_seen_at?: string; plan_id: string; role?: string; user_id: string };
+        Update: { joined_at?: string; last_seen_at?: string; plan_id?: string; role?: string; user_id?: string };
         Relationships: [
           { foreignKeyName: 'plan_members_plan_id_fkey'; columns: ['plan_id']; isOneToOne: false; referencedRelation: 'plans'; referencedColumns: ['id'] },
           { foreignKeyName: 'plan_members_user_id_fkey'; columns: ['user_id']; isOneToOne: false; referencedRelation: 'profiles'; referencedColumns: ['id'] },
@@ -50,6 +50,18 @@ export type Database = {
         Relationships: [
           { foreignKeyName: 'plans_decided_plan_event_fk'; columns: ['decided_plan_event_id']; isOneToOne: false; referencedRelation: 'plan_events'; referencedColumns: ['id'] },
         ];
+      };
+      friendships: {
+        Row: { addressee_id: string; created_at: string; requester_id: string; status: string };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      plan_invites: {
+        Row: { created_at: string; from_user: string; plan_id: string; to_user: string };
+        Insert: never;
+        Update: never;
+        Relationships: [];
       };
       comments: {
         Row: { author_id: string; body: string; created_at: string; deleted_at: string | null; depth: number; id: string; parent_id: string | null; plan_id: string | null; target_id: string; target_type: string };
@@ -76,9 +88,9 @@ export type Database = {
         Relationships: [];
       };
       profiles: {
-        Row: { created_at: string; display_name: string; id: string };
-        Insert: { created_at?: string; display_name: string; id: string };
-        Update: { created_at?: string; display_name?: string; id?: string };
+        Row: { created_at: string; display_name: string; friend_code: string; id: string };
+        Insert: { created_at?: string; display_name: string; friend_code?: string; id: string };
+        Update: { created_at?: string; display_name?: string; friend_code?: string; id?: string };
         Relationships: [];
       };
       votes: {
@@ -118,6 +130,29 @@ export type Database = {
         SetofOptions: { from: '*'; to: 'comments'; isOneToOne: true; isSetofReturn: false };
       };
       delete_comment: { Args: { p_comment_id: string }; Returns: undefined };
+      mark_plan_seen: { Args: { p_plan_id: string }; Returns: undefined };
+      my_unread: {
+        Args: Record<PropertyKey, never>;
+        Returns: { decided: boolean; new_comments: number; new_events: number; new_members: number; new_votes: number; plan_id: string }[];
+      };
+      set_display_name: {
+        Args: { p_name: string };
+        Returns: { created_at: string; display_name: string; friend_code: string; id: string };
+        SetofOptions: { from: '*'; to: 'profiles'; isOneToOne: true; isSetofReturn: false };
+      };
+      my_friend_code: { Args: Record<PropertyKey, never>; Returns: string };
+      friend_preview: { Args: { p_code: string }; Returns: { display_name: string; user_id: string }[] };
+      add_friend: { Args: { p_code: string }; Returns: string };
+      respond_friend: { Args: { p_accept: boolean; p_requester: string }; Returns: undefined };
+      remove_friend: { Args: { p_other: string }; Returns: undefined };
+      my_friends: { Args: Record<PropertyKey, never>; Returns: { display_name: string; relation: string; user_id: string }[] };
+      invite_friend: { Args: { p_friend: string; p_plan_id: string }; Returns: undefined };
+      my_invites: {
+        Args: Record<PropertyKey, never>;
+        Returns: { created_at: string; event_count: number; from_name: string; plan_date: string | null; plan_id: string; plan_title: string; status: string }[];
+      };
+      accept_invite: { Args: { p_plan_id: string }; Returns: string };
+      decline_invite: { Args: { p_plan_id: string }; Returns: undefined };
       join_plan: { Args: { p_display_name: string; p_invite_code: string }; Returns: string };
     };
     Enums: { [_ in never]: never };
