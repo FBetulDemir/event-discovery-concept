@@ -6,9 +6,10 @@ Next.js 16 (App Router) · React 19 · TypeScript (strict) · Tailwind CSS v4 + 
 
 | Route | File | Rendering | Purpose |
 |---|---|---|---|
-| `/` | `src/app/page.tsx` | static shell, client `EventDiscovery` | Hero, filters, event grid, `MatchPromo` |
-| `/monkey-match` | `src/app/monkey-match/page.tsx` | static shell, client `PreferenceFlow` | 3-step preference flow |
-| `/matches` | `src/app/matches/page.tsx` | static shell, client `MatchResults` | Top-3 ranked matches + reasons |
+| `/` | `src/app/page.tsx` | `force-dynamic`: catalogue loaded on the server, client sections | Front door: live sentence, tonight, how it works, all events, closing CTA |
+| `/match` | `src/app/match/page.tsx` | static shell, client `PreferenceFlow` | 3-step guided flow (`/monkey-match` redirects) |
+| `/match/results` | `src/app/match/results/page.tsx` | static shell, client `MatchResults` | Top-3 ranked matches + reasons (`/matches` redirects) |
+| `/design` | `src/app/design/page.tsx` | static, noindex | Token and component gallery |
 | `/events/[id]` | `src/app/events/[id]/page.tsx` | `force-dynamic` (server) | Event detail from the catalogue; ticket link to the seller |
 | `/plan` | `src/app/plan/page.tsx` | client `PlansList` | Your plans |
 | `/plan/new?event=` | `src/app/plan/new/page.tsx` | client `NewPlan` | Create a plan from an event, or add it to an open plan |
@@ -28,7 +29,8 @@ lib/plans/    api.ts (Supabase data access, realtime) · snapshot.ts · displayN
 lib/supabase/ client.ts (browser client, guest session) · database.types.ts (generated)
 lib/useEvents.ts   client hooks over /api/events
 components/   feature folders; ui/ = primitives (Button, Chip, DatePicker, …)
-app/          routes, layout (providers + header/nav), globals.css
+app/          routes, layout (fonts, theme, providers, header/footer/nav)
+styles/       tokens.css (semantic roles, 2 themes, scales) · base.css · components.css · screens.css
 supabase/     migrations (schema source of truth) · tests/plans_rls.test.sql
 ```
 
@@ -64,7 +66,7 @@ A guest session is created lazily (`ensureUser`) when someone acts; listing "you
 
 ## State
 
-- `PreferencesProvider` (context, in-memory): the Monkey Match draft. Reload resets it.
+- `PreferencesProvider` (context, in-memory): the Match draft. Reload resets it.
 - Plan state is server state: loaded by `usePlanRoom(code)`, kept fresh by Realtime, written through `lib/plans/api.ts`. Votes update optimistically then reload to mirror what the database accepted.
 - Convenience only in `localStorage`: your last display name.
 
@@ -74,8 +76,12 @@ A guest session is created lazily (`ensureUser`) when someone acts; listing "you
 
 ## Styling
 
-- `src/app/globals.css`: CSS custom properties for colour/space/type/radius/motion, a Tailwind `@theme static` block for brand colours, then `@layer components` with hand-written BEM-ish classes. Very little inline Tailwind; keep it that way. A tokenized design system pass is planned.
-- Brand: dark UI, primary mint `#00EBB0`, secondary orange `#FFA65E`, pink accent `#E86987`, Arial/Helvetica.
+- **Tokens** (`src/styles/tokens.css`): primitives (raw values) → semantic roles per theme (`--bg`, `--surface-1..3`, `--ink`, `--ink-muted`, `--accent`, `--paper`, …) → scales (five type steps, space, motion, layers). **Dark is the default theme**; `data-theme="light"` swaps the roles. The file mirrors `docs/brand/GUIDELINES.md`.
+- **Fonts:** Anton (display, caps) and Work Sans (text) through `next/font/google` (downloaded at build, self-hosted).
+- **CSS:** `base.css` (reset, element defaults, layout helpers, entrance motion), `components.css` (shared components), `screens.css` (per-screen layout). BEM-ish class names. Tailwind v4 is imported as a base layer and bridged to the tokens (`@theme inline`) but components do not use utility classes.
+- **Rules baked in:** square corners, no hairlines or shadows at rest, nothing under 13px, body 16px+, one accent action, no eyebrow labels. Checked by the skill's inspector (`docs/design/QA.md`).
+- **Motion:** content is visible without script. `[data-reveal]` elements reveal on scroll (`RevealObserver`); `.enter` containers animate on load with CSS only; the hero slot has the one signature move (image shutter). `prefers-reduced-motion` drops travel.
+- **Reference:** the running gallery at `/design`.
 
 ## Testing
 

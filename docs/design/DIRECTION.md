@@ -1,6 +1,6 @@
 # Design direction (proposal)
 
-Status: **proposal, awaiting decisions** (see "Decisions needed"). Produced with `design-taste-frontend` (`draw.mjs --sector event --have product-ui --options 3`), after `UX-IA.md` and `AUDIT.md`.
+Status: **decided and built (front door, Match, event page, join/plan screens, design system)**; decisions below are recorded in `docs/DECISIONS.md` D-013 to D-015. Produced with `design-taste-frontend` (`draw.mjs --sector event --have product-ui --options 3`), after `UX-IA.md` and `AUDIT.md`.
 
 ## Scope of the skill
 

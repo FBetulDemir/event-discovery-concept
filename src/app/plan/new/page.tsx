@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { NewPlan } from '@/components/plan/NewPlan';
 
-export const metadata: Metadata = { title: 'Ny plan | Monkey Match' };
+export const metadata: Metadata = { title: 'Ny plan' };
 
 export default function NewPlanPage() {
   return (

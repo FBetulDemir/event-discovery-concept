@@ -82,3 +82,20 @@ Template:
 - Date: 2026-10-18 · Status: accepted, not implemented yet (PR3) · Deciders: Eralp
 - Decision: Each plan has a Facebook-style comment thread (plus public comments on events). Replies nest two levels below the root (deeper replies attach to level two). Likes and emoji reactions on comments. No direct messages in this version.
 - Consequences: One polymorphic `comments` table (`target_type`: plan | event) with `parent_id`/depth; moderation basics (report, delete own, rate limit, admin delete) are required because event comments are public.
+
+## D-013 — Independent product: Gänget, with its own identity
+- Date: 2026-10-18 · Status: accepted · Deciders: Eralp
+- Context: The concept was built around VIP Monkey (name, logo, mascot, mint-on-black look) as a job-application demo. The product is now ours.
+- Decision: Name **Gänget**; mark = wordmark with a ticket notch, no mascot; palette A (paper and signal, one vermilion accent) with **dark as the default theme** and a light theme; Anton and Work Sans; Swedish informal voice. Everything of VIP Monkey is removed from the product. Source of truth: `docs/brand/GUIDELINES.md`; reasoning in `docs/brand/STRATEGY.md`.
+- Consequences: Trademark (PRV/EUIPO) and domain checks are still open; `gänget.se` appeared held by someone else. The README no longer carries the job-application disclaimer.
+
+## D-014 — Front door is the sentence; the plan is a ticket; mood first
+- Date: 2026-10-18 · Status: accepted (front door and winner ticket built; the full plan-room ticket comes next) · Deciders: Eralp
+- Decision: Direction `sentence-as-layout` ("Vad gör vi ikväll?" at poster scale, tonight's real events playing inside it, mood chips change the answer); the plan winner is a paper ticket; Match stays as the guided version using the same card; bottom nav Utforska · Match · Planer. Routes renamed `/monkey-match` → `/match`, `/matches` → `/match/results` with permanent redirects.
+- Consequences: The home page is rendered per request with the real catalogue (no hydration flash). The sections dealt by the design skill that do not serve the product (pinned showcase) were dropped.
+
+## D-015 — Styling approach: token CSS, not utility classes
+- Date: 2026-10-18 · Status: accepted · Deciders: Claude (to confirm)
+- Decision: Tokens in `src/styles/tokens.css` (primitive → semantic → scales), hand-written BEM-ish CSS split into base/components/screens, Tailwind v4 only as the base layer and token bridge. A theme is a `data-theme` on `<html>`.
+- Consequences: One palette, two themes, no raw values in components; a new look is a token change. Utility classes are not used, so the CSS files grow with the app (split per feature when they pass ~1,000 lines).
+

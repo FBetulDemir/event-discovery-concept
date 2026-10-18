@@ -1,7 +1,9 @@
-import { Check, Clock3, MapPin, Trash2 } from 'lucide-react';
+import { Check, Trash2 } from 'lucide-react';
 import type { EventSnapshot } from '@/lib/plans/snapshot';
 import { formatPrice } from '@/lib/format';
 import { Chip } from '@/components/ui/Chip';
+import { IconButton } from '@/components/ui/IconButton';
+import { Tag } from '@/components/ui/Tag';
 
 type VotingCardProps = {
   event: EventSnapshot;
@@ -13,34 +15,25 @@ type VotingCardProps = {
   onRemove?: () => void;
 };
 
-/** One shortlisted option in a plan's vote. Reused for every card in the list. */
+const dateFormatter = new Intl.DateTimeFormat('sv-SE', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+
+/** One shortlisted option in a plan's vote. Reused for every option in the list. */
 export function VotingCard({ event, votes, isMine, disabled = false, onVote, onRemove }: VotingCardProps) {
+  const date = dateFormatter.format(new Date(`${event.date}T12:00:00Z`)).replaceAll('.', '');
   return (
-    <article className={`event-card voting-card${isMine ? ' voting-card--mine' : ''}`} aria-labelledby={`voting-title-${event.id}`}>
-      <div className="event-image">
-        <img src={event.image} alt={event.imageAlt} width={900} height={600} loading="lazy" />
-        <span className="event-category">{event.category}</span>
-      </div>
-      <div className="event-body">
-        <h2 id={`voting-title-${event.id}`}>{event.title}</h2>
-        <div className="event-meta">
-          <span><MapPin size={14} aria-hidden="true" />{event.venue}</span>
-          <span><Clock3 size={14} aria-hidden="true" /><time dateTime={event.date}>{event.date}</time> · {event.time}</span>
-          <span>{formatPrice(event.price)}</span>
-        </div>
-        <div className="voting-card__footer">
-          <span className="voting-card__count" role="status" aria-live="polite" aria-atomic="true">
-            {votes} {votes === 1 ? 'röst' : 'röster'}
-          </span>
-          <div className="voting-card__actions">
-            {onRemove && !disabled && (
-              <button type="button" className="icon-button" onClick={onRemove} aria-label={`Ta bort ${event.title} från listan`}>
-                <Trash2 size={16} aria-hidden="true" />
-              </button>
-            )}
+    <article className={`vote-card${isMine ? ' vote-card--mine' : ''}`} aria-labelledby={`voting-title-${event.id}`} data-reveal>
+      <img className="vote-card__image" src={event.image} alt={event.imageAlt} width={480} height={600} loading="lazy" />
+      <div className="vote-card__body">
+        <Tag tone="paper">{event.category}</Tag>
+        <h2 id={`voting-title-${event.id}`} className="vote-card__title">{event.title}</h2>
+        <p className="muted">{event.venue}, <time dateTime={event.date}>{date}</time> {event.time.slice(0, 5)}</p>
+        <p className="muted">{formatPrice(event.price)}</p>
+        <div className="vote-card__footer">
+          <span className="vote-card__count" role="status" aria-live="polite" aria-atomic="true">{votes} {votes === 1 ? 'röst' : 'röster'}</span>
+          <div className="vote-card__actions">
+            {onRemove && !disabled && <IconButton label={`Ta bort ${event.title} från listan`} onClick={onRemove}><Trash2 size={18} aria-hidden="true" /></IconButton>}
             <Chip selected={isMine} disabled={disabled} onClick={onVote} aria-label={`${isMine ? 'Ta bort din röst för' : 'Rösta på'} ${event.title}`}>
-              {isMine && <Check size={16} aria-hidden="true" />}
-              {isMine ? 'Din röst' : 'Rösta'}
+              {isMine && <Check size={16} aria-hidden="true" />}{isMine ? 'Din röst' : 'Rösta'}
             </Chip>
           </div>
         </div>

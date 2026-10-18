@@ -4,7 +4,7 @@
 
 ## Where we are
 
-Front-end prototype: discovery with filters, 3-step Monkey Match, transparent ranking, local shortlist + voting + winner screen. Fictional data, in-memory state, no backend, dead ticket button. 31 unit tests on pure logic; no CI until this setup PR.
+Gänget: a real-event front door, a 3-step Match with transparent ranking, plans with live voting on a Supabase backend, ticket link-out, a tokenized dark/light design system. English, accounts, friends and comments are next.
 
 ## Phases
 
@@ -14,7 +14,8 @@ Agent docs, contracts, CI, PR workflow, project skills. **Done when:** merged an
 ### Phase 1 — Make it real for one group (the core promise)
 Goal: two phones can vote on the same plan.
 - **Done in PR1 (`feat/backend-foundation`):** Supabase schema + RLS + RPCs, guest auth, plans / members / shortlist / votes / invite links / organizer close with explicit tie-break, live updates, external event adapters (Ticketmaster, demo) with `/api/events`, ticket link-out, docs and contracts (D-006…D-010).
-- **PR2:** i18n `/sv` `/en` with toggle (D-011).
+- **Design PR (this branch):** brand, tokens, primitives, `/design`, front door, Match, event page, join/plan screens (D-013 to D-015).
+- **PR2:** i18n `/sv` `/en` with toggle (D-011), now on the new components.
 - **PR3:** accounts (magic link + Google), friends, comment threads with reactions on plans and events, moderation basics (D-008, D-012).
 - **Needs a key/decision:** Göteborg & Co adapter; verify Ticketmaster against the live API; enable anonymous sign-ins + CAPTCHA.
 
@@ -54,8 +55,8 @@ Goal: two phones can vote on the same plan.
 
 ## Open questions (need a human decision)
 
-1. **Brand & permission.** The README says this is an unaffiliated concept built for a job application, yet the repo ships VIP Monkey's name and logo (`public/images/`). Before we productise or promote it: do we have VIP Monkey's blessing, or do we rename/rebrand the product ("Monkey Match" as its own brand)? Until answered, keep the disclaimer in the README.
-2. **Who is the customer?** A white-label feature for VIP Monkey, or an independent product that links out to tickets (any provider)?
+1. ~~Brand & permission~~ **Resolved (D-013):** independent product, name Gänget, new identity. Still open: trademark search (PRV/EUIPO) and a domain.
+2. **Who is the customer?** Working answer: an independent product that links out to the seller's tickets (D-007, D-013). Revisit if a seller partnership appears.
 3. **Backend choice** (Phase 1) and hosting/cost ownership.
 4. **Licence** for the public repo (none today ⇒ all rights reserved by default).
 5. **Analytics & consent** approach (GDPR; Swedish audience).

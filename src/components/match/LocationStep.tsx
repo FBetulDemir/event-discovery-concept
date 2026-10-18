@@ -1,5 +1,5 @@
-import { MapPin } from 'lucide-react';
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Field } from '@/components/ui/Field';
 import { SelectionCard } from '@/components/ui/SelectionCard';
 import type { Preferences } from '@/types/preferences';
 
@@ -13,10 +13,7 @@ export function LocationStep({ preferences, onChange }: Props) {
         <DatePicker value={preferences.date} onChange={date => onChange({ date })} />
         <p className="field-help">Andra datum kan ge färre eller inga träffar.</p>
       </fieldset>
-      <div className="location-field">
-        <label htmlFor="match-location">Var börjar kvällen?</label>
-        <div className="location-input"><MapPin size={18} aria-hidden="true" /><input id="match-location" value={preferences.location} readOnly /></div>
-      </div>
+      <Field label="Var börjar kvällen?" value={preferences.location} readOnly hint="Just nu bara Göteborg." />
       <fieldset>
         <legend>Hur långt vill du ta dig?</legend>
         <div className="selection-grid selection-grid--distance">

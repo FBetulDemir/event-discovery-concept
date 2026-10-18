@@ -8,12 +8,12 @@ const REFRESH_MS = 5 * 60_000;
 const empty: Catalog = { events: [], sources: [] };
 
 /**
- * The event catalogue from /api/events. Starts empty on the server and first render (hydration
+ * The event catalogue from /api/events. Starts from `initial` (server-rendered) or empty (hydration
  * safe), then fills in; refreshes on window focus and every few minutes so source changes show up.
  */
-export function useCatalog(): Catalog & { loading: boolean } {
-  const [catalog, setCatalog] = useState<Catalog>(empty);
-  const [loading, setLoading] = useState(true);
+export function useCatalog(initial?: Catalog): Catalog & { loading: boolean } {
+  const [catalog, setCatalog] = useState<Catalog>(initial ?? empty);
+  const [loading, setLoading] = useState(!initial);
 
   useEffect(() => {
     let cancelled = false;

@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: End-of-session handoff for Monkey Match. Updates docs/STATUS.md (and DECISIONS/ROADMAP if needed) so the other maintainer or a fresh agent can continue from the repo alone. Use when finishing a work session, before opening a PR that leaves follow-ups, or when asked to "hand off" / "write up where we are".
+description: End-of-session handoff for Gänget. Updates docs/STATUS.md (and DECISIONS/ROADMAP if needed) so the other maintainer or a fresh agent can continue from the repo alone. Use when finishing a work session, before opening a PR that leaves follow-ups, or when asked to "hand off" / "write up where we are".
 ---
 
 # Handoff

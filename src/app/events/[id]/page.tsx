@@ -1,10 +1,12 @@
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, ArrowUpRight, CalendarDays, Users } from 'lucide-react';
+import { ArrowUpRight, Users } from 'lucide-react';
 import { findEvent } from '@/lib/events/catalog';
 import { formatAge, formatPricePerPerson } from '@/lib/format';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { EventMeta } from '@/components/events/EventMeta';
+import { ButtonLink } from '@/components/ui/Button';
+import { Tag } from '@/components/ui/Tag';
+import { BackLink } from '@/components/ui/BackLink';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,30 +18,34 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
   const age = formatAge(event.ageRestriction);
 
   return (
-    <PageContainer className="event-detail-page">
-      <Link href="/matches" className="text-link"><ArrowLeft size={17} aria-hidden="true" />Till matchningarna</Link>
-      <article className="event-detail">
-        <img className="event-detail__image" src={event.image} alt={event.imageAlt} width={900} height={600} />
-        <div className="event-detail__content">
-          <p className="eyebrow">{event.category} · {event.city}</p>
-          <h1>{event.title}</h1>
-          <EventMeta event={event} />
-          <p className="event-detail__date"><CalendarDays size={17} aria-hidden="true" /><time dateTime={event.date}>{date}</time></p>
-          {event.source === 'demo' && <p>Exempelevent som återkommer varje vecka · nästa tillfälle visas ovan.</p>}
-          {event.description && <p>{event.description}</p>}
-          <dl className="event-detail__facts">
+    <PageContainer className="event-page">
+      <div className="page event-detail">
+        <BackLink href="/#event-list" label="Alla event" className="event-detail__back" />
+        <figure className="event-detail__image" data-reveal>
+          <img src={event.image} alt={event.imageAlt} width={900} height={1125} />
+        </figure>
+        <div className="event-detail__content enter">
+          <h1 className="event-detail__title" data-reveal>{event.title}</h1>
+          <div className="event-detail__tags" data-reveal style={{ '--i': 1 } as React.CSSProperties}><Tag tone="paper">{event.category}</Tag><Tag>{event.city}</Tag></div>
+          <div data-reveal style={{ '--i': 2 } as React.CSSProperties}><EventMeta event={event} /></div>
+          <p className="lead" data-reveal style={{ '--i': 3 } as React.CSSProperties}><time dateTime={event.date}>{date}</time></p>
+          {event.source === 'demo' && <p className="muted">Exempelevent som återkommer varje vecka. Nästa tillfälle visas ovan.</p>}
+          {event.description && <p className="event-detail__description measure">{event.description}</p>}
+          <dl className="facts" data-reveal style={{ '--i': 4 } as React.CSSProperties}>
             <div><dt>Entré</dt><dd>{formatPricePerPerson(event.price)}</dd></div>
             {age && <div><dt>Åldersgräns</dt><dd>{age}</dd></div>}
             <div><dt>Från centrum</dt><dd>{event.distanceKm.toLocaleString('sv-SE')} km</dd></div>
           </dl>
-          <Link href={`/plan/new?event=${encodeURIComponent(event.id)}`} className="button button--primary"><Users size={17} aria-hidden="true" />Planera med vänner</Link>
-          {event.ticketUrl && (
-            <a href={event.ticketUrl} className="button button--secondary" target="_blank" rel="noopener noreferrer">
-              Biljetter hos säljaren<ArrowUpRight size={17} aria-hidden="true" /><span className="sr-only"> (öppnas i ny flik)</span>
-            </a>
-          )}
+          <div className="event-detail__actions" data-reveal style={{ '--i': 5 } as React.CSSProperties}>
+            <ButtonLink href={`/plan/new?event=${encodeURIComponent(event.id)}`}><Users size={18} aria-hidden="true" />Planera med vänner</ButtonLink>
+            {event.ticketUrl && (
+              <a href={event.ticketUrl} className="btn btn--secondary" target="_blank" rel="noopener noreferrer">
+                Biljetter hos säljaren<ArrowUpRight size={18} aria-hidden="true" /><span className="sr-only"> (öppnas i ny flik)</span>
+              </a>
+            )}
+          </div>
         </div>
-      </article>
+      </div>
     </PageContainer>
   );
 }

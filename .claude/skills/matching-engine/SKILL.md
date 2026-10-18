@@ -1,6 +1,6 @@
 ---
 name: matching-engine
-description: Rules and workflow for changing the Monkey Match ranking/filtering logic (src/lib/matching.ts, src/lib/discovery.ts, src/lib/dates.ts, src/data/events.ts recurrence). Use whenever a task changes which events are shown, how they are ranked, the reasons text, weights, or time/date handling.
+description: Rules and workflow for changing the Gänget ranking/filtering logic (src/lib/matching.ts, src/lib/discovery.ts, src/lib/dates.ts, src/data/events.ts recurrence). Use whenever a task changes which events are shown, how they are ranked, the reasons text, weights, or time/date handling.
 ---
 
 # Matching engine changes

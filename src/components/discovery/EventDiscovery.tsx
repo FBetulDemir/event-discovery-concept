@@ -1,71 +1,88 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { ArrowDown, AudioLines, CalendarDays, Check, Music2, Search, SlidersHorizontal, Smile, Wine, X } from 'lucide-react';
-import { useEvents } from '@/lib/useEvents';
+import { Check, Search, X } from 'lucide-react';
 import { filterEvents } from '@/lib/discovery';
 import type { EventCategory } from '@/types/event';
 import { Chip } from '@/components/ui/Chip';
 import { Button } from '@/components/ui/Button';
-import { SectionHeading } from '@/components/ui/SectionHeading';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { EventGrid } from '@/components/events/EventGrid';
+import { useHomeCatalog } from './CatalogProvider';
 
-const categories = [
-  { label: 'Alla event', icon: SlidersHorizontal },
-  { label: 'Klubb', icon: AudioLines },
-  { label: 'Livemusik', icon: Music2 },
-  { label: 'Stand-up', icon: Smile },
-  { label: 'Bar & häng', icon: Wine },
-] as const;
+const categories: ('Alla event' | EventCategory)[] = ['Alla event', 'Klubb', 'Livemusik', 'Stand-up', 'Bar & häng'];
+const PAGE_SIZE = 12;
 
+/** Browse everything: search, day, category, free entry. Search and filters combine (docs/CONTRACTS.md section 5). */
 export function EventDiscovery() {
-  const events = useEvents();
+  const { events } = useHomeCatalog();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<EventCategory | 'Alla event'>('Alla event');
   const [date, setDate] = useState('all');
   const [freeOnly, setFreeOnly] = useState(false);
+  const [visible, setVisible] = useState(PAGE_SIZE);
   const searchInput = useRef<HTMLInputElement>(null);
+
   const filtered = filterEvents(events, { query, category, date, freeOnly });
   const hasFilters = query !== '' || category !== 'Alla event' || date !== 'all' || freeOnly;
+  const days = [...new Set(events.map(event => event.date))];
+
   function reset() {
-    setQuery('');
-    setCategory('Alla event');
-    setDate('all');
-    setFreeOnly(false);
+    setQuery(''); setCategory('Alla event'); setDate('all'); setFreeOnly(false); setVisible(PAGE_SIZE);
     searchInput.current?.focus();
   }
+  const change = <T,>(setter: (value: T) => void) => (value: T) => { setter(value); setVisible(PAGE_SIZE); };
 
   return (
-    <section id="event-list" className="discovery-events" aria-labelledby="events-heading">
-      <div className="search-row">
-        <div className="search-field" role="search">
-          <Search size={18} aria-hidden="true" />
-          <label htmlFor="event-search" className="sr-only">Sök event eller ställe</label>
-          <input ref={searchInput} id="event-search" type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Sök event eller ställe…" autoComplete="off" aria-controls="event-results" />
-          {query && <button type="button" className="clear-search" onClick={() => { setQuery(''); searchInput.current?.focus(); }} aria-label="Rensa sökning"><X size={18} aria-hidden="true" /></button>}
+    <section id="event-list" className="section browse" aria-labelledby="browse-title">
+      <div className="page">
+        <div className="section-heading">
+          <h2 id="browse-title" className="head">Alla event</h2>
+          <p className="section-heading__aside muted" role="status" aria-live="polite" aria-atomic="true">{filtered.length} event</p>
         </div>
-        <div className="date-filter">
-          <CalendarDays size={18} aria-hidden="true" />
-          <label htmlFor="event-date" className="sr-only">Filtrera på datum</label>
-          <select id="event-date" value={date} onChange={e => setDate(e.target.value)} aria-controls="event-results">
-            <option value="all">Alla datum</option>
-            {[...new Set(events.map(event => event.date))].map(day => (
-              <option key={day} value={day}>{new Intl.DateTimeFormat('sv-SE', { weekday: 'short', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${day}T12:00:00Z`))}</option>
-            ))}
-          </select>
+
+        <div className="browse__controls">
+          <div className="field browse__search">
+            <label htmlFor="event-search">Sök event eller ställe</label>
+            <div className="browse__search-box">
+              <Search size={20} aria-hidden="true" />
+              <input ref={searchInput} id="event-search" type="search" value={query} onChange={event => change(setQuery)(event.target.value)} placeholder="Till exempel Scandinavium" autoComplete="off" aria-controls="event-results" />
+              {query && <button type="button" className="browse__clear" onClick={() => { setQuery(''); searchInput.current?.focus(); }} aria-label="Rensa sökning"><X size={18} aria-hidden="true" /></button>}
+            </div>
+          </div>
+          <div className="field browse__date">
+            <label htmlFor="event-date">Dag</label>
+            <select id="event-date" value={date} onChange={event => change(setDate)(event.target.value)} aria-controls="event-results">
+              <option value="all">Alla dagar</option>
+              {days.map(day => (
+                <option key={day} value={day}>{new Intl.DateTimeFormat('sv-SE', { weekday: 'short', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${day}T12:00:00Z`))}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="browse__chips" role="group" aria-label="Filtrera event">
+          {categories.map(label => <Chip key={label} selected={category === label} onClick={() => change(setCategory)(label)} aria-controls="event-results">{label}</Chip>)}
+          <Chip selected={freeOnly} onClick={() => change(setFreeOnly)(!freeOnly)} aria-controls="event-results">{freeOnly && <Check size={16} aria-hidden="true" />}Fri entré</Chip>
+        </div>
+
+        <div id="event-results">
+          {filtered.length ? (
+            <>
+              <EventGrid events={filtered.slice(0, visible)} />
+              {filtered.length > visible && (
+                <div className="browse__more">
+                  <Button variant="secondary" onClick={() => setVisible(current => current + PAGE_SIZE)}>Visa fler ({filtered.length - visible} kvar)</Button>
+                </div>
+              )}
+            </>
+          ) : (
+            <EmptyState title="Ingen träff den här gången" action={hasFilters ? <Button variant="secondary" onClick={reset}>Rensa filter</Button> : undefined}>
+              Testa ett annat sökord eller färre filter.
+            </EmptyState>
+          )}
         </div>
       </div>
-      <div className="filter-row" role="group" aria-label="Filtrera event">
-        {categories.map(({ label, icon: Icon }) => <Chip key={label} selected={category === label} onClick={() => setCategory(label)} aria-controls="event-results"><Icon size={16} aria-hidden="true" />{label}</Chip>)}
-        <Chip selected={freeOnly} onClick={() => setFreeOnly(!freeOnly)} aria-controls="event-results">{freeOnly && <Check size={16} aria-hidden="true" />}Fri entré</Chip>
-      </div>
-      <SectionHeading id="events-heading" title={hasFilters ? 'Hitta din nästa kväll' : 'Värt att gå ut för'} eyebrow="UTVALT I GÖTEBORG">
-        <span className="result-count" role="status" aria-live="polite" aria-atomic="true">{filtered.length} event <ArrowDown size={14} aria-hidden="true" /></span>
-      </SectionHeading>
-      <div id="event-results">
-        {filtered.length ? <EventGrid events={filtered} /> : <div className="empty-state"><Search size={32} aria-hidden="true" /><h3>Ingen träff den här gången</h3><p>Testa ett annat sökord eller välj färre filter.</p><Button onClick={reset}>Visa alla event</Button></div>}
-      </div>
-      {hasFilters && filtered.length > 0 && <button type="button" className="reset-filters" onClick={reset}><X size={17} aria-hidden="true" />Rensa alla filter</button>}
     </section>
   );
 }

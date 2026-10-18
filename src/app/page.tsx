@@ -1,32 +1,26 @@
-import { ArrowUpRight, MapPin } from 'lucide-react';
+import { loadCatalog } from '@/lib/events/catalog';
 import { PageContainer } from '@/components/layout/PageContainer';
+import { CatalogProvider } from '@/components/discovery/CatalogProvider';
+import { HeroSentence } from '@/components/discovery/HeroSentence';
+import { TonightList } from '@/components/discovery/TonightList';
+import { HowItWorks } from '@/components/discovery/HowItWorks';
 import { EventDiscovery } from '@/components/discovery/EventDiscovery';
-import { MatchPromo } from '@/components/discovery/MatchPromo';
+import { ClosingCta } from '@/components/discovery/ClosingCta';
 
-export default function HomePage() {
+// Real events change at their sources: render per request (the sources are cached for 10 minutes).
+export const dynamic = 'force-dynamic';
+
+export default async function HomePage() {
+  const catalog = await loadCatalog();
   return (
-    <PageContainer className="discovery-page">
-      <section className="discovery-intro" aria-labelledby="discovery-heading">
-        <div>
-          <p className="eyebrow"><MapPin size={16} aria-hidden="true" /> GÖTEBORG, VI SES UTE</p>
-          <h1 id="discovery-heading">Bra kvällar.<br /><span>Ännu bättre minnen.</span></h1>
-        </div>
-      </section>
-      <section className="discovery-hero" aria-labelledby="hero-heading">
-        <img src="/images/hero.jpg" alt="Publikhav framför en stor scen med varma strålkastare" width={1400} height={700} fetchPriority="high" />
-        <div className="hero-content">
-          <span className="hero-kicker">UT UR VARDAGEN. IN I KVÄLLEN.</span>
-          <h2 id="hero-heading">Staden är vaken.<br />Är du?</h2>
-          <p>Från första låten till sista dansen.<br />Upptäck Göteborg, en kväll i taget.</p>
-          <a className="button button--primary" href="#event-list">Hitta din kväll <ArrowUpRight size={17} aria-hidden="true" /></a>
-        </div>
-        <span className="hero-caption">GÖTEBORG AFTER HOURS <span aria-hidden="true">↗</span></span>
-      </section>
-      <EventDiscovery />
-      <MatchPromo />
-      <footer className="discovery-footer">
-        <span className="footer-wordmark">VIP MONKEY®</span><p>Fler kvällar att minnas.</p>
-      </footer>
+    <PageContainer className="home">
+      <CatalogProvider initial={catalog}>
+        <HeroSentence />
+        <TonightList />
+        <HowItWorks />
+        <EventDiscovery />
+        <ClosingCta />
+      </CatalogProvider>
     </PageContainer>
   );
 }

@@ -77,12 +77,16 @@ test: `discovery.test.mjs`.
 
 test: `voting.test.mjs`; `supabase/tests/plans_rls.test.sql` (run against the database, see `docs/BACKEND.md`).
 
-## 7. Design system (`src/app/globals.css`, `src/components/ui`)
+## 7. Design system (`src/styles`, `src/components/ui`, `/design`)
 
-- Colours, spacing, type, radii, control height and motion come from CSS variables / `@theme` tokens. No raw hex or px in components.
-- Primitives (`Button`, `Chip`, `SelectionCard`, `ProgressBar`, `SectionHeading`, `DatePicker`) are reused, not re-implemented.
-- Mobile-first at **390px**; content max-width `--container-width`.
-- `Chip` is a controlled toggle and exposes `aria-pressed`; keep that when changing it. Each route renders `PageContainer` exactly once (the `<main id="main-content">` landmark and skip-link target).
+- Colour, space, type, shape, motion and layers come from `src/styles/tokens.css`, which mirrors `docs/brand/GUIDELINES.md`. **Dark is the default theme**, light exists; components read semantic roles only, never raw values.
+- Five type steps (display, head, lead, body, small): Anton caps for display/head, Work Sans for text; nothing under 13px, body 16px+.
+- House rules: square corners, surfaces by tone step (no hairlines, no outlined boxes), no shadows at rest, no gradients (except a neutral scrim over photos), one accent action per screen, no eyebrow labels, no numbered labels, headings at most two lines at every width.
+- The ticket (plan winner) is `--paper` in both themes.
+- Primitives are reused, not re-implemented: `Button`/`ButtonLink`, `Chip` (toggle), `Tag`, `Field`, `IconButton`, `BackLink`, `Skeleton`, `EmptyState`, `SelectionCard`, `ProgressBar`, `SectionHeading`, `DatePicker`, `EventCard`. New components are added to the `/design` gallery.
+- Mobile-first at **390px**; content max-width `--page-max`.
+- `Chip` is a controlled toggle and exposes `aria-pressed`; each route renders `PageContainer` exactly once (the `<main id="main-content">` landmark and skip-link target).
+- Verification: `docs/design/QA.md` (lint + inspector, with documented exceptions).
 
 ## 8. Accessibility baseline
 
@@ -106,7 +110,7 @@ Must hold on every page:
 
 - Public repo: no secrets, no `.env`, no private data in fixtures.
 - `main` is changed only through reviewed PRs; CI (`typecheck`, `test`, `build`) must be green.
-- Third-party assets: record provenance (`public/images/SOURCES.md`). VIP Monkey name/logo are not ours — see `docs/ROADMAP.md` open questions.
+- Third-party assets: record provenance (`public/images/SOURCES.md`). Nothing of VIP Monkey's remains (name, logo, mascot, mint look); the brand is Gänget (`docs/brand/GUIDELINES.md`).
 
 ## 11. Event sources (`src/lib/events`)
 

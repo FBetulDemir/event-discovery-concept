@@ -1,66 +1,20 @@
-# Monkey Match
+# Gänget
 
-A UX/UI and frontend concept exploring how VIP Monkey could help users discover relevant events and decide together with friends.
+**Vad gör vi ikväll?** Gänget helps a group of friends in Göteborg decide what to do tonight: find a real event, send a link, everyone votes, then buy the ticket at the seller.
 
-## Concept
+Discover → Match → Decide together → Get tickets.
 
-The concept focuses on three parts of the event discovery journey:
+## What it does
 
-### More Visible Filtering
+- **Utforska:** real events from ticket sellers (Ticketmaster today), with search, day and category filters, and a mood picker on the front door.
+- **Match:** a short guided flow (when, mood, budget) that returns up to three events, each with the reasons it matched. No scores, no sponsored placement.
+- **Planer:** make a plan from an event, share the link, friends vote as guests (no sign-up), the organizer closes the vote and the winner becomes a ticket with a link to the seller.
 
-Event filters are made more prominent and accessible, helping users quickly narrow the available events by criteria such as date, location, category, and price.
+Swedish first; English and a language toggle are planned.
 
-### Monkey Match
+## Stack
 
-Monkey Match provides another way to discover events when users know what kind of experience they want but not exactly what to search for.
-
-Users can choose preferences such as location, time, mood or activity, budget, and distance. The experience then presents a smaller selection of relevant events with clear explanations of why they match.
-
-### Plan with Friends
-
-Users can add interesting events to a shared shortlist, invite friends, and vote on which event to attend.
-
-The flow stays intentionally simple:
-
-**Shortlist → Invite → Vote → Winner → Tickets**
-
-## User Journey
-
-**Monkey Match**
-"What should we do?"
-
-**Plan with Friends**
-"Which one should we choose?"
-
-**VIP Monkey**
-"Let's get the tickets."
-
-**Discover → Match → Decide Together → Get Tickets**
-
-## Features
-
-- More visible event filtering
-- Contextual event discovery
-- Mood and activity-based filtering
-- Transparent event matching
-- Match explanations
-- Event shortlisting
-- Group voting
-- Responsive interface
-- Accessible interaction states
-
-## Design
-
-Designed mobile-first around a **390px mobile viewport**, with a focus on clear visual hierarchy, simple interactions, accessibility, and reusable UI components.
-
-The implementation is fully responsive and adapts the experience for larger screen sizes.
-
-## Tech
-
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
+Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4 with a token-driven design system, Supabase (Postgres, Auth, Realtime), lucide-react. Fonts: Anton and Work Sans.
 
 ## Development
 
@@ -68,9 +22,12 @@ Requires Node ≥ 22.18 (`nvm use` reads `.nvmrc`).
 
 ```bash
 npm ci
-npm run dev      # http://localhost:3000
-npm run check    # typecheck + tests + build
+cp .env.example .env.local   # fill it in, see docs/BACKEND.md
+npm run dev                  # http://localhost:3000
+npm run check                # typecheck + tests + build
 ```
+
+The component and token reference is the running app at `/design`.
 
 ## Project docs
 
@@ -78,12 +35,8 @@ Contributor and AI-agent documentation lives in the repo:
 
 - [`AGENTS.md`](AGENTS.md): how to work here (commands, rules, workflow); `CLAUDE.md` imports it
 - [`CONTRIBUTING.md`](CONTRIBUTING.md): branches, PRs, review
-- [`docs/`](docs/README.md): product, architecture, contracts, roadmap, decisions, status
+- [`docs/`](docs/README.md): product, architecture, contracts, backend, brand and design, roadmap, decisions, status
 
-## Live Prototype
+## Credits
 
-[View Live Prototype](https://event-discovery-concept.vercel.app/)
-
-## Disclaimer
-
-This is an independent UX/UI and frontend concept created for demonstration purposes as part of a job application. It is not an official VIP Monkey product and is not affiliated with or endorsed by VIP Monkey.
+Events come from the sellers' public listings. City photographs: Matthew Skinner, Robin Röcker, Israel Sundseth and Riley Briggs via Unsplash. Gänget is an independent product and is not affiliated with any ticket seller.

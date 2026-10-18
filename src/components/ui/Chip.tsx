@@ -5,18 +5,6 @@ export type ChipProps = Omit<ComponentPropsWithRef<'button'>, 'aria-pressed'> & 
 };
 
 /** Controlled toggle: the parent owns selection and the click handler. */
-export function Chip({
-  selected = false,
-  type = 'button',
-  className = '',
-  ...props
-}: ChipProps) {
-  return (
-    <button
-      {...props}
-      type={type}
-      aria-pressed={selected}
-      className={`chip ${className}`}
-    />
-  );
+export function Chip({ selected = false, type = 'button', className = '', ...props }: ChipProps) {
+  return <button {...props} type={type} aria-pressed={selected} className={`chip${className ? ` ${className}` : ''}`} />;
 }

@@ -1,53 +1,45 @@
 import Link from 'next/link';
-import { ArrowUpRight, Check, ChevronDown, Users } from 'lucide-react';
+import { Users } from 'lucide-react';
 import type { Event } from '@/types/event';
-import { formatAge, formatPrice } from '@/lib/format';
+import { formatPrice } from '@/lib/format';
+import { Tag } from '@/components/ui/Tag';
+import { ButtonLink } from '@/components/ui/Button';
 import { EventMeta } from './EventMeta';
 import { MatchReasons } from './MatchReasons';
 
-const dateFormatter = new Intl.DateTimeFormat('sv-SE', {
-  weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC',
-});
-
 type EventCardProps = {
   event: Event;
+  /** Present in Match results: shows the reasons and a plan action. */
   recommendation?: { reasons: readonly string[]; rank: number };
+  /** Stagger index for the entrance animation. */
+  index?: number;
 };
 
-export function EventCard({ event, recommendation }: EventCardProps) {
-  const featured = recommendation?.rank === 1;
+/** The one event card. The title is the link and covers the whole card; secondary actions sit above it. */
+export function EventCard({ event, recommendation, index = 0 }: EventCardProps) {
+  const unknownPrice = event.price === null;
   return (
-    <article className={`event-card${recommendation ? ' match-card' : ''}${featured ? ' match-card--featured' : ''}`} aria-labelledby={`event-title-${event.id}`}>
-      <div className="event-image">
-        <img src={event.image} alt={event.imageAlt} width={900} height={600} loading={featured ? 'eager' : 'lazy'} fetchPriority={featured ? 'high' : 'auto'} />
-        {recommendation && <span className="match-rank" aria-label={`Rekommendation ${recommendation.rank}`}>{String(recommendation.rank).padStart(2, '0')}</span>}
-        <span className="event-category">{event.category}</span>
-        <time className="event-date" dateTime={event.date}>
-          {dateFormatter.format(new Date(`${event.date}T12:00:00Z`)).replaceAll('.', '')}
-        </time>
+    <article className={`event-card${recommendation ? ' event-card--match' : ''}`} data-reveal style={{ '--i': index % 6 } as React.CSSProperties}>
+      <div className="event-card__image">
+        <img src={event.image} alt={event.imageAlt} width={800} height={1000} loading={index < 2 ? 'eager' : 'lazy'} />
+        <Tag tone="paper" className="event-card__category">{event.category}</Tag>
       </div>
-      <div className="event-body">
-        {recommendation && <div className="match-card__label"><span><Check size={14} aria-hidden="true" />Bra match</span>{featured && <span>DITT TOPPVAL</span>}</div>}
-        <div className="event-topline"><span>{event.distanceKm.toLocaleString('sv-SE')} km från centrum</span><span>{formatPrice(event.price)}</span></div>
-        <h3 id={`event-title-${event.id}`}>{recommendation ? event.title : <Link href={`/events/${encodeURIComponent(event.id)}`} className="event-title-link">{event.title}</Link>}</h3>
+      <div className="event-card__body">
+        <div className="event-card__line">
+          <span className={`event-card__price${unknownPrice ? ' is-unknown' : ''}`}>{formatPrice(event.price)}</span>
+          <span className="muted">{event.distanceKm.toLocaleString('sv-SE')} km</span>
+        </div>
+        <h3 className="event-card__title">
+          <Link href={`/events/${encodeURIComponent(event.id)}`} className="event-card__link">{event.title}</Link>
+        </h3>
         <EventMeta event={event} />
-        {recommendation ? (
+        {recommendation && (
           <>
-            <p className="match-card__description">{event.description}</p>
             <MatchReasons reasons={recommendation.reasons} />
-            <div className="match-card__actions">
-              <Link href={`/events/${encodeURIComponent(event.id)}`} className="match-event-link">Visa event<span className="sr-only">: {event.title}</span><ArrowUpRight size={17} aria-hidden="true" /></Link>
-              <Link href={`/plan/new?event=${encodeURIComponent(event.id)}`} className="button button--primary"><Users size={17} aria-hidden="true" />Planera med vänner<span className="sr-only">: {event.title}</span></Link>
-            </div>
+            <ButtonLink variant="secondary" href={`/plan/new?event=${encodeURIComponent(event.id)}`} className="event-card__plan">
+              <Users size={18} aria-hidden="true" />Planera med vänner<span className="sr-only">: {event.title}</span>
+            </ButtonLink>
           </>
-        ) : <details className="event-details">
-          <summary>Om eventet<span className="sr-only">: {event.title}</span><ChevronDown size={16} aria-hidden="true" /></summary>
-          <div className="event-description">{event.description && <p>{event.description}</p>}<p>{[event.ageRestriction !== null ? `${event.ageRestriction}+` : null, event.city].filter(Boolean).join(' · ')}</p></div>
-        </details>}
-        {!recommendation && (
-          <Link href={`/events/${encodeURIComponent(event.id)}`} className="match-event-link event-card__open">
-            Visa event<span className="sr-only">: {event.title}</span><ArrowUpRight size={17} aria-hidden="true" />
-          </Link>
         )}
       </div>
     </article>

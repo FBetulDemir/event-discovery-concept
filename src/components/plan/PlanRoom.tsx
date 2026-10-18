@@ -2,11 +2,13 @@
 
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Check, Copy, Lock, Share2, Users } from 'lucide-react';
+import { Check, Copy, Lock, Share2 } from 'lucide-react';
 import { outcomeOf, tallyVotes } from '@/lib/voting';
 import { rememberedName } from '@/lib/plans/displayName';
 import type { PlanError } from '@/lib/plans/api';
 import { Button } from '@/components/ui/Button';
+import { Field } from '@/components/ui/Field';
+import { BackLink } from '@/components/ui/BackLink';
 import { BackendNotice } from './BackendNotice';
 import { VotingCard } from './VotingCard';
 import { WinnerCard } from './WinnerCard';
@@ -26,10 +28,10 @@ export function PlanRoom({ code }: { code: string }) {
 
   if (room.status === 'unconfigured') return <BackendNotice />;
   if (room.status === 'loading') {
-    return <section className="plan-page" aria-busy="true"><p role="status">Hämtar planen…</p></section>;
+    return <section className="page plan" aria-busy="true"><p role="status">Hämtar planen…</p></section>;
   }
   if (room.status === 'error') {
-    return <section className="plan-page"><h1>Något gick fel</h1><p>{room.message}</p><Link href="/plan" className="text-link">Till dina planer</Link></section>;
+    return <section className="page plan"><h1 className="head">Något gick fel</h1><p>{room.message}</p><Link href="/plan" className="btn btn--ghost">Till dina planer</Link></section>;
   }
   if (room.status === 'preview') {
     return <JoinPlan preview={room.preview} busy={busy} onJoin={join} />;
@@ -46,11 +48,10 @@ export function PlanRoom({ code }: { code: string }) {
   const message = actionError ? (ERROR_TEXT[actionError.code] ?? 'Något gick fel, försök igen.') : null;
 
   return (
-    <section className="plan-page">
-      <Link href="/plan" className="text-link"><ArrowLeft size={17} aria-hidden="true" />Dina planer</Link>
-      <p className="eyebrow"><Users size={16} aria-hidden="true" /> {members.length} {members.length === 1 ? 'person' : 'personer'} med</p>
-      <h1>{plan.title}</h1>
-      <p className="plan-page__intro">{members.map(member => member.displayName).join(', ')}</p>
+    <section className="page plan enter">
+      <BackLink href="/plan" label="Dina planer" className="plan__back" />
+      <h1 className="head" data-reveal>{plan.title}</h1>
+      <p className="lead muted">{members.length} {members.length === 1 ? 'person är' : 'personer är'} med: {members.map(member => member.displayName).join(', ')}</p>
 
       {!decided && <InviteBox code={plan.inviteCode} title={plan.title} />}
       {message && <p className="plan-notice" role="alert">{message}</p>}
@@ -60,7 +61,7 @@ export function PlanRoom({ code }: { code: string }) {
       )}
 
       {events.length === 0 ? (
-        <p>Inga event i planen än. <Link href="/" className="text-link">Hitta något att lägga till</Link></p>
+        <p>Inga event i planen än. <Link href="/#event-list">Hitta något att lägga till</Link></p>
       ) : (
         <div className="voting-grid">
           {events.map(event => (
@@ -78,7 +79,7 @@ export function PlanRoom({ code }: { code: string }) {
       )}
 
       {decided ? (
-        <p className="plan-notice"><Lock size={16} aria-hidden="true" /> Omröstningen är stängd.</p>
+        <p className="plan-notice"><Lock size={18} aria-hidden="true" /> Omröstningen är stängd.</p>
       ) : isOrganizer ? (
         <div className="plan-organizer">
           {outcome.kind === 'tie' && actionError?.code === 'tie' ? (
@@ -92,11 +93,11 @@ export function PlanRoom({ code }: { code: string }) {
               </div>
             </>
           ) : (
-            <Button disabled={busy || events.length === 0} onClick={() => close()}><Lock size={17} aria-hidden="true" />Stäng omröstningen</Button>
+            <Button disabled={busy || events.length === 0} onClick={() => close()}><Lock size={18} aria-hidden="true" />Stäng omröstningen</Button>
           )}
         </div>
       ) : (
-        <p className="field-help">Arrangören stänger omröstningen och utser vinnaren.</p>
+        <p className="small muted">Arrangören stänger omröstningen och utser vinnaren.</p>
       )}
     </section>
   );
@@ -117,21 +118,20 @@ function InviteBox({ code, title }: { code: string; title: string }) {
   }
 
   return (
-    <div className="invite-box">
-      <label htmlFor="invite-link">Bjud in vänner med länken</label>
+    <div className="invite-box" data-reveal style={{ '--i': 1 } as React.CSSProperties}>
       <div className="invite-box__row">
-        <input id="invite-link" readOnly value={url} onFocus={event => event.currentTarget.select()} />
+        <Field label="Bjud in vänner med länken" readOnly value={url} onFocus={event => event.currentTarget.select()} />
         <Button variant="secondary" onClick={copy}>
-          {copied ? <Check size={17} aria-hidden="true" /> : <Copy size={17} aria-hidden="true" />}
+          {copied ? <Check size={18} aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
           {copied ? 'Kopierad' : 'Kopiera'}
         </Button>
         {typeof navigator !== 'undefined' && 'share' in navigator && (
           <Button variant="secondary" onClick={() => navigator.share({ title, url }).catch(() => undefined)}>
-            <Share2 size={17} aria-hidden="true" />Dela
+            <Share2 size={18} aria-hidden="true" />Dela
           </Button>
         )}
       </div>
-      <p className="field-help" role="status">{copied ? 'Länken är kopierad.' : ''}</p>
+      <p className="small muted" role="status">{copied ? 'Länken är kopierad.' : ''}</p>
     </div>
   );
 }
@@ -143,20 +143,18 @@ function JoinPlan({ preview, busy, onJoin }: {
 }) {
   const [name, setName] = useState(() => (typeof window === 'undefined' ? '' : rememberedName()));
   if (!preview) {
-    return <section className="plan-page"><h1>Planen hittades inte</h1><p>Länken kan vara fel eller så har planen tagits bort.</p><Link href="/plan" className="text-link">Till dina planer</Link></section>;
+    return <section className="page plan"><h1 className="head">Planen hittades inte</h1><p>Länken kan vara fel eller så har planen tagits bort.</p><Link href="/plan" className="btn btn--ghost">Till dina planer</Link></section>;
   }
   const submit = (event: FormEvent) => {
     event.preventDefault();
     if (name.trim()) onJoin(name.trim());
   };
   return (
-    <section className="plan-page" aria-labelledby="join-title">
-      <p className="eyebrow"><Users size={16} aria-hidden="true" /> Du är inbjuden av {preview.organizerName}</p>
-      <h1 id="join-title">{preview.title}</h1>
-      <p className="plan-page__intro">{preview.memberCount} {preview.memberCount === 1 ? 'person är' : 'personer är'} med. Skriv ditt namn så kan du rösta direkt, inget konto behövs.</p>
+    <section className="page plan join" aria-labelledby="join-title">
+      <h1 id="join-title" className="head">{preview.title}</h1>
+      <p className="lead">{preview.organizerName} har bjudit in dig. {preview.memberCount} {preview.memberCount === 1 ? 'person är' : 'personer är'} med. Skriv ditt namn så kan du rösta direkt, inget konto behövs.</p>
       <form className="plan-form" onSubmit={submit}>
-        <label htmlFor="join-name">Ditt namn</label>
-        <input id="join-name" value={name} onChange={event => setName(event.target.value)} maxLength={40} autoComplete="given-name" required />
+        <Field label="Ditt namn" value={name} onChange={event => setName(event.target.value)} maxLength={40} autoComplete="given-name" required />
         <Button type="submit" disabled={busy || !name.trim()}>{busy ? 'Går med…' : 'Gå med och rösta'}</Button>
       </form>
     </section>

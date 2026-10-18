@@ -14,14 +14,14 @@ Help people who know *what kind of night they want* but not *which event to pick
 | Step | User question | Surface |
 |---|---|---|
 | Discover | "What's on?" | Home: visible filters (search, category, date, free entry) |
-| Match | "What fits me?" | Monkey Match: location, date, distance, mood, budget → 3 transparent matches |
+| Match | "What fits me?" | Match: when, mood, budget → 3 transparent matches |
 | Decide together | "Which one?" | Plan with Friends: shared shortlist → invite → vote → winner |
 | Get tickets | "Let's go." | Winner → ticket purchase (not built) |
 
 ## Principles
 
 - **Transparent, not magical.** Show *why* something matched (`reasons`), never a hidden score. No sponsored placement. If we ever monetise ranking, it must be labelled and is a product decision (`docs/DECISIONS.md`).
-- **Fewer, better.** Monkey Match returns a short list (3), not a feed.
+- **Fewer, better.** Match returns a short list (3), not a feed.
 - **Decision, then ticket.** The group-decision step exists to shorten the path to a purchase.
 - **Mobile first.** Designed at 390px; scales up.
 - **Accessible by default.** Keyboard, screen reader, reduced motion.
