@@ -11,6 +11,7 @@ Start here, in this order:
 | [`BACKEND.md`](BACKEND.md) | Supabase setup, migrations, env vars, event sources, how to test the database rules. |
 | [`CONTRACTS.md`](CONTRACTS.md) | The rules the code relies on (events, preferences, matching, time, voting, a11y, content). |
 | [`design/`](design/UX-IA.md) | UX/IA reset ([`UX-IA.md`](design/UX-IA.md)), critique + design-system audit ([`AUDIT.md`](design/AUDIT.md)), direction proposal ([`DIRECTION.md`](design/DIRECTION.md)). |
+| [`brand/`](brand/STRATEGY.md) | Brand strategy proposal (positioning, name options, identity, voice). |
 | [`ROADMAP.md`](ROADMAP.md) | Phases, known issues, open questions. |
 | [`DECISIONS.md`](DECISIONS.md) | Append-only decision log. |
 | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) | Branching, PRs, review, commit style. |
