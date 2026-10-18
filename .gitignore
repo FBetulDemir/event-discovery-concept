@@ -2,3 +2,11 @@ node_modules/
 .next/
 *.tsbuildinfo
 .npm-cache/
+
+# env and local tooling
+.env
+.env.*
+!.env.example
+.DS_Store
+.claude/settings.local.json
+.vercel/

@@ -62,6 +62,24 @@ The implementation is fully responsive and adapts the experience for larger scre
 - TypeScript
 - Tailwind CSS
 
+## Development
+
+Requires Node ≥ 22.18 (`nvm use` reads `.nvmrc`).
+
+```bash
+npm ci
+npm run dev      # http://localhost:3000
+npm run check    # typecheck + tests + build
+```
+
+## Project docs
+
+Contributor and AI-agent documentation lives in the repo:
+
+- [`AGENTS.md`](AGENTS.md): how to work here (commands, rules, workflow); `CLAUDE.md` imports it
+- [`CONTRIBUTING.md`](CONTRIBUTING.md): branches, PRs, review
+- [`docs/`](docs/README.md): product, architecture, contracts, roadmap, decisions, status
+
 ## Live Prototype
 
 [View Live Prototype](https://event-discovery-concept.vercel.app/)
