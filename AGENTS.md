@@ -10,7 +10,7 @@ Flow: **Discover → Match → Decide together → Get tickets.**
 
 - Started as a UX/UI + frontend prototype; now being developed into a real product by two people working in parallel.
 - Brand and design: `docs/brand/GUIDELINES.md` (name, mark, colour, type, voice) and `docs/design/` (UX/IA, audit, direction, QA). The running component reference is `/design`.
-- Today: a Next.js app with a Supabase backend (plans, members, shortlist, votes, invite links, guest + account auth), events fetched from external sources (Ticketmaster, later Göteborg & Co), and tickets handed off to the seller. Comments, friends and English/i18n are planned (see `docs/ROADMAP.md`).
+- Today: a Next.js app with a Supabase backend (plans, members, shortlist, votes, invite links, guest + account auth), events fetched from external sources (Ticketmaster, later Göteborg & Co), and tickets handed off to the seller. Friends, notifications and English (`/en`, language toggle) are built; see `docs/ROADMAP.md`.
 - Product intent: `docs/PRODUCT.md`. Where it is going: `docs/ROADMAP.md`. Where it is right now: `docs/STATUS.md`.
 
 ## Commands
@@ -35,7 +35,7 @@ Copy `.env.example` to `.env.local` (git-ignored) and fill it. Without Supabase 
 ## Repo map
 
 ```
-src/app/            Next.js App Router routes (thin: compose components, no logic)
+src/app/            Next.js App Router routes (thin: compose components, no logic); pages live in `[locale]/`, `api/` outside it
   page.tsx            /                 front door: live sentence, tonight, how it works, all events, closing CTA (server-rendered catalogue)
   match/              /match            3-step guided preference flow (/monkey-match redirects here)
   match/results/      /match/results    top-3 ranked matches with reasons (/matches redirects here)
@@ -48,7 +48,9 @@ src/app/            Next.js App Router routes (thin: compose components, no logi
   layout.tsx          fonts (Anton, Work Sans), dark theme, providers, header/footer/nav
 src/components/     UI by feature: brand/ design/ discovery/ events/ layout/ match/ plan/ ui/
 src/styles/         tokens.css (source of truth, mirrors docs/brand/GUIDELINES.md) · base.css · components.css · screens.css
-src/lib/            Pure logic + tests: matching, dates, discovery, voting, format
+src/lib/            Pure logic + tests: matching, dates, discovery, voting, format, i18n helpers
+src/i18n/           next-intl config (routing, navigation, request) and the language guard tests; `src/proxy.ts` is the middleware
+messages/           sv.json, en.json: every UI string
 src/lib/events/     Event sources behind one adapter interface (sources/ticketmaster, sources/demo), catalog, geo
 src/lib/plans/      Client data access for plans (api.ts), snapshot, remembered name
 src/lib/supabase/   Browser client, guest session helper, generated DB types
@@ -73,7 +75,7 @@ The full list with rationale is in `docs/CONTRACTS.md`. The ones that bite most 
 5. **Event IDs are stable and unique across sources** (`tm-…`, `gbg-…`, demo ids as-is). Plans reference an event by `(source, externalId)`.
 6. **Events are not stored by us.** They come from source adapters in the one normalized `Event` shape; an adapter drops what it cannot map honestly (no invented prices, times or coordinates). Plans keep only a small snapshot. Never log or return a URL that contains an API key.
 7. **Authorization lives in the database.** Every table has RLS; privileged or atomic writes go through `SECURITY DEFINER` RPCs. The browser only ever holds the publishable key. Schema changes are migrations in `supabase/migrations/`, never dashboard edits.
-8. **UI language is Swedish for now (English + toggle is planned); code, comments and docs are English.** `<html lang="sv">`.
+8. **UI language is Swedish (default, unprefixed) and English (`/en`); code, comments and docs are English.** Every UI string comes from `messages/sv.json` and `messages/en.json` (typed keys, parity and no-hard-coded-Swedish tests); data identifiers (categories, moods) stay Swedish and get display labels. Use `@/i18n/navigation` for links and routing. `<html lang>` follows the locale. See `docs/CONTRACTS.md` §16.
 9. **Design tokens live in `src/styles/tokens.css`.** Use semantic roles (`--bg`, `--surface-1..3`, `--ink`, `--accent`, `--paper`, …) and the five type steps; no raw hex or off-scale sizes in components. **Dark is the default theme** (`data-theme` on `<html>`), a light theme exists. Square corners, no hairlines or shadows at rest, nothing under 13px, body 16px+, one accent action per screen, no eyebrow labels, no numbered labels. New components go in the `/design` gallery.
 10. **Accessibility is a feature, not polish.** Labels on every control, `aria-live` status for result counts, focus moved to the heading on step change, visible focus ring, skip link, reduced-motion respected. Do not regress these.
 

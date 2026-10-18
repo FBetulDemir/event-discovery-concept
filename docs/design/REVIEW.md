@@ -157,7 +157,16 @@ Giriş yapmamışsa "Logga in" + e-posta alanı; misafirse "Spara dina planer"; 
 
 Plan odasında arkadaş listesi "Bjud in vänner" olarak görünür; davet edilen kişi **Planer** sayfasında "Inbjudningar" altında "Gå med / Avböj" görür, menüde rozet çıkar, katılınca rozet kaybolur. Mobilde rozet alt menüdeki "Planer" üstündedir. (Bu ekranların temiz bir görüntüsü alınamadı; animasyon ortasında yakalandı, o yüzden eklenmedi.)
 
+### 17. İngilizce ve dil değiştirici (SV | EN)
+Başlıkta (telefonda da) SV | EN düğmesi var; seçili dil dolu görünür. Düğme sayfayı ve `?kod=`/`?event=` gibi parametreleri korur, `NEXT_LOCALE` çerezini yazar. İngilizce adresler `/en/...` (ör. `/en/plan`, `/en/vanner`); İsveççe adresler eskisi gibi. Tarayıcı dilinden otomatik yönlendirme **yok** (D-022).
+
+390px ve masaüstünde iki dilde bakılanlar: ön sayfa, Match (3 adım + sonuç), planlarım, plan odası, `/konto` ve `/vanner` (misafir halleri), 404. Bulunan ve düzeltilen tek görsel sorun: İngilizce "What are we" telefonda iki satıra kırılıyordu; başlık telefonda İngilizce için %12 küçültüldü. Davet bağlantısı artık gönderenin dilini taşır (`/en/plan/<kod>`).
+
+Dikkat: İngilizce metinleri ben yazdım, insan gözüyle okunmadı; `/integritet` yasal bir metin ve mutlaka okunmalı.
+
 ## 8. Doğrulanmayan şeyler
+
+- İngilizce **giriş yapılmış** `/konto` ve `/vanner` (arkadaş listesi, istekler): gerçek bir Supabase hesabı gerektiriyor, oluşturulmadı. Anahtarlar tip denetiminden ve sv/en eşitlik testinden geçti.
 
 - Şifreyle **sıfırdan kayıt** (auth sunucusu sahte e-posta alanlarını reddediyor). Giriş, misafir→hesap yükseltmenin kod yolu ve veritabanı kuralları ayrıca test edildi.
 - Arkadaş/bildirim ekranlarının klavye-ekran okuyucu denemesi, açık temada `/vanner`.

@@ -14,7 +14,7 @@ node $S/inspect.mjs http://localhost:3100/                       # front door: m
 node $S/inspect.mjs http://localhost:3100/match --allow few-pictures,covered-text   # app screens
 ```
 
-Screenshots land in `.taste-skill/inspect/` (git-ignored); look at them, the numbers are not the design.
+Run the screens in **both languages** (`/` and `/en`, `/en/match`, …): English strings are longer, so look at 390px for wrapping. Screenshots land in `.taste-skill/inspect/` (git-ignored); look at them, the numbers are not the design.
 
 ## Result on 2026-10-18
 

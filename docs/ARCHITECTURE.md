@@ -6,17 +6,17 @@ Next.js 16 (App Router) · React 19 · TypeScript (strict) · Tailwind CSS v4 + 
 
 | Route | File | Rendering | Purpose |
 |---|---|---|---|
-| `/` | `src/app/page.tsx` | `force-dynamic`: catalogue loaded on the server, client sections | Front door: live sentence, tonight, how it works, all events, closing CTA |
-| `/match` | `src/app/match/page.tsx` | static shell, client `PreferenceFlow` | 3-step guided flow (`/monkey-match` redirects) |
-| `/match/results` | `src/app/match/results/page.tsx` | static shell, client `MatchResults` | Top-3 ranked matches + reasons (`/matches` redirects) |
-| `/design` | `src/app/design/page.tsx` | static, noindex | Token and component gallery |
-| `/events/[id]` | `src/app/events/[id]/page.tsx` | `force-dynamic` (server) | Event detail from the catalogue; ticket link to the seller |
-| `/plan` | `src/app/plan/page.tsx` | client `PlansList` | Your plans |
-| `/plan/new?event=` | `src/app/plan/new/page.tsx` | client `NewPlan` | Create a plan from an event, or add it to an open plan |
-| `/plan/[code]` | `src/app/plan/[code]/page.tsx` | client `PlanRoom` (noindex) | Join via invite code, shortlist, live voting, organizer closes, winner |
+| `/` · `/en` | `src/app/[locale]/page.tsx` | `force-dynamic`: catalogue loaded on the server, client sections | Front door: live sentence, tonight, how it works, all events, closing CTA |
+| `/match` | `src/app/[locale]/match/page.tsx` | static shell, client `PreferenceFlow` | 3-step guided flow (`/monkey-match` redirects) |
+| `/match/results` | `src/app/[locale]/match/results/page.tsx` | static shell, client `MatchResults` | Top-3 ranked matches + reasons (`/matches` redirects) |
+| `/design` | `src/app/[locale]/design/page.tsx` | static, noindex | Token and component gallery |
+| `/events/[id]` | `src/app/[locale]/events/[id]/page.tsx` | `force-dynamic` (server) | Event detail from the catalogue; ticket link to the seller |
+| `/plan` | `src/app/[locale]/plan/page.tsx` | client `PlansList` | Your plans |
+| `/plan/new?event=` | `src/app/[locale]/plan/new/page.tsx` | client `NewPlan` | Create a plan from an event, or add it to an open plan |
+| `/plan/[code]` | `src/app/[locale]/plan/[code]/page.tsx` | client `PlanRoom` (noindex) | Join via invite code, shortlist, live voting, organizer closes, winner |
 | `/api/events` | `src/app/api/events/route.ts` | route handler | Merged event catalogue + per-source status |
 
-Pages are thin; behaviour lives in components and `src/lib`.
+Every page route lives under `src/app/[locale]/` and exists in two languages (`/plan` and `/en/plan`; the table shows the Swedish URL). `src/app/api/` and `icon.svg` stay outside it. Pages are thin; behaviour lives in components and `src/lib`.
 
 ## Layers
 
@@ -27,12 +27,20 @@ lib/          matching · dates · discovery · voting · format       (pure, te
 lib/events/   source.ts (interface, enabledSources) · catalog.ts · geo.ts · sources/{ticketmaster,demo}.ts
 lib/plans/    api.ts (Supabase data access, realtime) · snapshot.ts · displayName.ts
 lib/supabase/ client.ts (browser client, guest session) · database.types.ts (generated)
-lib/useEvents.ts   client hooks over /api/events
+lib/useEvents.ts   client hooks over /api/events (demo events localized here)
+lib/i18n/     locale.ts (Locale, Translator, intlLocale) · labels.ts · reasons.ts · events.ts   (pure, tested)
+i18n/         routing.ts · navigation.ts · request.ts · page.ts (config; messages are in ../messages)
+proxy.ts      next-intl middleware (Next 16 name), strips Accept-Language
+messages/     sv.json · en.json (every UI string, typed from sv.json)
 components/   feature folders; ui/ = primitives (Button, Chip, DatePicker, …)
 app/          routes, layout (fonts, theme, providers, header/footer/nav)
 styles/       tokens.css (semantic roles, 2 themes, scales) · base.css · components.css · screens.css
 supabase/     migrations (schema source of truth) · tests/plans_rls.test.sql
 ```
+
+### Languages
+
+`next-intl` with `/en` prefixed and Swedish unprefixed (`docs/CONTRACTS.md` §16, D-011, D-022). Server components use `getTranslations`, client components `useTranslations`; the root layout passes the active locale's messages to `NextIntlClientProvider`. Pure `src/lib` helpers receive the locale/translator as arguments so they stay testable.
 
 Dependency direction: `app → components → lib/data → types`. `lib` must not import from `components` or `app`. Pure modules under test import siblings with a `.ts` extension (Node runs the tests directly).
 
@@ -85,7 +93,7 @@ A guest session is created lazily (`ensureUser`) when someone acts; listing "you
 
 ## Testing
 
-`node:test` on pure logic (`src/**/*.test.mjs`) importing `.ts` directly (Node ≥ 22.18). Database rules: `supabase/tests/plans_rls.test.sql`. No component, e2e or visual tests yet.
+`node:test` on pure logic (`src/**/*.test.mjs`) importing `.ts` directly (Node ≥ 22.18). Language guards: `src/i18n/messages.test.mjs` (sv/en parity) and `src/i18n/hardcoded.test.mjs` (no Swedish copy in code). Database rules: `supabase/tests/plans_rls.test.sql`. No component, e2e or visual tests yet.
 
 ## CI / deploy
 

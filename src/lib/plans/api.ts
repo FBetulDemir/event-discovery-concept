@@ -228,13 +228,7 @@ export async function updatePlan(planId: string, title: string, planDate: string
 // ------------------------------------------------------------------ comments and reactions
 
 export type ReactionKind = 'like' | 'love' | 'laugh' | 'fire' | 'wow';
-export const REACTIONS: { kind: ReactionKind; label: string }[] = [
-  { kind: 'like', label: 'Gilla' },
-  { kind: 'love', label: 'Älskar' },
-  { kind: 'laugh', label: 'Skratt' },
-  { kind: 'fire', label: 'Eld' },
-  { kind: 'wow', label: 'Wow' },
-];
+export const REACTION_KINDS: ReactionKind[] = ['like', 'love', 'laugh', 'fire', 'wow'];
 
 export type CommentTarget = { type: 'plan' | 'event'; id: string };
 export type CommentNode = {

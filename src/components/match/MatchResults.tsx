@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { groupSeries } from '@/lib/events/series';
 import { useEvents } from '@/lib/useEvents';
 import { matchEvents } from '@/lib/matching';
@@ -12,9 +13,8 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { usePreferences } from './PreferencesProvider';
 import { MatchSummary } from './MatchSummary';
 
-const countWord = ['Inga', 'En', 'Två', 'Tre'];
-
 export function MatchResults() {
+  const t = useTranslations('match.results');
   const allEvents = useEvents();
   const events = useMemo(() => groupSeries(allEvents), [allEvents]);
   const { preferences, completed } = usePreferences();
@@ -26,17 +26,17 @@ export function MatchResults() {
   const ready = now !== null && events.length > 0;
   const recommendations = ready ? matchEvents(events, preferences, { now }).slice(0, 3) : [];
   const count = recommendations.length;
-  const title = !ready ? 'Letar efter kvällar' : count === 0 ? 'Ingen perfekt kväll just här' : `${countWord[count]} ${count === 1 ? 'kväll' : 'kvällar'} som passar`;
+  const title = !ready ? t('loading') : count === 0 ? t('none') : t('found', { count });
 
   return (
     <div className="page results">
-      <BackLink href="/match" label="Ändra mina val" className="results__back" />
+      <BackLink href="/match" label={t('change')} className="results__back" />
       <h1 id="results-title" className="head results__title" data-reveal>{title}</h1>
-      <p className="lead muted">{completed ? 'Du gav oss känslan. Här är kvällarna som passar.' : 'En första känsla för vad som finns. Gör dina val för personliga matchningar.'}</p>
+      <p className="lead muted">{completed ? t('leadDone') : t('leadFirst')}</p>
       <MatchSummary preferences={preferences} />
 
       <section aria-labelledby="results-title" aria-busy={!ready} className="results__list">
-        <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{ready ? `${count} ${count === 1 ? 'matchning' : 'matchningar'}` : 'Hämtar dina matchningar'}</p>
+        <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{ready ? t('status', { count }) : t('fetching')}</p>
         {!ready ? (
           <div className="event-grid" aria-hidden="true">{[0, 1, 2].map(key => <Skeleton key={key} className="skeleton--card" />)}</div>
         ) : count > 0 ? (
@@ -44,13 +44,13 @@ export function MatchResults() {
             {recommendations.map(({ event, reasons }, index) => <EventCard key={event.id} event={event} index={index} recommendation={{ reasons, rank: index + 1 }} />)}
           </div>
         ) : (
-          <EmptyState title="Inga event passar alla dina val" action={<ButtonLink href="/match">Ändra mina val</ButtonLink>}>
-            Prova ett annat datum, en större radie eller en annan budget. Event som redan har börjat visas inte.
+          <EmptyState title={t('emptyTitle')} action={<ButtonLink href="/match">{t('change')}</ButtonLink>}>
+            {t('emptyBody')}
           </EmptyState>
         )}
       </section>
 
-      <p className="small muted results__footnote" data-reveal>Sorterat efter känsla, tid, budget och avstånd. Inga sponsrade placeringar.</p>
+      <p className="small muted results__footnote" data-reveal>{t('footnote')}</p>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import { localizeEvents } from '@/lib/i18n/events';
 import type { Catalog } from '@/lib/events/catalog';
 import type { Event } from '@/types/event';
 
@@ -13,6 +15,8 @@ const empty: Catalog = { events: [], sources: [] };
  */
 export function useCatalog(initial?: Catalog): Catalog & { loading: boolean } {
   const [catalog, setCatalog] = useState<Catalog>(initial ?? empty);
+  const t = useTranslations();
+  const locale = useLocale();
   const [loading, setLoading] = useState(!initial);
 
   useEffect(() => {
@@ -39,7 +43,9 @@ export function useCatalog(initial?: Catalog): Catalog & { loading: boolean } {
     };
   }, []);
 
-  return { ...catalog, loading };
+  // Demo listings are shown in the visitor's language; real events are left exactly as the seller wrote them.
+  const events = useMemo(() => localizeEvents(catalog.events, t), [catalog.events, locale]);
+  return { ...catalog, events, loading };
 }
 
 export function useEvents(): Event[] {

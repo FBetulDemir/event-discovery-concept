@@ -52,3 +52,8 @@ Before storing any provider data beyond the plan snapshot, check that provider's
 ## Data model (short)
 
 `profiles(id → auth.users)` · `plans(invite_code, organizer_id, status, decided_plan_event_id)` · `plan_members(plan_id, user_id, role)` · `plan_events(plan_id, source, external_id, snapshot)` · `votes(plan_id, user_id → one row, plan_event_id)`.
+
+## Language and auth redirects
+
+Auth is email + password, so no Supabase redirect URL depends on the language. If a magic-link or confirmation-email flow is added later, build `emailRedirectTo` with `getPathname` from `@/i18n/navigation` so it returns the person to their own language, and add both `/…` and `/en/…` to the dashboard's redirect allow-list. Database error codes are language-neutral; the UI maps them to messages (`plan.errors.*`, `friends.errors.*`, `comments.errors.*`, `account.problems.*`).
+

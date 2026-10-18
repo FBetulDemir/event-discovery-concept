@@ -1,25 +1,27 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { Link, usePathname } from '@/i18n/navigation';
 import { Logo } from '@/components/brand/Logo';
 
 const year = 2026;
 
 function Notes() {
+  const t = useTranslations('shell.footer');
   return (
     <>
-      <p>Evenemangen kommer från säljarna, i dag Ticketmaster. Vi säljer inga biljetter, vi hjälper gänget att bestämma.</p>
-      <p>Gänget är ett oberoende koncept och är inte kopplat till någon biljettsäljare.</p>
+      <p>{t('sellers')}</p>
+      <p>{t('independent')}</p>
     </>
   );
 }
 
 function Credits() {
+  const t = useTranslations('shell.footer');
   return (
     <>
-      <p>Foton: Matthew Skinner, Robin Röcker, Israel Sundseth, Riley Briggs via Unsplash.</p>
-      <p><Link href="/integritet">Integritet och data</Link></p>
+      <p>{t('photos')}</p>
+      <p><Link href="/integritet">{t('privacy')}</Link></p>
     </>
   );
 }
@@ -27,6 +29,7 @@ function Credits() {
 /** The home page closes with a full designed field; app screens get a slim footer. */
 export function Footer() {
   const pathname = usePathname();
+  const t = useTranslations('shell');
 
   if (pathname !== '/') {
     return (
@@ -34,7 +37,7 @@ export function Footer() {
         <div className="page site-footer__slim-inner">
           <Logo />
           <div className="site-footer__notes"><Notes /></div>
-          <div className="site-footer__credits"><Credits /><p>Göteborg {year}</p></div>
+          <div className="site-footer__credits"><Credits /><p>{t('footer.city', { year })}</p></div>
         </div>
       </footer>
     );
@@ -46,18 +49,18 @@ export function Footer() {
         <div className="site-footer__top">
           <Logo />
           <div className="site-footer__notes"><Notes /></div>
-          <a href="#main-content" className="site-footer__up">Till toppen</a>
+          <a href="#main-content" className="site-footer__up">{t('footer.toTop')}</a>
         </div>
-        <p className="site-footer__line display" aria-label="Vi ses ute">
-          Vi ses<br />ute.
+        <p className="site-footer__line display" aria-label={t('footer.seeYouLabel')}>
+          {t('footer.seeYou1')}<br />{t('footer.seeYou2')}
         </p>
         <div className="site-footer__meta">
-          <nav aria-label="Sidfot">
-            <Link href="/match">Match</Link>
-            <Link href="/plan">Planer</Link>
+          <nav aria-label={t('footer.navLabel')}>
+            <Link href="/match">{t('nav.match')}</Link>
+            <Link href="/plan">{t('nav.plans')}</Link>
           </nav>
           <Credits />
-          <p>Göteborg {year}</p>
+          <p>{t('footer.city', { year })}</p>
         </div>
       </div>
     </footer>

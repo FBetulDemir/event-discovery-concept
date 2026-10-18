@@ -2,6 +2,11 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { matchEvents, filterCompatibleEvents } from './matching.ts';
 import { eventTemplates } from '../data/events.ts';
+import { describeReason } from './i18n/reasons.ts';
+import { translatorFor } from '../i18n/testing.mjs';
+
+const kinds = reasons => reasons.map(reason => reason.kind);
+const words = (reasons, locale = 'sv') => reasons.map(reason => describeReason(reason, translatorFor(locale), locale));
 const events = eventTemplates.slice(0, 6);
 
 const preferences = {
@@ -65,15 +70,15 @@ test('mood relevance outweighs small cost/distance advantages and category suppl
   const candidates = [fixture('cheap', { price: 0, distanceKm: 0 }), fixture('dance', { category: 'Klubb', price: 280, distanceKm: 4 })];
   const ranked = matchEvents(candidates, preferences, now);
   assert.equal(ranked[0].event.id, 'dance');
-  assert.ok(ranked[0].reasons.includes('Matchar Dansa'));
-  assert.ok(!ranked[1].reasons.some(reason => reason.startsWith('Matchar')));
+  assert.deepEqual(ranked[0].reasons[0], { kind: 'mood', mood: 'Dansa' });
+  assert.ok(!ranked[1].reasons.some(reason => reason.kind === 'mood'));
 });
 
 test('multiple matched moods increase relevance and duplicate tags do not inflate it', () => {
   const candidates = [fixture('one', { moods: ['Dansa', 'Dansa'] }), fixture('both', { moods: ['Dansa', 'Skratta'] })];
   assert.deepEqual(ids(matchEvents(candidates, { ...preferences, moods: ['Dansa', 'Skratta'] })), ['both', 'one']);
   const reasons = matchEvents([fixture('dance', { category: 'Klubb', moods: ['Dansa', 'Dansa'] })], { ...preferences, moods: ['Dansa', 'Dansa'] })[0].reasons;
-  assert.equal(reasons.filter(reason => reason === 'Matchar Dansa').length, 1);
+  assert.equal(reasons.filter(reason => reason.kind === 'mood' && reason.mood === 'Dansa').length, 1);
 });
 
 test('sooner events rank higher when other factors are equal, including start time within a day', () => {
@@ -87,22 +92,28 @@ test('budget and distance rank independently when remaining factors are equal', 
   assert.deepEqual(ids(matchEvents([fixture('far', { distanceKm: 4 }), fixture('near', { distanceKm: 1 })], preferences)), ['near', 'far']);
 });
 
-test('Swedish reasons reflect actual constraints without percentages or implicit budgets', () => {
+test('reasons are structured facts that reflect actual constraints, without percentages or implicit budgets', () => {
   const result = matchEvents([fixture('dance', { category: 'Klubb', distanceKm: 1.8 })], preferences, now)[0];
-  assert.deepEqual(result.reasons, ['Matchar Dansa', 'Inom din budget', '1,8 km bort', 'Ikväll']);
+  assert.deepEqual(result.reasons, [
+    { kind: 'mood', mood: 'Dansa' }, { kind: 'withinBudget' }, { kind: 'distance', km: 1.8 },
+    { kind: 'when', when: 'tonight', date: '2026-09-25', time: '19:00' },
+  ]);
   assert.deepEqual(Object.keys(result).sort(), ['event', 'reasons']);
-  assert.ok(result.reasons.every(reason => !reason.includes('%')));
+  // Rendered in both languages, still no scores.
+  assert.deepEqual(words(result.reasons), ['Matchar Dansa', 'Inom din budget', '1,8 km bort', 'Ikväll']);
+  assert.deepEqual(words(result.reasons, 'en'), ['Matches Dance', 'Within your budget', '1.8 km away', 'Tonight']);
+  assert.ok(words(result.reasons).every(reason => !reason.includes('%')));
   const unlimited = matchEvents([fixture('free', { price: 0 })], { ...preferences, budget: null })[0];
-  assert.ok(unlimited.reasons.includes('Fri entré'));
-  assert.ok(!unlimited.reasons.includes('Inom din budget'));
-  assert.ok(!unlimited.reasons.includes('Ikväll'));
+  assert.ok(kinds(unlimited.reasons).includes('free'));
+  assert.ok(!kinds(unlimited.reasons).includes('withinBudget'));
+  assert.equal(unlimited.reasons.at(-1).when, 'date'); // no `now`, so no relative label
 });
 
 test('relative labels use Stockholm time, distinguish daytime, and do not label tomorrow as tonight', () => {
-  assert.ok(matchEvents([fixture('day', { time: '15:00–17:00' })], preferences, { now: '2026-09-25T10:00:00Z' })[0].reasons.includes('Idag'));
-  assert.ok(matchEvents([fixture('tomorrow', { date: '2026-09-26' })], { ...preferences, date: { mode: 'flexible' } }, now)[0].reasons.includes('Imorgon'));
+  assert.ok(matchEvents([fixture('day', { time: '15:00–17:00' })], preferences, { now: '2026-09-25T10:00:00Z' })[0].reasons.some(reason => reason.when === 'today'));
+  assert.ok(matchEvents([fixture('tomorrow', { date: '2026-09-26' })], { ...preferences, date: { mode: 'flexible' } }, now)[0].reasons.some(reason => reason.when === 'tomorrow'));
   const midnight = { now: '2026-09-25T22:30:00Z' }; // Already September 26 locally.
-  assert.ok(matchEvents([fixture('night', { date: '2026-09-26', time: '01:00–03:00' })], { ...preferences, date: { mode: 'flexible' } }, midnight)[0].reasons.includes('Idag'));
+  assert.ok(matchEvents([fixture('night', { date: '2026-09-26', time: '01:00–03:00' })], { ...preferences, date: { mode: 'flexible' } }, midnight)[0].reasons.some(reason => reason.when === 'today'));
 });
 
 test('overnight events are dated by start and already-started events are excluded', () => {
@@ -141,8 +152,8 @@ test('an unknown price stays eligible for a capped budget but is never claimed t
   const unknown = fixture('unknown', { price: null });
   const capped = matchEvents([unknown], preferences, now);
   assert.deepEqual(ids(capped), ['unknown']);
-  assert.ok(capped[0].reasons.includes('Pris ej angivet'));
-  assert.ok(!capped[0].reasons.includes('Inom din budget'));
+  assert.ok(kinds(capped[0].reasons).includes('priceUnknown'));
+  assert.ok(!kinds(capped[0].reasons).includes('withinBudget'));
   assert.deepEqual(ids(matchEvents([unknown], { ...preferences, budget: 0 }, now)), []);
   assert.deepEqual(ids(matchEvents([unknown], { ...preferences, budget: null }, now)), ['unknown']);
 });

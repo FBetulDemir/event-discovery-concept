@@ -74,9 +74,9 @@ Template:
 - Consequences: A small copy of public listing metadata is stored; verify each provider's terms allow it.
 
 ## D-011 — i18n with next-intl, `/sv` and `/en` prefixes, Swedish default
-- Date: 2026-10-18 · Status: accepted, not implemented yet (PR2) · Deciders: Eralp
-- Decision: URL-prefixed locales via `next-intl` so shared links carry the language; Swedish is the default; a visible language toggle switches the prefix.
-- Consequences: Routes move under `app/[locale]/`; UI strings leave the components; invite links must be locale-aware.
+- Date: 2026-10-18 · Status: **built** (branch `feat/i18n`, `docs/CONTRACTS.md` §16) · Deciders: Eralp
+- Decision: URL-prefixed locales via `next-intl` so shared links carry the language; Swedish is the default and unprefixed (`as-needed`); English lives under `/en`; a visible language toggle switches the prefix and keeps the page.
+- Consequences: Routes moved under `app/[locale]/`; UI strings left the components for `messages/*.json`; invite and friend links are locale-aware; `next-intl@4.14.9` is a dependency; Next 16 needs `src/proxy.ts` (not `middleware.ts`). See D-021 and D-022 for the two choices made while building it.
 
 ## D-012 — Comments are threaded posts with reactions, not chat
 - Date: 2026-10-18 · Status: accepted, not implemented yet (PR3) · Deciders: Eralp
@@ -126,4 +126,15 @@ Template:
 - Context: Ticketmaster's API terms limit how long event data may be kept, forbid earning revenue from the API data itself, and require removing content on request within about 24 hours. Plan rows keep an event snapshot so a plan survives the event leaving the feed.
 - Decision (proposed): keep snapshots only while the plan is open and shortly after the event date, purge them afterwards; no ads or paid placement next to API data (already a product promise); one named contact for takedowns (placeholder on `/integritet`); the privacy page states what is stored.
 - Consequences: a purge job is not built yet. Until then snapshots stay. Re-read the current terms before launch; this is a reading of them, not legal advice.
+
+## D-021 — Matching reasons are structured data, rendered per language
+- Date: 2026-10-18 · Status: accepted · Deciders: Eralp (approved in plan), Claude
+- Context: `matchEvents` returned Swedish sentences (`Matchar Dansa`). A second language would have meant either translating inside a pure function or parsing sentences back.
+- Decision: `Recommendation.reasons` is `Reason[]` (`kind` + the facts: mood, km, when/date/time). Ranking, filters and the honesty rule (a reason states a real constraint) are unchanged. `describeReason(reason, t, locale)` produces the sentence; the engine stays pure and clock-free.
+- Consequences: CONTRACTS §3.5–3.7 and `matching.test.mjs` changed in the same PR; any new reason must be added in the type, the renderer, both message files and the tests. Nothing else in the engine moved.
+
+## D-022 — Language memory: URL, then cookie; no Accept-Language; Swedish slugs
+- Date: 2026-10-18 · Status: accepted · Deciders: Eralp
+- Decision: the URL prefix decides; an unprefixed URL falls back to the `NEXT_LOCALE` cookie (set by the toggle) and then to Swedish. The browser's `Accept-Language` is deliberately ignored (stripped in `src/proxy.ts`; next-intl cannot read the cookie without also reading that header, hence `localeDetection: true` plus the strip). Route slugs stay Swedish under `/en`.
+- Consequences: a shared Swedish link never redirects by itself; someone who chose English and opens an unprefixed link is sent to the `/en` version of it. One functional cookie, disclosed on `/integritet`. Translating slugs later (`pathnames`) means touching every internal link, friend link and redirect.
 

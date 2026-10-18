@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import type { ComponentPropsWithRef, ComponentProps } from 'react';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost';

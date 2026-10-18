@@ -2,7 +2,7 @@
 
 Living handoff note. **Update it at the end of any session that leaves work open** (the `handoff` skill does this). Keep it short; history lives in git.
 
-_Last updated: 2026-10-18 by Eralp (with Claude) — design system branch._
+_Last updated: 2026-10-18 by Eralp (with Claude) — i18n branch._
 
 ## Now
 
@@ -13,7 +13,7 @@ _Last updated: 2026-10-18 by Eralp (with Claude) — design system branch._
 
 ## Honest status
 
-The core loop is now a social tool: invitee screen that shows the options, a plan room with who-voted-what, date, add-event and a two-level comment thread with reactions, accounts by email link (guest upgrade keeps plans), richer plan list, catalogue quality gates. **Still missing:** friends list, notifications, English, a second event source and prices. **Needs you:** Supabase redirect URLs and custom SMTP before real people can sign in (`docs/BACKEND.md`). Full review with screenshots (Turkish): [`design/REVIEW.md`](design/REVIEW.md).
+The core loop is now a social tool: invitee screen that shows the options, a plan room with who-voted-what, date, add-event and a two-level comment thread with reactions, accounts by email link (guest upgrade keeps plans), richer plan list, catalogue quality gates. **Still missing:** a second event source and prices. English (`/en`) and the language toggle are built (D-011, D-021, D-022). **Needs you:** Supabase redirect URLs and custom SMTP before real people can sign in (`docs/BACKEND.md`). Full review with screenshots (Turkish): [`design/REVIEW.md`](design/REVIEW.md).
 
 ## In flight
 
@@ -22,14 +22,14 @@ The core loop is now a social tool: invitee screen that shows the options, a pla
 | `feat/backend-foundation` | Eralp | PR1 backend + event sources + plans | Committed locally; not pushed |
 | `feat/design-system` | Eralp | Design PR: brand, system, front door, Match, event | Built, committed locally, verified in a production build; not pushed |
 | `feat/design-system` (same branch) | Eralp | Notifications, friends (`/vanner`), invite-a-friend, password accounts, `/integritet` (D-018, D-019) | Built; verified in a production build with 3 test accounts; not committed at time of writing |
-| (next) i18n `/sv` `/en` + toggle | Eralp | D-011, last in the order | Not started |
+| `feat/i18n` (cut from `feat/design-system`) | Eralp | i18n `/sv` `/en` + toggle (D-011, D-021, D-022) | Built, committed locally; not pushed. Needs a human read of the English copy, especially `/integritet` |
 | (next) plan room as a full ticket | Eralp | D-014 | Winner card is a ticket; the rest of the room is plain |
 
 ## Next up
 
 0. Decide D-020 (Ticketmaster snapshot retention) and build the purge; add a privacy contact on `/integritet`.
 1. Review both branches; the owner decides when to push and open PRs (PR2 depends on PR1).
-2. i18n on the new components.
+2. Read the English copy (`messages/en.json`), above all the privacy text, before launch.
 3. Real Göteborg pictures from open collections and one looping clip for the front door (`assets.mjs`); trademark and domain checks for "Gänget".
 4. Göteborg & Co adapter (needs a key); decide the budget-step question (roadmap issue 13).
 
@@ -41,6 +41,8 @@ The core loop is now a social tool: invitee screen that shows the options, a pla
 - Supabase dashboard: **Confirm email OFF** (Authentication → Sign In / Providers → Email), otherwise password sign-up sends mail that outsiders never receive.
 
 ## Verification notes
+
+- **i18n:** `npm run check` and the skill lint (0 FAIL) pass; production build on port 3100. Looked at in both languages at 390px and desktop: home, Match (3 steps + results), plan list, plan room (guest session), `/konto` and `/vanner` in their guest states, 404. Language toggle keeps page and query string; `curl` confirmed redirects (`/monkey-match`, `/en/matches`, `/sv`), `html lang`, hreflang `Link` header, cookie behaviour and that `Accept-Language: en` does not redirect. **Not verified:** the signed-in states of `/konto` and `/vanner` (friends list, requests) and the account sign-up in English, because that needs a real Supabase account and none was created; the messages are type-checked and the strings are covered by the parity test. English copy was written by Claude and has had no human read.
 
 - `npm run check` passes (typecheck, tests, build) on Node 24.
 - Production build run on port 3100 and looked at in the browser: front door (desktop and a 375px phone), Match step 1, Match results, event page, `/design` in dark and light. Found and fixed on the way: display leading too tight for Å Ä Ö, mobile hero slot collapsing (now a 3:2 frame between the two lines), an invisible link colour on cards.

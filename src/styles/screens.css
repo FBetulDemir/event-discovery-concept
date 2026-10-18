@@ -65,6 +65,8 @@ body { padding-bottom: 4.5rem; }
   .hero__slot-wrap { flex-basis: 100%; }
   .hero__slot { width: 100%; height: auto; aspect-ratio: 3 / 2; max-height: 16rem; }
   .hero__sentence { row-gap: 0.15em; }
+  /* "What are we" is longer than "Vad gör vi": a touch smaller keeps it on one line above the picture. */
+  .hero__sentence:lang(en) { font-size: calc(var(--step-display) * 0.88); }
 }
 .hero__foot { display: grid; gap: var(--space-5); }
 .hero__lead { max-width: 32ch; }

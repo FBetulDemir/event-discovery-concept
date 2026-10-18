@@ -1,11 +1,11 @@
 import { Clock3, MapPin } from 'lucide-react';
+import { useLocale } from 'next-intl';
 import type { Event } from '@/types/event';
-
-const dateFormatter = new Intl.DateTimeFormat('sv-SE', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+import { formatPlanDate } from '@/lib/plans/dates';
 
 /** Venue and when, on one compact block. Date is formatted in UTC from a plain YYYY-MM-DD. */
 export function EventMeta({ event }: { event: Event }) {
-  const date = dateFormatter.format(new Date(`${event.date}T12:00:00Z`)).replaceAll('.', '');
+  const date = formatPlanDate(event.date, useLocale(), true);
   return (
     <ul className="event-meta">
       <li><MapPin size={16} aria-hidden="true" />{event.venue}</li>

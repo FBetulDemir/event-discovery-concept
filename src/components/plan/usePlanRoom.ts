@@ -15,7 +15,7 @@ import { useNotifications } from '@/components/notifications/NotificationsProvid
 export type Room =
   | { status: 'loading' }
   | { status: 'unconfigured' }
-  | { status: 'error'; message: string }
+  | { status: 'error' }
   | { status: 'preview'; preview: PlanPreview | null }
   | { status: 'ready'; state: PlanState; userId: string };
 
@@ -41,7 +41,9 @@ export function usePlanRoom(code: string) {
       }
       else setRoom({ status: 'preview', preview: await getPlanPreview(code) });
     } catch (error) {
-      setRoom({ status: 'error', message: error instanceof Error ? error.message : 'Något gick fel' });
+      // The cause is not shown: it is a raw service message, not something a visitor can act on.
+      console.error(error);
+      setRoom({ status: 'error' });
     }
   }, [code]);
 

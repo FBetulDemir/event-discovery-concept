@@ -40,12 +40,12 @@ test: `matching.test.mjs` "free-only, unlimited budget…", "incomplete/reversed
 ## 3. Matching engine (`src/lib/matching.ts`)
 
 1. **Pure.** No clock, no randomness, no I/O. Time enters only via `options.now` (ISO instant **with** `Z`/offset). A malformed `now` throws `RangeError`. Inputs are never mutated.
-2. **Hard filters first, then rank.** An event failing any of these is never returned, whatever its score: `available`, same city, `price ≤ budget` (an **unknown price** stays eligible for a capped budget but never passes a free-only search, and is never claimed to fit: reason `Pris ej angivet`, no `Inom din budget`), `distanceKm ≤ distance`, valid date/time (start-only times are valid), date within selection, **not already started** (only when `now` given).
+2. **Hard filters first, then rank.** An event failing any of these is never returned, whatever its score: `available`, same city, `price ≤ budget` (an **unknown price** stays eligible for a capped budget but never passes a free-only search, and is never claimed to fit: reason `priceUnknown`, no `withinBudget`), `distanceKm ≤ distance`, valid date/time (start-only times are valid), date within selection, **not already started** (only when `now` given).
 3. **Score** (relative ranking points, *not* percentages or confidence): mood **60** · soonness **20** · budget headroom **10** · proximity **10**. Mood = fraction of chosen moods the event satisfies; the category's implied mood counts once alongside tags (`Klubb→Dansa`, `Livemusik→Livemusik`, `Stand-up→Skratta`, `Bar & häng→Hänga`). No moods or no budget ⇒ that factor is neutral. Soonness is measured from `now`, else the selected start date, else the earliest eligible event.
 4. **Deterministic order.** Ties break by start date/time → distance → price (unknown last) → `id`, independent of input order.
-5. **Return everything eligible**; the UI slices the top 3. **No score leaves the engine** — only `reasons: string[]`.
-6. **Reasons are honest and Swedish** (`Matchar Dansa`, `Inom din budget`, `Fri entré`, `1,8 km bort`, `Ikväll`/`Idag`/`Imorgon`/date, `Inom din valda period`). A reason must reflect an actual constraint the user set. "Inom din budget" only when a budget was set.
-7. Without `now`, past-event filtering and relative labels (`Idag`, `Imorgon`) are unavailable by design.
+5. **Return everything eligible**; the UI slices the top 3. **No score leaves the engine** — only `reasons: Reason[]`.
+6. **Reasons are honest, structured data** (D-021): `{ kind: 'mood', mood }`, `withinBudget`, `free`, `priceUnknown`, `{ distance, km }`, `{ when: 'tonight' | 'today' | 'tomorrow' | 'date', date, time }`, `inRange`. The engine never produces prose; `describeReason` (`src/lib/i18n/reasons.ts`) renders them in the visitor's language (Swedish: `Matchar Dansa`, `Inom din budget`, `Fri entré`, `1,8 km bort`, `Ikväll`; English: `Matches Dance`, `Within your budget`, `Free entry`, `1.8 km away`, `Tonight`). A reason must reflect an actual constraint the user set: `withinBudget` only when a budget was set. Adding a kind means adding it to `Reason`, `describeReason`, both message files and the tests.
+7. Without `now`, past-event filtering and relative `when` values (`tonight`, `today`, `tomorrow`) are unavailable by design: the reason falls back to `date`.
 8. **Changing weights or adding a factor** is a product decision: update this section, the doc-comment above `matchEvents`, tests, and `docs/DECISIONS.md`.
 
 test: all of `matching.test.mjs`.
@@ -97,15 +97,15 @@ Must hold on every page:
 - Dynamic result counts use `role="status" aria-live="polite" aria-atomic="true"`.
 - Multi-step flows move focus to the step heading on change.
 - Visible focus ring (`--focus-width`, `--focus-offset`); all actions reachable and operable by keyboard.
-- Decorative icons `aria-hidden`; meaningful images have Swedish `alt`.
+- Decorative icons `aria-hidden`; meaningful images have `alt` in the page language. Every `aria-label`, `legend` and `alt` comes from the messages, in both languages.
 - Motion respects `prefers-reduced-motion`.
 - Colour is never the only signal (selected chips also show a check).
 
 ## 9. Content & language
 
-- UI strings: Swedish, informal, short. `<html lang="sv">`.
+- UI strings: Swedish (default) and English, informal, short, all from `messages/sv.json` and `messages/en.json` (§16). `<html lang>` follows the locale.
 - Code, comments, docs, commits, PRs: English.
-- Product promises in copy ("Inga sponsrade placeringar", "Sorterat efter känsla, tid, budget och avstånd") must remain true of the implementation (§3).
+- Product promises in copy ("Inga sponsrade placeringar" / "No sponsored placements", "Sorterat efter känsla, tid, budget och avstånd" / "Sorted by mood, time, budget and distance") must remain true of the implementation (§3), in both languages.
 
 ## 10. Repo & delivery
 
@@ -159,3 +159,17 @@ test: `supabase/tests/comments.test.sql`.
 - **Friends and invitations need an account** (`private.require_account()` rejects anonymous users). A guest shares the plan link instead. Everything is written through RPCs (`add_friend`, `respond_friend`, `remove_friend`, `invite_friend`, `accept_invite`, `decline_invite`); the tables are read-only to clients and RLS limits reads to the two people involved.
 - A friend is added by **code or link** (`/vanner?kod=…`); `friend_preview` shows only the display name. Adding someone who already asked you accepts the request. Only accepted friends can be invited; accepting an invitation joins the plan.
 - Notifications are polled (on focus and every 60 s), not pushed, and they fail quietly. There is no email or push delivery yet.
+
+## 16. Languages (`src/i18n`, `messages/`, `src/proxy.ts`, `src/lib/i18n`)
+
+- **Locales:** `sv` (default, unprefixed URLs) and `en` (`/en/…`). Route slugs are **not** translated (`/en/vanner`, `/en/konto`, `/en/integritet`, `/en/plan/<code>`) so friend links, invite links and redirects stay one-to-one. `/sv/…` redirects to the unprefixed URL; the old `/monkey-match` and `/matches` redirects exist in both languages.
+- **Which language you get:** the URL prefix wins; otherwise the `NEXT_LOCALE` cookie; otherwise Swedish. `Accept-Language` is never used (`src/proxy.ts` strips it before next-intl sees the request), so a shared link never redirects on the browser's language. The cookie is functional only (language), set by next-intl on the toggle or when a prefixed URL is opened, and is listed on `/integritet`.
+- **Strings:** every user-facing string lives in `messages/sv.json` and `messages/en.json`, same keys, same placeholders (`src/i18n/messages.test.mjs`). Keys are typed from `sv.json` (`global.d.ts`), so a missing key fails `npm run typecheck`. `src/i18n/hardcoded.test.mjs` fails if Swedish copy is hard-coded in `src/components`, `src/app`, `src/lib` or `src/data` (the seed events are the one exception, see below). Plurals are ICU in the message, never `count === 1 ?` in code.
+- **Data identifiers are not translated.** `EventCategory`, `Mood`, the `'Alla event'` filter value and `Preferences.location` stay Swedish in code, filters, snapshots and the database; `categoryLabel`, `moodLabel`, `cityLabel` (`src/lib/i18n/labels.ts`) give them a display name (`categories.*`, `moods.*`, `cities.*`). New category or mood ⇒ add both labels.
+- **Pure `src/lib` helpers take the language, they do not read it:** `formatPrice`, `formatWhen`, `formatDateSelection`, `formatPlanDate`, `describeNews`, `describeReason` receive a `locale` and/or the root translator (`useTranslations()` / `getTranslations()`); tests pass a translator over the real messages (`src/i18n/testing.mjs`).
+- **Seller content is shown as written.** Ticketmaster titles, venues and descriptions are never translated. The fictional demo events keep Swedish source data and are shown through `demoEvents.*` messages (`localizeEvent`, applied in `useCatalog` and on the event page). A plan created from a demo event stores what its creator saw.
+- **Dates and prices:** `intlLocale` maps `sv → sv-SE`, `en → en-GB` (24 h clock, day before month). Prices read `180 kr` / `180 SEK`. The time zone stays Europe/Stockholm (§4) in both languages; `todayInGothenburg` uses `sv-SE` only because it formats `YYYY-MM-DD`.
+- **Shared links carry the language of the sender** (`getPathname` in `PlanRoom` invite box and `FriendsPanel` link); `parseFriendCode` accepts any URL shape.
+- **Navigation:** import `Link`, `useRouter`, `usePathname`, `redirect` from `@/i18n/navigation`, never from `next/link` / `next/navigation` (except `notFound`, `useSearchParams`).
+- **Toggle:** `LanguageToggle` in the header (also on phones). Each option is a real link with `lang`/`hreflang`; the current one has `aria-current`. Switching keeps the page and the query string.
+

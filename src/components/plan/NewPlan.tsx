@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState, type FormEvent } from 'react';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { useCatalog } from '@/lib/useEvents';
 import { getExistingUser, isSupabaseConfigured, ensureUser } from '@/lib/supabase/client';
 import { addEventToPlan, createPlan, listMyPlans, type MyPlan } from '@/lib/plans/api';
@@ -15,12 +17,14 @@ import { BackendNotice } from './BackendNotice';
 
 export function NewPlan() {
   const router = useRouter();
+  const t = useTranslations('plan.new');
+  const all = useTranslations();
   const search = useSearchParams();
   const eventId = search.get('event');
   const { events, loading } = useCatalog();
   const event = events.find(candidate => candidate.id === eventId);
 
-  const [title, setTitle] = useState(search.get('title') ?? 'Kväll ut');
+  const [title, setTitle] = useState(search.get('title') ?? t('defaultTitle'));
   const [name, setName] = useState('');
   const [openPlans, setOpenPlans] = useState<MyPlan[]>([]);
   const [busy, setBusy] = useState(false);
@@ -70,32 +74,32 @@ export function NewPlan() {
 
   return (
     <section className="page plan enter" aria-labelledby="new-plan-title">
-      <BackLink href={event ? `/events/${encodeURIComponent(event.id)}` : '/'} label="Tillbaka" className="plan__back" />
-      <h1 id="new-plan-title" className="head" data-reveal>Ny plan</h1>
+      <BackLink href={event ? `/events/${encodeURIComponent(event.id)}` : '/'} label={all('common.back')} className="plan__back" />
+      <h1 id="new-plan-title" className="head" data-reveal>{t('title')}</h1>
       {event ? (
-        <p className="lead muted">{event.title}, {event.venue}, {formatPrice(event.price)}</p>
+        <p className="lead muted">{event.title}, {event.venue}, {formatPrice(event.price, all)}</p>
       ) : loading ? (
-        <p role="status">Hämtar eventet…</p>
+        <p role="status">{t('loadingEvent')}</p>
       ) : (
-        <p className="lead muted">Skapa en plan och lägg till event efteråt.</p>
+        <p className="lead muted">{t('lead')}</p>
       )}
 
       <form className="plan-form" onSubmit={create} data-reveal style={{ '--i': 1 } as React.CSSProperties}>
-        <Field label="Namn på planen" value={title} onChange={e => setTitle(e.target.value)} maxLength={80} required />
-        <Field label="Ditt namn" value={name} onChange={e => setName(e.target.value)} maxLength={40} autoComplete="given-name" required />
-        <Button type="submit" disabled={busy || !title.trim() || !name.trim()}>{busy ? 'Skapar…' : 'Skapa plan'}</Button>
+        <Field label={t('titleLabel')} value={title} onChange={e => setTitle(e.target.value)} maxLength={80} required />
+        <Field label={t('yourName')} value={name} onChange={e => setName(e.target.value)} maxLength={40} autoComplete="given-name" required />
+        <Button type="submit" disabled={busy || !title.trim() || !name.trim()}>{busy ? t('creating') : t('create')}</Button>
       </form>
-      {failed && <p className="plan-notice" role="alert">Det gick inte att spara. Försök igen.</p>}
+      {failed && <p className="plan-notice" role="alert">{t('failed')}</p>}
 
       {event && openPlans.length > 0 && (
         <section aria-labelledby="existing-title">
-          <h2 id="existing-title" className="lead">Eller lägg till i en pågående plan</h2>
+          <h2 id="existing-title" className="lead">{t('addToExisting')}</h2>
           <ul className="plan-list">
             {openPlans.map(plan => (
               <li key={plan.id}>
                 <button type="button" className="plan-list__item" disabled={busy} onClick={() => addTo(plan)}>
                   <span className="plan-list__title">{plan.title}</span>
-                  <span className="plan-list__meta muted">{plan.memberCount} {plan.memberCount === 1 ? 'person' : 'personer'}</span>
+                  <span className="plan-list__meta muted">{all('plan.list.people', { count: plan.memberCount })}</span>
                 </button>
               </li>
             ))}

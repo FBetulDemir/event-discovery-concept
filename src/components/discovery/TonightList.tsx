@@ -1,18 +1,20 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import { ArrowUpRight } from 'lucide-react';
-import { todayInGothenburg } from '@/lib/dates';
+import { addDays, formatDay, todayInGothenburg } from '@/lib/dates';
 import { formatPrice, formatWhen } from '@/lib/format';
+import { cityLabel } from '@/lib/i18n/labels';
 import { useHomeCatalog } from './CatalogProvider';
 import { useNow } from './useNow';
-
-const shortDay = (date: string) =>
-  new Intl.DateTimeFormat('sv-SE', { weekday: 'short', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`)).replaceAll('.', '');
 
 /** The next evening with events, as a schedule: when, what and where, what it costs. */
 export function TonightList() {
   const { listed: events } = useHomeCatalog();
+  const t = useTranslations('home.tonight');
+  const all = useTranslations();
+  const locale = useLocale();
   const now = useNow();
   const today = now ? todayInGothenburg(new Date(now)) : null;
 
@@ -22,8 +24,11 @@ export function TonightList() {
   const sameDay = upcoming.filter(event => event.date === first);
   const rows = (sameDay.length >= 5 ? sameDay : upcoming).slice(0, 8);
   const isToday = first !== undefined && first === today;
-  const label = today && first ? formatWhen(first, today) : 'Ikväll';
-  const heading = !today || (isToday && sameDay.length >= 5) ? 'Det händer ikväll' : isToday ? 'Det händer snart' : label === 'Imorgon' ? 'Det händer imorgon' : /^\d/.test(label) ? `Det händer ${label}` : `Det händer ${label}`;
+  const heading = !today || (isToday && sameDay.length >= 5) ? t('headingTonight')
+    : isToday ? t('headingSoon')
+    : first === addDays(today, 1) ? t('headingTomorrow')
+    : t('headingOn', { when: formatWhen(first!, today, locale, all) });
+  const shortDay = (date: string) => formatDay(date, locale, { weekday: 'short' }).replaceAll('.', '');
   const lead = rows[0];
 
   return (
@@ -31,7 +36,7 @@ export function TonightList() {
       <div className="page tonight__inner">
         <h2 id="tonight-title" className="head tonight__title" data-reveal>{heading}</h2>
         {rows.length === 0 ? (
-          <p className="tonight__empty muted">Inget på listan just nu. Titta på alla event längre ner.</p>
+          <p className="tonight__empty muted">{t('empty')}</p>
         ) : (
           <>
             {lead && (
@@ -39,7 +44,7 @@ export function TonightList() {
                 <img src={lead.image} alt={lead.imageAlt} width={640} height={800} loading="lazy" />
               </figure>
             )}
-            <ul className="schedule" aria-label="Kvällens event">
+            <ul className="schedule" aria-label={t('listLabel')}>
               {rows.map((event, index) => (
                 <li key={event.id} data-reveal style={{ '--i': index } as React.CSSProperties}>
                   <Link href={`/events/${encodeURIComponent(event.id)}`} className="schedule__row">
@@ -49,9 +54,9 @@ export function TonightList() {
                     </span>
                     <span className="schedule__what">
                       <span className="schedule__title">{event.title}</span>
-                      <span className="muted">{event.venue}, {event.city}</span>
+                      <span className="muted">{event.venue}, {cityLabel(all, event.city)}</span>
                     </span>
-                    <span className="schedule__price">{formatPrice(event.price)}</span>
+                    <span className="schedule__price">{formatPrice(event.price, all)}</span>
                     <ArrowUpRight size={20} aria-hidden="true" />
                   </Link>
                 </li>

@@ -1,8 +1,11 @@
+import { useTranslations } from 'next-intl';
+
 export function BackendNotice() {
+  const t = useTranslations('plan.backend');
   return (
     <section className="page plan" aria-labelledby="backend-title">
-      <h1 id="backend-title" className="head">Planering är inte påslagen här</h1>
-      <p>Den här versionen saknar koppling till databasen. Ställ in Supabase-variablerna (se .env.example) och starta om.</p>
+      <h1 id="backend-title" className="head">{t('title')}</h1>
+      <p>{t('body')}</p>
     </section>
   );
 }

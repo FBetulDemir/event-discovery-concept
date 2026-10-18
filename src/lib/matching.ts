@@ -1,9 +1,23 @@
 import type { Event, EventCategory } from '@/types/event';
 import type { Mood, Preferences } from '@/types/preferences';
 
+/**
+ * Why an event matched, as data. Language is the UI's business: `describeReason`
+ * (src/lib/i18n/reasons.ts) turns each of these into a sentence in the visitor's language.
+ */
+export type Reason =
+  | { kind: 'mood'; mood: Mood }
+  | { kind: 'withinBudget' }
+  | { kind: 'free' }
+  | { kind: 'priceUnknown' }
+  | { kind: 'distance'; km: number }
+  /** `tonight`/`today`/`tomorrow` are relative to the supplied `now`; `date` carries the event's own date and start. */
+  | { kind: 'when'; when: 'tonight' | 'today' | 'tomorrow' | 'date'; date: string; time: string }
+  | { kind: 'inRange' };
+
 export type Recommendation = {
   event: Event;
-  reasons: string[];
+  reasons: Reason[];
 };
 
 export type MatchingOptions = {
@@ -72,8 +86,8 @@ function validPreferences(preferences: Preferences): boolean {
 
 /**
  * An unknown price (`null`) cannot be shown to fit a budget, but it also is not known to exceed
- * one: it stays eligible for a capped budget (and is labelled "Pris ej angivet" instead of
- * "Inom din budget"), yet never passes a free-only search.
+ * one: it stays eligible for a capped budget (and is reported as `priceUnknown` instead of
+ * `withinBudget`), yet never passes a free-only search.
  */
 function priceWithinBudget(price: number | null, budget: number | null): boolean {
   if (price === null) return budget !== 0;
@@ -110,13 +124,11 @@ function matchingMoods(event: Event, preferences: Preferences): Mood[] {
   return [...new Set(preferences.moods)].filter(mood => relevant.has(normalize(mood)));
 }
 
-function timeReason(event: Event, reference?: ReferenceTime): string {
-  if (reference && event.date === reference.date) return startMinute(event)! >= 18 * 60 ? 'Ikväll' : 'Idag';
-  if (reference && minuteIndex(event.date) - minuteIndex(reference.date) === 1_440) return 'Imorgon';
-  const date = new Intl.DateTimeFormat('sv-SE', {
-    day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC',
-  }).format(new Date(`${event.date}T12:00:00Z`));
-  return `${date} kl. ${event.time.slice(0, 5)}`;
+function timeReason(event: Event, reference?: ReferenceTime): Reason {
+  const base = { kind: 'when', date: event.date, time: event.time.slice(0, 5) } as const;
+  if (reference && event.date === reference.date) return { ...base, when: startMinute(event)! >= 18 * 60 ? 'tonight' : 'today' };
+  if (reference && minuteIndex(event.date) - minuteIndex(reference.date) === 1_440) return { ...base, when: 'tomorrow' };
+  return { ...base, when: 'date' };
 }
 
 /**
@@ -127,7 +139,7 @@ function timeReason(event: Event, reference?: ReferenceTime): string {
  * earliest eligible event when dates are flexible. This never invents a time preference.
  * Exact ties resolve by start date/time, distance, price, then ID, independent of input order.
  * An unknown price (null) stays eligible for a capped budget but scores no budget points and
- * is labelled "Pris ej angivet"; it never passes free-only (budget 0). Unknown is not "fits".
+ * is reported as `priceUnknown`; it never passes free-only (budget 0). Unknown is not "fits".
  * Returns every eligible result; the UI may take the first three. No scores are exposed.
  * Without `now`, past-event filtering and relative labels are intentionally unavailable.
  */
@@ -157,13 +169,13 @@ export function matchEvents(
       + budgetFit * weights.budget
       + distanceFit * weights.distance;
 
-    const reasons = moods.map(mood => `Matchar ${mood}`);
-    if (preferences.budget !== null && event.price !== null) reasons.push('Inom din budget');
-    if (event.price === 0) reasons.push('Fri entré');
-    if (event.price === null) reasons.push('Pris ej angivet');
-    reasons.push(`${event.distanceKm.toLocaleString('sv-SE', { maximumFractionDigits: 2 })} km bort`);
+    const reasons: Reason[] = moods.map(mood => ({ kind: 'mood', mood }));
+    if (preferences.budget !== null && event.price !== null) reasons.push({ kind: 'withinBudget' });
+    if (event.price === 0) reasons.push({ kind: 'free' });
+    if (event.price === null) reasons.push({ kind: 'priceUnknown' });
+    reasons.push({ kind: 'distance', km: event.distanceKm });
     reasons.push(timeReason(event, reference));
-    if (preferences.date.mode === 'range') reasons.push('Inom din valda period');
+    if (preferences.date.mode === 'range') reasons.push({ kind: 'inRange' });
 
     return { event, reasons, score, start };
   }).sort((a, b) => b.score - a.score || a.start - b.start

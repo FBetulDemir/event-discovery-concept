@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import { ArrowUpRight } from 'lucide-react';
 import { defaultPreferences } from '@/data/match-options';
-import { matchEvents } from '@/lib/matching';
+import { matchEvents, type Reason } from '@/lib/matching';
 import { formatPrice, formatWhen } from '@/lib/format';
 import { todayInGothenburg } from '@/lib/dates';
+import { moodLabel } from '@/lib/i18n/labels';
 import type { Mood } from '@/types/preferences';
 import { Chip } from '@/components/ui/Chip';
 import { Button, ButtonLink } from '@/components/ui/Button';
@@ -25,6 +26,9 @@ const CYCLE_MS = 5000;
  */
 export function HeroSentence() {
   const { listed: events } = useHomeCatalog();
+  const t = useTranslations('home.hero');
+  const all = useTranslations();
+  const locale = useLocale();
   const router = useRouter();
   const { setPreferences, setCompleted, resetPreferences } = usePreferences();
   const now = useNow();
@@ -42,7 +46,7 @@ export function HeroSentence() {
   }, []);
 
   const picks = useMemo(() => {
-    if (!now) return events.slice(0, 5).map(event => ({ event, reasons: [] as string[] }));
+    if (!now) return events.slice(0, 5).map(event => ({ event, reasons: [] as Reason[] }));
     return matchEvents(events, { ...defaultPreferences, distance: 15, moods: mood ? [mood] : [] }, { now }).slice(0, 5);
   }, [events, now, mood]);
 
@@ -54,13 +58,13 @@ export function HeroSentence() {
   }, [paused, reduced, picks.length]);
 
   const current = picks[index % Math.max(picks.length, 1)]?.event;
-  const when = current && now ? `${formatWhen(current.date, todayInGothenburg(new Date(now)))} ${current.time.slice(0, 5)}` : '';
+  const when = current && now ? `${formatWhen(current.date, todayInGothenburg(new Date(now)), locale, all)} ${current.time.slice(0, 5)}` : '';
 
   return (
     <section className="hero" aria-labelledby="hero-title">
       <div className="page hero__inner">
         <h1 id="hero-title" className="display hero__sentence">
-          <span>Vad gör vi</span>
+          <span>{t('line1')}</span>
           <span className="hero__slot-wrap">
             {current ? (
               <Link
@@ -76,16 +80,16 @@ export function HeroSentence() {
               </Link>
             ) : <span className="hero__slot hero__slot--empty" aria-hidden="true" />}
           </span>
-          <span>ikväll?</span>
+          <span>{t('line2')}</span>
         </h1>
 
         <div className="hero__foot">
-          <p className="hero__lead lead">Riktiga kvällar i Göteborg. Välj känsla, skicka länken, låt gänget rösta.</p>
+          <p className="hero__lead lead">{t('lead')}</p>
 
-          <div className="hero__moods" role="group" aria-label="Vad är du sugen på?">
-            <Chip selected={mood === null} onClick={() => setMood(null)}>Allt</Chip>
+          <div className="hero__moods" role="group" aria-label={t('moodsLabel')}>
+            <Chip selected={mood === null} onClick={() => setMood(null)}>{t('anything')}</Chip>
             {moods.map(option => (
-              <Chip key={option} selected={mood === option} onClick={() => setMood(mood === option ? null : option)}>{option}</Chip>
+              <Chip key={option} selected={mood === option} onClick={() => setMood(mood === option ? null : option)}>{moodLabel(all, option)}</Chip>
             ))}
           </div>
 
@@ -101,19 +105,19 @@ export function HeroSentence() {
                   resetPreferences();
                   router.push('/match');
                 }
-              }}>{mood ? `Visa ${mood.toLowerCase()}-kvällar` : 'Hitta kvällen'}<ArrowUpRight size={18} aria-hidden="true" /></Button>
-              <ButtonLink href="/plan/new" variant="secondary">Samla gänget</ButtonLink>
+              }}>{mood ? t('showMood', { mood: moodLabel(all, mood).toLocaleLowerCase(locale) }) : t('find')}<ArrowUpRight size={18} aria-hidden="true" /></Button>
+              <ButtonLink href="/plan/new" variant="secondary">{t('gather')}</ButtonLink>
             </div>
             {current && (
               <p className="hero__now" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
                 <span className="muted">{when} · {current.venue}</span>
                 <Link href={`/events/${encodeURIComponent(current.id)}`} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>{current.title}</Link>
-                <span className="muted">{formatPrice(current.price)}</span>
+                <span className="muted">{formatPrice(current.price, all)}</span>
               </p>
             )}
           </div>
         </div>
-        <p className="sr-only" role="status">{now ? `${picks.length} förslag${mood ? ` för ${mood}` : ''}` : ''}</p>
+        <p className="sr-only" role="status">{now ? (mood ? t('statusMood', { count: picks.length, mood: moodLabel(all, mood) }) : t('status', { count: picks.length })) : ''}</p>
       </div>
     </section>
   );

@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import { ArrowUpRight } from 'lucide-react';
 import { getExistingUser, isSupabaseConfigured } from '@/lib/supabase/client';
 import { listMyPlans, type MyPlan } from '@/lib/plans/api';
@@ -19,6 +19,9 @@ export function PlansList() {
   const [plans, setPlans] = useState<MyPlan[] | null>(null);
   const [failed, setFailed] = useState(false);
   const { unread, invites, refresh } = useNotifications();
+  const t = useTranslations('plan.list');
+  const all = useTranslations();
+  const locale = useLocale();
 
   useEffect(() => {
     if (!isSupabaseConfigured) return;
@@ -38,24 +41,24 @@ export function PlansList() {
 
   return (
     <section className="page plan enter" aria-labelledby="plans-title">
-      <h1 id="plans-title" className="head" data-reveal>Dina planer</h1>
+      <h1 id="plans-title" className="head" data-reveal>{t('title')}</h1>
       {failed ? (
-        <p className="plan-notice" role="alert">Kunde inte hämta dina planer just nu. Ladda om sidan.</p>
+        <p className="plan-notice" role="alert">{t('failed')}</p>
       ) : plans === null ? (
         <div aria-busy="true"><Skeleton className="skeleton--row" /><Skeleton className="skeleton--row" /></div>
       ) : plans.length === 0 ? (
         <>
           <Invitations invites={invites} onChanged={refresh} />
-          <p className="lead muted measure">Hitta ett event, välj ”Planera med vänner” och skicka länken. Alla röstar, en vinnare utses.</p>
-          <ButtonLink href="/">Hitta något att göra<ArrowUpRight size={18} aria-hidden="true" /></ButtonLink>
+          <p className="lead muted measure">{t('emptyLead')}</p>
+          <ButtonLink href="/">{t('findSomething')}<ArrowUpRight size={18} aria-hidden="true" /></ButtonLink>
         </>
       ) : (
         <>
         <Invitations invites={invites} onChanged={refresh} />
         <ul className="plan-list" data-reveal style={{ '--i': 1 } as React.CSSProperties}>
           {plans.map(plan => {
-            const news = describeNews(unread.get(plan.id));
-            const when = formatPlanDate(plan.planDate, true);
+            const news = describeNews(unread.get(plan.id), all);
+            const when = formatPlanDate(plan.planDate, locale, true);
             const decided = plan.status === 'decided';
             return (
               <li key={plan.id}>
@@ -64,13 +67,13 @@ export function PlansList() {
                   <span className="plan-card__body">
                     <span className="plan-card__title">{plan.title}</span>
                     <span className="muted">
-                      {[when, `${plan.memberCount} ${plan.memberCount === 1 ? 'person' : 'personer'}`, `${plan.eventCount} ${plan.eventCount === 1 ? 'alternativ' : 'alternativ'}`].filter(Boolean).join(', ')}
+                      {[when, t('people', { count: plan.memberCount }), t('options', { count: plan.eventCount })].filter(Boolean).join(', ')}
                     </span>
                     <span className="plan-card__tags">
-                      {decided ? <Tag>Avgjord</Tag> : plan.iHaveVoted ? <Tag>Du har röstat</Tag> : plan.eventCount > 0 ? <Tag tone="paper">Din röst saknas</Tag> : <Tag>Inga alternativ än</Tag>}
-                      {!decided && <span className="muted small">{plan.votes} {plan.votes === 1 ? 'röst' : 'röster'} hittills</span>}
+                      {decided ? <Tag>{t('decided')}</Tag> : plan.iHaveVoted ? <Tag>{t('youVoted')}</Tag> : plan.eventCount > 0 ? <Tag tone="paper">{t('voteMissing')}</Tag> : <Tag>{t('noOptions')}</Tag>}
+                      {!decided && <span className="muted small">{t('votesSoFar', { count: plan.votes })}</span>}
                     </span>
-                    {hasNews(unread.get(plan.id)) && <span className="plan-card__news">Nytt: {news}</span>}
+                    {hasNews(unread.get(plan.id)) && <span className="plan-card__news">{t('news', { news: news ?? '' })}</span>}
                   </span>
                 </Link>
               </li>
@@ -85,6 +88,9 @@ export function PlansList() {
 
 function Invitations({ invites, onChanged }: { invites: ReturnType<typeof useNotifications>['invites']; onChanged: () => Promise<void> }) {
   const router = useRouter();
+  const t = useTranslations('plan.invitations');
+  const all = useTranslations();
+  const locale = useLocale();
   const [busy, setBusy] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
   if (invites.length === 0) return null;
@@ -104,22 +110,22 @@ function Invitations({ invites, onChanged }: { invites: ReturnType<typeof useNot
 
   return (
     <section className="invitations" aria-labelledby="invitations-title">
-      <h2 id="invitations-title" className="lead">Inbjudningar</h2>
+      <h2 id="invitations-title" className="lead">{t('title')}</h2>
       <ul>
         {invites.map(invite => (
           <li key={invite.planId}>
             <span className="invitations__text">
               <strong>{invite.planTitle}</strong>
-              <span className="muted">{invite.fromName} bjuder in dig{invite.planDate ? `, ${formatPlanDate(invite.planDate, true)}` : ''}, {invite.eventCount} {invite.eventCount === 1 ? 'alternativ' : 'alternativ'}</span>
+              <span className="muted">{invite.planDate ? t('textDated', { from: invite.fromName, date: formatPlanDate(invite.planDate, locale, true) ?? '', options: all('plan.list.options', { count: invite.eventCount }) }) : t('text', { from: invite.fromName, options: all('plan.list.options', { count: invite.eventCount }) })}</span>
             </span>
             <span className="invitations__actions">
-              <Button disabled={busy === invite.planId} onClick={() => respond(invite.planId, true)}>Gå med</Button>
-              <Button variant="ghost" disabled={busy === invite.planId} onClick={() => respond(invite.planId, false)}>Avböj</Button>
+              <Button disabled={busy === invite.planId} onClick={() => respond(invite.planId, true)}>{t('join')}</Button>
+              <Button variant="ghost" disabled={busy === invite.planId} onClick={() => respond(invite.planId, false)}>{t('decline')}</Button>
             </span>
           </li>
         ))}
       </ul>
-      {failed && <p className="plan-notice" role="alert">Något gick fel, försök igen.</p>}
+      {failed && <p className="plan-notice" role="alert">{all('common.generic')}</p>}
     </section>
   );
 }

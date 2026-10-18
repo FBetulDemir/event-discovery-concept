@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { isSupabaseConfigured } from '@/lib/supabase/client';
 import { AuthFailure, MIN_PASSWORD_LENGTH, signIn, signOut, signUp, type AuthProblem } from '@/lib/supabase/auth';
 import { useAuth } from '@/lib/useAuth';
@@ -13,21 +14,17 @@ import { BackendNotice } from '@/components/plan/BackendNotice';
 
 type Mode = 'create' | 'login';
 
-const PROBLEMS: Record<AuthProblem, string> = {
-  bad_credentials: 'Fel e-post eller lösenord.',
-  weak_password: `Lösenordet måste vara minst ${MIN_PASSWORD_LENGTH} tecken.`,
-  invalid_email: 'Kontrollera e-postadressen.',
-  unknown: 'Något gick fel, försök igen.',
-};
+type Problem = AuthProblem | 'fill' | 'taken';
 
 export function AccountPanel() {
   const auth = useAuth();
+  const t = useTranslations('account');
   const [mode, setMode] = useState<Mode>('create');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [error, setError] = useState<Problem | null>(null);
+  const [noticeEmail, setNoticeEmail] = useState<string | null>(null);
 
   if (!isSupabaseConfigured) return <BackendNotice />;
   if (auth.status === 'loading') return <section className="page plan" aria-busy="true"><Skeleton className="skeleton--row" /></section>;
@@ -35,11 +32,11 @@ export function AccountPanel() {
   if (auth.status === 'account') {
     return (
       <section className="page plan enter" aria-labelledby="account-title">
-        <h1 id="account-title" className="head">Ditt konto</h1>
-        <p className="lead muted">Du är inloggad som {auth.email}. Dina planer följer med på alla enheter.</p>
+        <h1 id="account-title" className="head">{t('in.title')}</h1>
+        <p className="lead muted">{t('in.lead', { email: auth.email })}</p>
         <div className="plan-organizer">
-          <Link href="/vanner" className="btn btn--secondary">Mina vänner</Link>
-          <Button variant="ghost" onClick={() => signOut()}>Logga ut</Button>
+          <Link href="/vanner" className="btn btn--secondary">{t('in.friends')}</Link>
+          <Button variant="ghost" onClick={() => signOut()}>{t('in.signOut')}</Button>
         </div>
       </section>
     );
@@ -47,18 +44,18 @@ export function AccountPanel() {
 
   async function submit(event: FormEvent) {
     event.preventDefault();
-    if (!email.trim() || !password) { setError('Fyll i e-post och lösenord.'); return; }
-    if (mode === 'create' && password.length < MIN_PASSWORD_LENGTH) { setError(PROBLEMS.weak_password); return; }
-    setBusy(true); setError(null); setNotice(null);
+    if (!email.trim() || !password) { setError('fill'); return; }
+    if (mode === 'create' && password.length < MIN_PASSWORD_LENGTH) { setError('weak_password'); return; }
+    setBusy(true); setError(null); setNoticeEmail(null);
     try {
       if (mode === 'login') await signIn(email.trim(), password);
       else {
         const result = await signUp(email.trim(), password);
-        if (result === 'email_taken') { setMode('login'); setError('Den e-postadressen har redan ett konto. Logga in i stället.'); }
-        else if (result === 'needs_confirmation') setNotice(`Vi skickade en bekräftelselänk till ${email.trim()}. Öppna den, så är kontot klart.`);
+        if (result === 'email_taken') { setMode('login'); setError('taken'); }
+        else if (result === 'needs_confirmation') setNoticeEmail(email.trim());
       }
     } catch (cause) {
-      setError(PROBLEMS[cause instanceof AuthFailure ? cause.problem : 'unknown']);
+      setError(cause instanceof AuthFailure ? cause.problem : 'unknown');
     } finally {
       setBusy(false);
     }
@@ -67,29 +64,27 @@ export function AccountPanel() {
   const guest = auth.status === 'guest';
   return (
     <section className="page plan enter" aria-labelledby="account-title">
-      <h1 id="account-title" className="head">{guest ? 'Spara dina planer' : mode === 'login' ? 'Logga in' : 'Skapa konto'}</h1>
+      <h1 id="account-title" className="head">{guest ? t('titleGuest') : mode === 'login' ? t('titleLogin') : t('titleCreate')}</h1>
       <p className="lead muted measure">
-        {guest
-          ? 'Du är gäst på den här enheten. Skapa ett konto så följer dina planer och röster med dig, och du kan kommentera event och lägga till vänner.'
-          : 'Med ett konto sparas dina planer på alla enheter, och du kan kommentera event och lägga till vänner.'}
+        {guest ? t('leadGuest') : t('lead')}
       </p>
 
       {!guest && (
-        <div className="design__row" role="group" aria-label="Konto">
-          <Chip selected={mode === 'create'} onClick={() => { setMode('create'); setError(null); }}>Skapa konto</Chip>
-          <Chip selected={mode === 'login'} onClick={() => { setMode('login'); setError(null); }}>Jag har redan ett</Chip>
+        <div className="design__row" role="group" aria-label={t('modeGroup')}>
+          <Chip selected={mode === 'create'} onClick={() => { setMode('create'); setError(null); }}>{t('modeCreate')}</Chip>
+          <Chip selected={mode === 'login'} onClick={() => { setMode('login'); setError(null); }}>{t('modeLogin')}</Chip>
         </div>
       )}
 
-      {notice ? (
-        <p className="lead" role="status">{notice}</p>
+      {noticeEmail ? (
+        <p className="lead" role="status">{t('notice', { email: noticeEmail })}</p>
       ) : (
         <form className="plan-form" onSubmit={submit} noValidate>
-          <Field label="E-post" type="email" value={email} onChange={e => setEmail(e.target.value)} autoComplete="email" placeholder="du@exempel.se" />
-          <Field label="Lösenord" type="password" value={password} onChange={e => setPassword(e.target.value)}
+          <Field label={t('email')} type="email" value={email} onChange={e => setEmail(e.target.value)} autoComplete="email" placeholder={t('emailPlaceholder')} />
+          <Field label={t('password')} type="password" value={password} onChange={e => setPassword(e.target.value)}
             autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-            hint={mode === 'create' ? `Minst ${MIN_PASSWORD_LENGTH} tecken.` : undefined} error={error} />
-          <Button type="submit" disabled={busy}>{busy ? 'Ett ögonblick…' : mode === 'login' && !guest ? 'Logga in' : 'Skapa konto'}</Button>
+            hint={mode === 'create' ? t('passwordHint', { min: MIN_PASSWORD_LENGTH }) : undefined} error={error ? t(`problems.${error}`, { min: MIN_PASSWORD_LENGTH }) : null} />
+          <Button type="submit" disabled={busy}>{busy ? t('busy') : mode === 'login' && !guest ? t('submitLogin') : t('submitCreate')}</Button>
         </form>
       )}
     </section>

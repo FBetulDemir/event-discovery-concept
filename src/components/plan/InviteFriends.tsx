@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Check } from 'lucide-react';
 import { inviteFriend, loadFriends, type Friend } from '@/lib/social/api';
 import { useAuth } from '@/lib/useAuth';
@@ -10,6 +11,7 @@ import { Button } from '@/components/ui/Button';
 /** Invite accepted friends straight into the plan. Accounts only; guests share the link instead. */
 export function InviteFriends({ planId, memberIds }: { planId: string; memberIds: string[] }) {
   const auth = useAuth();
+  const t = useTranslations('plan.inviteFriends');
   const [friends, setFriends] = useState<Friend[] | null>(null);
   const [invited, setInvited] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState<string | null>(null);
@@ -24,7 +26,7 @@ export function InviteFriends({ planId, memberIds }: { planId: string; memberIds
   if (!isAccount || friends === null) return null;
   const candidates = friends.filter(friend => !memberIds.includes(friend.userId));
   if (friends.length === 0) {
-    return <p className="small muted">Har du vänner i Gänget kan du bjuda in dem direkt. <Link href="/vanner">Lägg till vänner</Link></p>;
+    return <p className="small muted">{t.rich('none', { link: chunks => <Link href="/vanner">{chunks}</Link> })}</p>;
   }
   if (candidates.length === 0) return null;
 
@@ -42,20 +44,20 @@ export function InviteFriends({ planId, memberIds }: { planId: string; memberIds
 
   return (
     <section className="friend-group" aria-labelledby="invite-friends-title">
-      <h2 id="invite-friends-title" className="lead">Bjud in vänner</h2>
+      <h2 id="invite-friends-title" className="lead">{t('title')}</h2>
       <ul>
         {candidates.map(friend => (
           <li key={friend.userId} className="friend-row">
             <span className="friend-row__name">{friend.displayName}</span>
             <span className="friend-row__actions">
               {invited.has(friend.userId)
-                ? <span className="muted"><Check size={18} aria-hidden="true" /> Inbjuden</span>
-                : <Button variant="secondary" disabled={busy === friend.userId} onClick={() => invite(friend)}>Bjud in</Button>}
+                ? <span className="muted"><Check size={18} aria-hidden="true" /> {t('invited')}</span>
+                : <Button variant="secondary" disabled={busy === friend.userId} onClick={() => invite(friend)}>{t('invite')}</Button>}
             </span>
           </li>
         ))}
       </ul>
-      {failed && <p className="plan-notice" role="alert">Kunde inte skicka inbjudan, försök igen.</p>}
+      {failed && <p className="plan-notice" role="alert">{t('failed')}</p>}
     </section>
   );
 }

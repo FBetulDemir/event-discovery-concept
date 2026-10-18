@@ -4,7 +4,7 @@
 
 ## Where we are
 
-Gänget: a real-event front door, a 3-step Match with transparent ranking, plans with live voting on a Supabase backend, ticket link-out, a tokenized dark/light design system. Accounts, friends, notifications and comments are built; English is next.
+Gänget: a real-event front door, a 3-step Match with transparent ranking, plans with live voting on a Supabase backend, ticket link-out, a tokenized dark/light design system. Accounts, friends, notifications, comments and English (`/en`) are built.
 
 ## Phases
 
@@ -15,7 +15,7 @@ Agent docs, contracts, CI, PR workflow, project skills. **Done when:** merged an
 Goal: two phones can vote on the same plan.
 - **Done in PR1 (`feat/backend-foundation`):** Supabase schema + RLS + RPCs, guest auth, plans / members / shortlist / votes / invite links / organizer close with explicit tie-break, live updates, external event adapters (Ticketmaster, demo) with `/api/events`, ticket link-out, docs and contracts (D-006…D-010).
 - **Design PR (this branch):** brand, tokens, primitives, `/design`, front door, Match, event page, join/plan screens (D-013 to D-015).
-- **PR2:** i18n `/sv` `/en` with toggle (D-011), now on the new components.
+- **PR2:** i18n `/sv` `/en` with toggle (D-011): built on `feat/i18n`.
 - **PR3 (built on the design branch):** accounts (email + password, D-018), friends, invitations and notifications (D-019), comment threads with reactions on plans and events, moderation basics (D-008, D-012). Google sign-in, password reset and email/push notifications are still open.
 - **Needs a key/decision:** Göteborg & Co adapter; verify Ticketmaster against the live API; enable anonymous sign-ins + CAPTCHA.
 
