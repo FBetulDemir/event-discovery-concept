@@ -729,3 +729,9 @@
   }
   .icon-button:hover { color: var(--color-text); border-color: var(--color-primary); }
 }
+
+@layer components {
+  .event-title-link { color: inherit; }
+  .event-title-link:hover { color: var(--color-primary); text-decoration: underline; }
+  .event-card__open { margin-top: var(--space-2); }
+}

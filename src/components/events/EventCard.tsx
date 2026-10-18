@@ -29,14 +29,14 @@ export function EventCard({ event, recommendation }: EventCardProps) {
       <div className="event-body">
         {recommendation && <div className="match-card__label"><span><Check size={14} aria-hidden="true" />Bra match</span>{featured && <span>DITT TOPPVAL</span>}</div>}
         <div className="event-topline"><span>{event.distanceKm.toLocaleString('sv-SE')} km från centrum</span><span>{formatPrice(event.price)}</span></div>
-        <h3 id={`event-title-${event.id}`}>{event.title}</h3>
+        <h3 id={`event-title-${event.id}`}>{recommendation ? event.title : <Link href={`/events/${encodeURIComponent(event.id)}`} className="event-title-link">{event.title}</Link>}</h3>
         <EventMeta event={event} />
         {recommendation ? (
           <>
             <p className="match-card__description">{event.description}</p>
             <MatchReasons reasons={recommendation.reasons} />
             <div className="match-card__actions">
-              <Link href={`/events/${event.id}`} className="match-event-link">Visa event<span className="sr-only">: {event.title}</span><ArrowUpRight size={17} aria-hidden="true" /></Link>
+              <Link href={`/events/${encodeURIComponent(event.id)}`} className="match-event-link">Visa event<span className="sr-only">: {event.title}</span><ArrowUpRight size={17} aria-hidden="true" /></Link>
               <Link href={`/plan/new?event=${encodeURIComponent(event.id)}`} className="button button--primary"><Users size={17} aria-hidden="true" />Planera med vänner<span className="sr-only">: {event.title}</span></Link>
             </div>
           </>
@@ -44,6 +44,11 @@ export function EventCard({ event, recommendation }: EventCardProps) {
           <summary>Om eventet<span className="sr-only">: {event.title}</span><ChevronDown size={16} aria-hidden="true" /></summary>
           <div className="event-description">{event.description && <p>{event.description}</p>}<p>{[event.ageRestriction !== null ? `${event.ageRestriction}+` : null, event.city].filter(Boolean).join(' · ')}</p></div>
         </details>}
+        {!recommendation && (
+          <Link href={`/events/${encodeURIComponent(event.id)}`} className="match-event-link event-card__open">
+            Visa event<span className="sr-only">: {event.title}</span><ArrowUpRight size={17} aria-hidden="true" />
+          </Link>
+        )}
       </div>
     </article>
   );
