@@ -13,11 +13,10 @@ Agent docs, contracts, CI, PR workflow, project skills. **Done when:** merged an
 
 ### Phase 1 — Make it real for one group (the core promise)
 Goal: two phones can vote on the same plan.
-- Pick backend (leading candidate: Supabase — Postgres + Realtime + anonymous auth). *Decision needed.*
-- `Plan`, `Member`, `Vote` data model; create plan from a match; shareable invite link (`/plan/<id>`); anonymous join with a display name; one vote per member; live tally.
-- Deterministic tie rule + explicit "close voting" by the organiser.
-- Remove hard-coded "4 vänner" / "Fredag kväll"; derive from plan data (name + date).
-- Contract §6 rewritten for the real model; tests for tally/tie logic in `src/lib`.
+- **Done in PR1 (`feat/backend-foundation`):** Supabase schema + RLS + RPCs, guest auth, plans / members / shortlist / votes / invite links / organizer close with explicit tie-break, live updates, external event adapters (Ticketmaster, demo) with `/api/events`, ticket link-out, docs and contracts (D-006…D-010).
+- **PR2:** i18n `/sv` `/en` with toggle (D-011).
+- **PR3:** accounts (magic link + Google), friends, comment threads with reactions on plans and events, moderation basics (D-008, D-012).
+- **Needs a key/decision:** Göteborg & Co adapter; verify Ticketmaster against the live API; enable anonymous sign-ins + CAPTCHA.
 
 ### Phase 2 — Real events
 - Event source: VIP Monkey API/feed if available, otherwise a CMS/seed pipeline we own. *Needs a conversation with VIP Monkey (see open questions).*
@@ -39,14 +38,16 @@ Goal: two phones can vote on the same plan.
 
 | # | Issue | Where | Suggested fix |
 |---|---|---|---|
-| 1 | Vote ties resolve to the earliest shortlisted event, silently | `ResultExperience.tsx` (`reduce` with `>`) | Explicit tie rule + UI ("lika många röster") |
-| 2 | "4 vänner har gått med" and "Fredag kväll" are hard-coded | `PlanExperience.tsx`, `ResultExperience.tsx` | Derive from plan state (Phase 1) |
-| 3 | Seed votes are fabricated so the demo looks alive | `ShortlistProvider.tsx` | Remove with real plans; keep behind a demo flag if needed |
-| 4 | "Köp biljetter" does nothing | `ResultExperience.tsx` | Phase 3 |
-| 5 | Shortlist may contain IDs that disappear (e.g. `?event=` typo) and are silently dropped from the list but kept in state | `PlanExperience.tsx` | Validate ID against catalogue before adding |
+| 1 | ~~Vote ties resolve silently~~ | — | Fixed in PR1: organizer must break a tie (`close_plan`, `voting.ts`) |
+| 2 | ~~Hard-coded "4 vänner" / "Fredag kväll"~~ | — | Fixed in PR1: derived from the plan |
+| 3 | ~~Fabricated seed votes~~ | — | Removed in PR1 |
+| 4 | ~~"Köp biljetter" does nothing~~ | — | Now links to the seller when the source provides a URL; demo events have none |
+| 5 | ~~Invalid `?event=` ids~~ | — | `NewPlan` only offers an event found in the catalogue |
 | 6 | No `test` script / CI existed; tests need Node ≥ 22.18 | `package.json` | Fixed in Phase 0 |
+| 11 | Anonymous sign-in has no CAPTCHA; guests are cheap to create | Supabase Auth | Enable Turnstile/hCaptcha before launch |
+| 12 | Ticketmaster adapter not verified on a live response; Göteborg & Co adapter missing | `lib/events/sources` | Add key, run, fix mapping |
 | 7 | README says "Tailwind CSS" but styling is mostly hand-written token CSS | `README.md`, `globals.css` | Document (done in `ARCHITECTURE.md`); decide whether to converge |
-| 8 | `distanceKm` is a static number, not computed | `events.ts` | Phase 2 |
+| 8 | Distance is from a fixed city-centre point, not the user's location | `lib/events/geo.ts` | Phase 2 (user location, multi-city) |
 | 9 | Plain `<img>` instead of `next/image`; images are not optimised | many components | Switch when images become dynamic |
 | 10 | No lint/format tooling | repo | Add ESLint (next config) + Prettier once both maintainers agree on style |
 

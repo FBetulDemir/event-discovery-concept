@@ -136,3 +136,25 @@ test('real prototype data produces compatible recommendations and all eligible r
   assert.equal(matched[0].event.id, 'yaki-da');
   assert.ok(matched.every(result => result.event.date === '2026-09-25' && result.event.price <= 300));
 });
+
+test('an unknown price stays eligible for a capped budget but is never claimed to fit it, nor free', () => {
+  const unknown = fixture('unknown', { price: null });
+  const capped = matchEvents([unknown], preferences, now);
+  assert.deepEqual(ids(capped), ['unknown']);
+  assert.ok(capped[0].reasons.includes('Pris ej angivet'));
+  assert.ok(!capped[0].reasons.includes('Inom din budget'));
+  assert.deepEqual(ids(matchEvents([unknown], { ...preferences, budget: 0 }, now)), []);
+  assert.deepEqual(ids(matchEvents([unknown], { ...preferences, budget: null }, now)), ['unknown']);
+});
+
+test('unknown prices sort after known ones on an otherwise exact tie', () => {
+  const results = matchEvents([fixture('a-unknown', { price: null }), fixture('b-known', { price: 200 })], { ...preferences, budget: null }, now);
+  assert.deepEqual(ids(results), ['b-known', 'a-unknown']);
+});
+
+test('a start-only time (no published end) is valid; malformed times still are not', () => {
+  assert.deepEqual(ids(matchEvents([fixture('start-only', { time: '19:00' })], preferences, now)), ['start-only']);
+  for (const time of ['25:00', '19:00–24:30', '7pm', '19:00–']) {
+    assert.deepEqual(ids(matchEvents([fixture('bad', { time })], preferences, now)), [], time);
+  }
+});

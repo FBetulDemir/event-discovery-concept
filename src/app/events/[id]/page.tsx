@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, CalendarDays, Users } from 'lucide-react';
-import { getEvents } from '@/data/events';
+import { ArrowLeft, ArrowUpRight, CalendarDays, Users } from 'lucide-react';
+import { findEvent } from '@/lib/events/catalog';
+import { formatAge, formatPricePerPerson } from '@/lib/format';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { EventMeta } from '@/components/events/EventMeta';
 
@@ -9,9 +10,10 @@ export const dynamic = 'force-dynamic';
 
 export default async function EventPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const event = getEvents().find(candidate => candidate.id === id);
+  const event = await findEvent(decodeURIComponent(id));
   if (!event) notFound();
   const date = new Intl.DateTimeFormat('sv-SE', { dateStyle: 'full', timeZone: 'UTC' }).format(new Date(`${event.date}T12:00:00Z`));
+  const age = formatAge(event.ageRestriction);
 
   return (
     <PageContainer className="event-detail-page">
@@ -23,10 +25,19 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
           <h1>{event.title}</h1>
           <EventMeta event={event} />
           <p className="event-detail__date"><CalendarDays size={17} aria-hidden="true" /><time dateTime={event.date}>{date}</time></p>
-          <p>Återkommer varje vecka · nästa tillfälle visas ovan.</p>
-          <p>{event.description}</p>
-          <dl className="event-detail__facts"><div><dt>Entré</dt><dd>{event.price ? `${event.price} kr / person` : 'Fri entré'}</dd></div><div><dt>Åldersgräns</dt><dd>{event.ageRestriction} år</dd></div><div><dt>Från centrum</dt><dd>{event.distanceKm.toLocaleString('sv-SE')} km</dd></div></dl>
-          <Link href={`/plan?event=${event.id}`} className="button button--primary"><Users size={17} aria-hidden="true" />Planera med vänner</Link>
+          {event.source === 'demo' && <p>Exempelevent som återkommer varje vecka · nästa tillfälle visas ovan.</p>}
+          {event.description && <p>{event.description}</p>}
+          <dl className="event-detail__facts">
+            <div><dt>Entré</dt><dd>{formatPricePerPerson(event.price)}</dd></div>
+            {age && <div><dt>Åldersgräns</dt><dd>{age}</dd></div>}
+            <div><dt>Från centrum</dt><dd>{event.distanceKm.toLocaleString('sv-SE')} km</dd></div>
+          </dl>
+          <Link href={`/plan/new?event=${encodeURIComponent(event.id)}`} className="button button--primary"><Users size={17} aria-hidden="true" />Planera med vänner</Link>
+          {event.ticketUrl && (
+            <a href={event.ticketUrl} className="button button--secondary" target="_blank" rel="noopener noreferrer">
+              Biljetter hos säljaren<ArrowUpRight size={17} aria-hidden="true" /><span className="sr-only"> (öppnas i ny flik)</span>
+            </a>
+          )}
         </div>
       </article>
     </PageContainer>

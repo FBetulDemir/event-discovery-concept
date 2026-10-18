@@ -4,22 +4,27 @@ Rules the codebase relies on. Each is enforced by a test where one exists (`test
 
 ## 1. Event (`src/types/event.ts`)
 
+The one shape every source adapter (§11) must produce.
+
 | Field | Contract |
 |---|---|
-| `id` | Unique, URL-safe, **stable forever** (shortlist, votes and `/events/[id]` use it). Weekly rollover must not change it. |
+| `id` | Unique **across sources**, URL-safe, **stable**. Demo ids as-is; external ones prefixed (`tm-<id>`, `gbg-<id>`). |
+| `source`, `externalId` | Which source, and its own id. Together they identify the event in `plan_events`. |
 | `slug` | URL-friendly name; currently unused for routing. |
 | `date` | `YYYY-MM-DD`, a real calendar date, interpreted in **Europe/Stockholm**. For overnight events this is the **start** date. |
-| `time` | `HH:MM–HH:MM` (en dash or hyphen), 24 h, local. Start = first half. Anything else makes the event ineligible for matching. |
-| `city` | Compared case-, whitespace- and Unicode-normalised (`NFC`, `sv-SE`) against `Preferences.location`. |
-| `price` | SEK per person, finite, `≥ 0`. `0` = free entry. |
-| `distanceKm` | Finite, `≥ 0`, from city centre (placeholder until real geo exists). |
-| `category` | One of `Klubb · Livemusik · Stand-up · Bar & häng`. Implies a mood (§3). |
-| `moods` | Free-form mood tags; matched against `Mood`. |
+| `time` | `HH:MM–HH:MM` (en dash or hyphen) **or just `HH:MM`** when the source publishes no end. 24 h, local. Start = first part. Anything else makes the event ineligible for matching. |
+| `city` | Compared case-, whitespace- and Unicode-normalised (`NFC`, `sv-SE`) against `Preferences.location`. Adapters normalise aliases (`Gothenburg` → `Göteborg`). |
+| `price` | SEK per person, finite, `≥ 0`, or **`null` = the source does not say**. `0` = free entry. Never converted from another currency, never guessed. |
+| `distanceKm` | Finite, `≥ 0`, great-circle km from the city centre (`GOTEBORG_CENTRE`), computed from the source's coordinates. Events without coordinates are dropped by the adapter. |
+| `category` | One of `Klubb · Livemusik · Stand-up · Bar & häng`. Implies a mood (§3). Events an adapter cannot map to one of these are dropped. |
+| `moods` | Extra mood tags; matched against `Mood`. |
+| `ageRestriction` | Years, or `null` = unknown. |
 | `available` | `false` ⇒ never shown anywhere (discovery or matching). |
+| `ticketUrl` | Link to buy/read at the source, or `null` (fictional demo events). We never sell tickets ourselves. |
 
-Invalid events are **silently excluded** from matching (never thrown). Seed data is fictional.
+Invalid events are **silently excluded** from matching (never thrown). Demo events are fictional.
 
-test: `matching.test.mjs` "invalid event dates, times, prices and distances cannot enter ranking".
+test: `matching.test.mjs` "invalid event dates, times, prices and distances cannot enter ranking", `ticketmaster.test.mjs`.
 
 ## 2. Preferences (`src/types/preferences.ts`)
 
@@ -35,9 +40,9 @@ test: `matching.test.mjs` "free-only, unlimited budget…", "incomplete/reversed
 ## 3. Matching engine (`src/lib/matching.ts`)
 
 1. **Pure.** No clock, no randomness, no I/O. Time enters only via `options.now` (ISO instant **with** `Z`/offset). A malformed `now` throws `RangeError`. Inputs are never mutated.
-2. **Hard filters first, then rank.** An event failing any of these is never returned, whatever its score: `available`, same city, `price ≤ budget`, `distanceKm ≤ distance`, valid date/time, date within selection, **not already started** (only when `now` given).
+2. **Hard filters first, then rank.** An event failing any of these is never returned, whatever its score: `available`, same city, `price ≤ budget` (an **unknown price** stays eligible for a capped budget but never passes a free-only search, and is never claimed to fit: reason `Pris ej angivet`, no `Inom din budget`), `distanceKm ≤ distance`, valid date/time (start-only times are valid), date within selection, **not already started** (only when `now` given).
 3. **Score** (relative ranking points, *not* percentages or confidence): mood **60** · soonness **20** · budget headroom **10** · proximity **10**. Mood = fraction of chosen moods the event satisfies; the category's implied mood counts once alongside tags (`Klubb→Dansa`, `Livemusik→Livemusik`, `Stand-up→Skratta`, `Bar & häng→Hänga`). No moods or no budget ⇒ that factor is neutral. Soonness is measured from `now`, else the selected start date, else the earliest eligible event.
-4. **Deterministic order.** Ties break by start date/time → distance → price → `id`, independent of input order.
+4. **Deterministic order.** Ties break by start date/time → distance → price (unknown last) → `id`, independent of input order.
 5. **Return everything eligible**; the UI slices the top 3. **No score leaves the engine** — only `reasons: string[]`.
 6. **Reasons are honest and Swedish** (`Matchar Dansa`, `Inom din budget`, `Fri entré`, `1,8 km bort`, `Ikväll`/`Idag`/`Imorgon`/date, `Inom din valda period`). A reason must reflect an actual constraint the user set. "Inom din budget" only when a budget was set.
 7. Without `now`, past-event filtering and relative labels (`Idag`, `Imorgon`) are unavailable by design.
@@ -60,17 +65,17 @@ test: `recurrence.test.mjs`, `dates.test.mjs`.
 
 test: `discovery.test.mjs`.
 
-## 6. Plan & voting (`src/components/plan/ShortlistProvider.tsx`)
+## 6. Plans & voting (`supabase/migrations`, `src/lib/plans`, `src/lib/voting.ts`)
 
-Current (prototype) behaviour — **will change when a backend exists**:
+- A **plan** has a private **invite code** (12 hex chars, a capability: it lets you preview and join, nothing else), one organizer, members, a shortlist of events, and at most one vote per member. Status `open → decided`.
+- **Guests** (Supabase anonymous sign-in) and **accounts** are both authenticated users. A guest session is created only when a person acts (join / create / vote), never on browsing.
+- Shortlist: any member adds while the plan is open; the adder or the organizer removes while open. An event is `(source, external_id)` plus a small `snapshot` (§12).
+- **Votes:** one per member, enforced by the primary key `(plan_id, user_id)`. Voting for the same event again withdraws it; voting for another moves it. A vote for a non-member or for an event not on the plan's shortlist is impossible (composite FKs). Everyone in the plan sees all votes.
+- **Closing:** only the organizer, through `close_plan`. The leader wins; **a tie raises `tie` and the organizer must pick** (`close_plan(plan, plan_event)`). No silent tie-breaks. After closing, votes and shortlist changes are refused.
+- The client mirrors the tally/tie rule in `src/lib/voting.ts` for display; the database function is the source of truth.
+- Live updates: Realtime on `votes`, `plan_events`, `plan_members`, `plans`; clients reload on change.
 
-- A shortlist is an ordered list of unique event IDs; adding an existing ID is a no-op.
-- Each person has **at most one vote**. Voting for the same event again withdraws it; voting for another moves it. Counts never go below 0.
-- Winner = highest count; **ties currently go to the earliest shortlisted event** (known gap — see roadmap).
-- Seed votes `{yaki-da:1, standup:0, tradgarn:3}` sum to 4, matching the "4 vänner har gått med" banner; the user's vote is the 5th. If you change one, change both.
-- State is in-memory only.
-
-Target contract (when real): a Plan has an ID, an organiser, members (anonymous allowed), a shortlist, one vote per member, a lifecycle (`open → decided`), a deterministic tie rule, and a shareable URL.
+test: `voting.test.mjs`; `supabase/tests/plans_rls.test.sql` (run against the database, see `docs/BACKEND.md`).
 
 ## 7. Design system (`src/app/globals.css`, `src/components/ui`)
 
@@ -102,3 +107,22 @@ Must hold on every page:
 - Public repo: no secrets, no `.env`, no private data in fixtures.
 - `main` is changed only through reviewed PRs; CI (`typecheck`, `test`, `build`) must be green.
 - Third-party assets: record provenance (`public/images/SOURCES.md`). VIP Monkey name/logo are not ours — see `docs/ROADMAP.md` open questions.
+
+## 11. Event sources (`src/lib/events`)
+
+- A source implements `EventSource { id, load(now) → SourceResult }`. `loadCatalog` runs the enabled sources **in parallel**; one failing never breaks the page (`status: 'error' | 'not-configured'`, with a safe `message`).
+- Adapters map to the §1 `Event` or **drop** the item. They never fabricate a price, time, coordinate or image.
+- Data is fetched server-side, reused for `SOURCE_REVALIDATE_SECONDS` (10 min) and reaches the browser via `/api/events`; a page refresh after that window shows source changes. Plans keep a snapshot so they survive changes at the source.
+- `EVENT_SOURCES` (default `ticketmaster,goteborgco`) picks sources. If nothing real returns, the fictional `demo` source fills in and the `sources` field of the response says so. The UI must not present demo events as real.
+- API keys are server-only env vars; error messages and logs must never include a request URL (it carries the key).
+- Respect each provider's terms (attribution, caching, storage limits) when adding a source; note them in `docs/BACKEND.md`.
+
+test: `ticketmaster.test.mjs`, `catalog.test.mjs`.
+
+## 12. Backend & access control (`supabase/`)
+
+- Schema changes are SQL files in `supabase/migrations/`, applied in order; never edit the live schema by hand. Regenerate `src/lib/supabase/database.types.ts` after each one.
+- **RLS on every table.** The `anon` role has no privileges; everything goes through `authenticated` (guests are authenticated). Policy helpers live in the non-exposed `private` schema.
+- Privileged/atomic writes are `SECURITY DEFINER` functions with `search_path = ''` and an explicit `auth.uid()` check: `create_plan`, `join_plan`, `close_plan`, `get_plan_preview`.
+- Snapshots: ≤ 4 KB JSON object, description ≤ 280 chars. They are a reference copy of public listing metadata.
+- Never ship a `service_role`/secret key to the browser or the repo.

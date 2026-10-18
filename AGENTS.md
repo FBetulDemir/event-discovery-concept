@@ -9,7 +9,7 @@ This file is the single source of truth for how to work in this repo. `CLAUDE.md
 Flow: **Discover → Match → Decide together → Get tickets.**
 
 - Started as a UX/UI + frontend prototype; now being developed into a real product by two people working in parallel.
-- Today it is a front-end only app: static seed data, in-memory state, no backend, no auth, no real ticketing.
+- Today: a Next.js app with a Supabase backend (plans, members, shortlist, votes, invite links, guest + account auth), events fetched from external sources (Ticketmaster, later Göteborg & Co), and tickets handed off to the seller. Comments, friends and English/i18n are planned (see `docs/ROADMAP.md`).
 - Product intent: `docs/PRODUCT.md`. Where it is going: `docs/ROADMAP.md`. Where it is right now: `docs/STATUS.md`.
 
 ## Commands
@@ -27,6 +27,10 @@ npm run check        # typecheck + test + build — run before every commit/PR
 
 There is no linter or formatter yet. Match the style of the surrounding code.
 
+### Environment
+
+Copy `.env.example` to `.env.local` (git-ignored) and fill it. Without Supabase variables the plan pages show a notice; without event-source keys the catalogue falls back to fictional demo events (labelled as such by `/api/events` `sources`). Backend setup, migrations and the RLS test: `docs/BACKEND.md`.
+
 ## Repo map
 
 ```
@@ -35,12 +39,18 @@ src/app/            Next.js App Router routes (thin: compose components, no logi
   monkey-match/       /monkey-match     3-step preference flow
   matches/            /matches          top-3 ranked matches with reasons
   events/[id]/        /events/:id       event detail (force-dynamic)
-  plan/               /plan             shared shortlist + voting
-  plan/result/        /plan/result      winner + "Köp biljetter"
+  plan/               /plan             your plans
+  plan/new/           /plan/new?event=  create a plan from an event / add it to an open plan
+  plan/[code]/        /plan/:inviteCode join, shortlist, live voting, organizer closes, winner + ticket link
+  api/events/         /api/events       merged external event catalogue (cached)
   globals.css         design tokens + all component CSS (@layer components)
 src/components/     UI by feature: discovery/ events/ layout/ monkey-match/ plan/ ui/
-src/lib/            Pure logic + tests: matching, dates, discovery, useEvents hook
-src/data/           Seed data (events.ts) and option defaults (match-options.ts)
+src/lib/            Pure logic + tests: matching, dates, discovery, voting, format
+src/lib/events/     Event sources behind one adapter interface (sources/ticketmaster, sources/demo), catalog, geo
+src/lib/plans/      Client data access for plans (api.ts), snapshot, remembered name
+src/lib/supabase/   Browser client, guest session helper, generated DB types
+src/data/           Demo seed events (events.ts, fictional) and option defaults (match-options.ts)
+supabase/           SQL migrations (source of truth for the schema) and the RLS test
 src/types/          Shared domain types (event.ts, preferences.ts)
 public/images/      Local images; provenance in SOURCES.md
 docs/               Product, architecture, contracts, roadmap, decisions, status
@@ -55,12 +65,14 @@ The full list with rationale is in `docs/CONTRACTS.md`. The ones that bite most 
 
 1. **Matching is a pure function.** `matchEvents` / `filterCompatibleEvents` in `src/lib/matching.ts` never read the clock; the caller passes `now`. Hard filters run first, then ranking. No scores are exposed to the UI — only human-readable `reasons`.
 2. **Matching is transparent.** Every recommendation must be explainable by its `reasons`. No hidden boosts, no sponsored placement. The UI promises "Inga sponsrade placeringar"; keep that true.
-3. **Time is Europe/Stockholm.** Dates are `YYYY-MM-DD` strings, times are `HH:MM–HH:MM` strings. Never use `new Date()` at module load; evaluate "now" at use time (see `getEvents`).
+3. **Time is Europe/Stockholm.** Dates are `YYYY-MM-DD` strings, times are `HH:MM–HH:MM` strings (the end may be missing: `HH:MM`). Never use `new Date()` at module load; evaluate "now" at use time (see `getEvents`).
 4. **Hydration safety.** Anything time-dependent renders empty/neutral on the server and fills in after mount (`useEvents`, `MatchResults`). Do not call `Date.now()` / `Math.random()` during render.
-5. **Event IDs are stable** across weekly rollover. Votes and shortlist reference IDs.
-6. **UI language is Swedish; code, comments and docs are English.** `<html lang="sv">`.
-7. **Design tokens live in `globals.css`.** Use the CSS variables / `@theme` tokens; do not hard-code colours, spacing or radii in components.
-8. **Accessibility is a feature, not polish.** Labels on every control, `aria-live` status for result counts, focus moved to the heading on step change, visible focus ring, skip link, reduced-motion respected. Do not regress these.
+5. **Event IDs are stable and unique across sources** (`tm-…`, `gbg-…`, demo ids as-is). Plans reference an event by `(source, externalId)`.
+6. **Events are not stored by us.** They come from source adapters in the one normalized `Event` shape; an adapter drops what it cannot map honestly (no invented prices, times or coordinates). Plans keep only a small snapshot. Never log or return a URL that contains an API key.
+7. **Authorization lives in the database.** Every table has RLS; privileged or atomic writes go through `SECURITY DEFINER` RPCs. The browser only ever holds the publishable key. Schema changes are migrations in `supabase/migrations/`, never dashboard edits.
+8. **UI language is Swedish for now (English + toggle is planned); code, comments and docs are English.** `<html lang="sv">`.
+9. **Design tokens live in `globals.css`.** Use the CSS variables / `@theme` tokens; do not hard-code colours, spacing or radii in components.
+10. **Accessibility is a feature, not polish.** Labels on every control, `aria-live` status for result counts, focus moved to the heading on step change, visible focus ring, skip link, reduced-motion respected. Do not regress these.
 
 Changing a contract = update `docs/CONTRACTS.md` + tests + add an entry to `docs/DECISIONS.md` in the same PR.
 
@@ -83,9 +95,9 @@ Changing a contract = update `docs/CONTRACTS.md` + tests + add an entry to `docs
 
 ## Ask first / never
 
-**Ask the humans before:** adding a dependency; adding a backend/DB/auth provider; changing a contract; changing routes or URLs; changing visual identity (logo, palette, wordmark); deleting seed events or tests.
+**Ask the humans before:** adding a dependency; changing the database schema or any RLS policy; changing the auth model; changing a contract; changing routes or URLs; changing visual identity (logo, palette, wordmark); deleting seed events or tests.
 
-**Never:** commit secrets, API keys or `.env` files (this repo is **public**); push to `main`; rewrite shared history; weaken or delete a test to make it pass; add tracking/analytics without a decision entry; claim a venue/event in seed data is real.
+**Never:** commit secrets, API keys, a Supabase `service_role`/secret key or `.env` files (this repo is **public**); push to `main`; rewrite shared history; weaken or delete a test to make it pass; add tracking/analytics without a decision entry; claim a venue/event in seed data is real.
 
 ## Handoff protocol
 
@@ -93,4 +105,4 @@ Two people (and their agents) work here in parallel. At the end of any session t
 
 ## Known sharp edges
 
-See `docs/ROADMAP.md` → "Known issues". Highlights: vote ties resolve to the first shortlisted item; "4 vänner har gått med" and "Fredag kväll" are hard-coded; "Köp biljetter" is a dead button; the VIP Monkey name/logo are third-party brand assets (see open question in `docs/ROADMAP.md`).
+See `docs/ROADMAP.md` → "Known issues". Highlights: Supabase *anonymous sign-ins* must be enabled in the dashboard or guests cannot join (`docs/BACKEND.md`); the Göteborg & Co adapter is not written yet (needs a key); the Ticketmaster adapter is tested on documented sample data, not yet against the live API; the VIP Monkey name/logo are third-party brand assets (see open question in `docs/ROADMAP.md`).

@@ -694,3 +694,38 @@
   .match-card__actions .button { padding-inline: var(--space-4); }
   .match-event-link { justify-content: flex-start; }
 }
+
+/* ---- Plans: invite, forms, lists (backend-backed plan flow) ---- */
+@layer components {
+  .plan-form, .invite-box { display: grid; gap: var(--space-3); }
+  .plan-form label, .invite-box label { font-size: var(--text-sm); font-weight: var(--font-weight-semibold); }
+  .plan-form input, .invite-box input {
+    width: 100%; min-width: 0; min-height: var(--control-height); padding-inline: var(--space-4);
+    background: var(--color-surface); color: var(--color-text);
+    border: var(--border-width) solid var(--color-border); border-radius: var(--radius-md);
+  }
+  .plan-form input:focus-visible, .invite-box input:focus-visible { outline: var(--focus-width) solid var(--color-primary); outline-offset: var(--focus-offset); }
+  .invite-box__row { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .invite-box__row input { flex: 1 1 14rem; }
+  .invite-box .field-help { margin-top: 0; min-height: 1em; }
+  .plan-notice { display: flex; align-items: center; gap: var(--space-2); color: var(--color-secondary); font-size: var(--text-sm); }
+  .plan-organizer { display: grid; gap: var(--space-3); justify-items: start; }
+  .plan-organizer__ties { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .plan-list { display: grid; gap: var(--space-3); list-style: none; padding: 0; margin: 0; }
+  .plan-list__item {
+    display: grid; gap: var(--space-1); width: 100%; min-height: var(--control-height); padding: var(--space-4);
+    text-align: left; color: var(--color-text); background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border-subtle); border-radius: var(--radius-md);
+  }
+  .plan-list__item:hover { background: var(--color-surface-hover); border-color: var(--color-primary); }
+  .plan-list__item:disabled { opacity: var(--disabled-opacity); }
+  .plan-list__title { font-weight: var(--font-weight-semibold); }
+  .plan-list__meta { color: var(--color-text-muted); font-size: var(--text-sm); }
+  .voting-card__actions { display: flex; align-items: center; gap: var(--space-2); }
+  .icon-button {
+    display: inline-grid; place-items: center; width: var(--control-height); height: var(--control-height);
+    color: var(--color-text-muted); background: transparent;
+    border: var(--border-width) solid var(--color-border-subtle); border-radius: var(--radius-md);
+  }
+  .icon-button:hover { color: var(--color-text); border-color: var(--color-primary); }
+}
