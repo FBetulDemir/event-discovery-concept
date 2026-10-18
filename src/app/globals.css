@@ -733,5 +733,5 @@
 @layer components {
   .event-title-link { color: inherit; }
   .event-title-link:hover { color: var(--color-primary); text-decoration: underline; }
-  .event-card__open { margin-top: var(--space-2); }
+  .event-card__open { margin-top: var(--space-2); color: var(--color-primary); }
 }
