@@ -13,7 +13,7 @@ _Last updated: 2026-10-18 by Eralp (with Claude) — i18n branch._
 
 ## Honest status
 
-The core loop is now a social tool: invitee screen that shows the options, a plan room with who-voted-what, date, add-event and a two-level comment thread with reactions, accounts by email link (guest upgrade keeps plans), richer plan list, catalogue quality gates. **Still missing:** a second event source and prices. English (`/en`) and the language toggle are built (D-011, D-021, D-022). **Needs you:** Supabase redirect URLs and custom SMTP before real people can sign in (`docs/BACKEND.md`). Full review with screenshots (Turkish): [`design/REVIEW.md`](design/REVIEW.md).
+The core loop is now a social tool: invitee screen that shows the options, a plan room with who-voted-what, date, add-event and a two-level comment thread with reactions, accounts by email + password (guest upgrade keeps plans), friends and invitations (`/vanner`), notifications (nav badge), richer plan list, catalogue quality gates. **Still missing:** a second event source and prices. English (`/en`) and the language toggle are built (D-011, D-021, D-022). **Needs you:** switch *Confirm email* off in the Supabase dashboard (password sign-up otherwise sends mail outsiders never get); custom SMTP is only needed later for password reset (`docs/BACKEND.md`). Full review with screenshots (Turkish): [`design/REVIEW.md`](design/REVIEW.md).
 
 ## In flight
 
