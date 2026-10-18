@@ -18,11 +18,11 @@ export const metadata: Metadata = {
 
 // Marks the document as script-enabled before first paint, so entrance animations only hide
 // content when they can also reveal it.
-const enableScript = `document.documentElement.classList.add('js')`;
+const enableScript = `document.documentElement.classList.add('js');try{var t=localStorage.getItem('ganget-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}`;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="sv" data-theme="dark" className={`${anton.variable} ${workSans.variable}`}>
+    <html lang="sv" data-theme="dark" suppressHydrationWarning className={`${anton.variable} ${workSans.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: enableScript }} />
       </head>

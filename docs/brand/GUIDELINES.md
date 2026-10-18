@@ -55,13 +55,13 @@ Dealt for this brand (see `docs/design/DIRECTION.md`): **Anton** for display, **
 
 | Step | Use | Size | Face |
 |---|---|---|---|
-| `display` | The hero sentence | `clamp(4rem, 2rem + 11vw, 11rem)`, leading 1.04 | Anton, uppercase, tracking -0.01em |
-| `head` | Section headings | `clamp(2.5rem, 1.2rem + 5vw, 5.5rem)`, leading 1.04 | Anton, uppercase |
+| `display` | The hero sentence | `clamp(4rem, 2rem + 11vw, 11rem)`, leading 1.12 | Anton, uppercase, tracking -0.01em |
+| `head` | Section headings | `clamp(2.5rem, 1.2rem + 5vw, 5.5rem)`, leading 1.12 | Anton, uppercase |
 | `lead` | Statements, card titles | `clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem)` | Work Sans 600 or Anton |
 | `body` | Running text | `clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem)`, leading 1.5 | Work Sans 400 |
 | `small` | Meta, captions | `clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem)` | Work Sans 400/600 |
 
-Rules: five sizes, nothing under 13 px, body 16 px or more, left-aligned, headings at most two lines at every width, no small uppercase letter-spaced labels, no monospace, no numbered labels. Diacritics (Å Ä Ö) collide with the line above below leading 1.0 on caps, so display and heading leading is 1.04.
+Rules: five sizes, nothing under 13 px, body 16 px or more, left-aligned, headings at most two lines at every width, no small uppercase letter-spaced labels, no monospace, no numbered labels. Diacritics (Å Ä Ö) collide with the line above below leading 1.0 on caps, so display and heading leading is 1.12.
 
 ## Shape and surface
 

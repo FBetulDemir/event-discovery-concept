@@ -11,6 +11,10 @@ _Last updated: 2026-10-18 by Eralp (with Claude) — design system branch._
 - Branch `feat/design-system` (**stacked on PR1, not opened**): new independent brand **Gänget** (D-013), dark-default tokens + light theme, primitives, `/design` gallery, new front door (live sentence), Match, event page, join/plan screens, routes `/match` and `/match/results` (D-014, D-015). Nothing of VIP Monkey remains.
 - Skill lint: 0 FAIL. Inspector: front door 0 FAIL; app screens 0 FAIL with documented exceptions; `/plan` and `/plan/new` 1 FAIL each (`still-page`, near-empty screens). See `docs/design/QA.md`.
 
+## Honest status
+
+The design system and the core loop work; the product is **not finished**. Missing: sign-in, comments, friends, notifications, a richer plan room, an invitee screen that shows what to vote on, and better event content. Full review with screenshots: [`design/REVIEW.md`](design/REVIEW.md). Reordered plan: that file, section 5 (English comes last).
+
 ## In flight
 
 | Branch / PR | Owner | What | State |
