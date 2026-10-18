@@ -1,186 +1,160 @@
 # Gänget: durum ve sayfa sayfa inceleme
 
-Bu doküman Eralp'in incelemesi için Türkçe yazıldı (repo dokümanlarının geri kalanı İngilizce). Tarih: 2026-10-18. Branch: `feat/design-system` (PR1 `feat/backend-foundation` üzerine yığılı, ikisi de push'lanmadı).
+Eralp'in incelemesi için Türkçe yazıldı (repo dokümanlarının geri kalanı İngilizce). Güncelleme: 2026-10-18, ikinci tur. Branch: `feat/design-system` (PR1 `feat/backend-foundation` üzerine yığılı; ikisi de push'lanmadı).
 
-Ekran görüntüleri gerçek tarayıcıda, gerçek Supabase veritabanı ve gerçek Ticketmaster verisiyle, **arkadaşları olan bir senaryoda** alındı (aşağıda). Test kullanıcıları ve planları işimiz bitince silindi.
+Ekran görüntüleri gerçek tarayıcıda, gerçek Supabase veritabanı ve gerçek Ticketmaster verisiyle, **arkadaşları olan bir senaryoda** alındı. Test kullanıcıları ve planları silindi.
 
 ## 1. Hüküm
 
-**Bitmedi.** Görsel dil, tasarım sistemi ve çekirdek döngü (etkinlik bul, plan kur, linki gönder, arkadaşlar oy versin, kazananı bilete çevir) çalışıyor. Ama ürün, tek başına "kullanıp geri döneceğim" dedirtecek kadar değerli değil. Eksikler tasarımda değil, **ürün içeriğinde ve sosyal katmanda**.
+Önceki turdaki hüküm "bitmedi, çekirdek döngü çalışıyor ama sosyal katman yok" idi. Bu turda sosyal katmanın büyük kısmı geldi: davetli akışı, zengin plan odası, yorum thread'i + tepkiler, hesap (e-posta ile giriş). **Hâlâ bitmedi**: e-posta ile girişin gerçek kullanıcıya ulaşması için sizin yapacağınız panel ayarları var, arkadaş listesi ve bildirimler yok, İngilizce yok, ikinci etkinlik kaynağı yok. Aşağıda her şey ayrıntılı.
 
 ## 2. Ne yapıldı, ne kaldı
 
 | Alan | Durum | Not |
 |---|---|---|
-| Marka (Gänget, bilet çentikli logo, palet A, Anton + Work Sans, ses tonu) | ✅ | `docs/brand/GUIDELINES.md`. Tescil ve alan adı kontrolü yapılmadı. |
-| Tasarım sistemi (token'lar, 2 tema, bileşenler, `/design` galerisi) | ✅ | Bileşenlerin tek tek bileşen dokümanı yok, sadece galeri. |
-| **Tema düğmesi (koyu/açık)** | ✅ (bu turda eklendi) | Header sağ üstte, tercih cihazda saklanır. Daha önce sadece galerideydi, kullanıcıya ulaşmıyordu. |
-| Ön sayfa (canlı cümle, bu akşam, nasıl çalışır, tüm etkinlikler) | ⚠️ | Güzel ama **plan fikri sayfanın en altında**, bkz. 4. |
-| Match (3 adım + sonuç) | ⚠️ | Çalışıyor. Fiyat verisi olmadığı için bütçe adımı anlamsız. |
-| Etkinlik sayfası | ⚠️ | Bilgi var, **sosyal bağlam yok** (arkadaşlar, yorumlar, paylaş). |
-| Plan kur, link, katıl, oy ver, kapat, beraberlik, kazanan bilet | ✅ çalışıyor | Canlı güncelleniyor, misafir olarak girilebiliyor. |
-| Plan odası zenginliği | ❌ | Kimin neye oy verdiği görünmüyor, odadan etkinlik eklenemiyor, plan tarihi yok. |
-| Davetli (arkadaş) ilk ekranı | ❌ zayıf | Sadece ad kutusu; **neye oy vereceğini görmüyor**. |
-| **Giriş yapma (sign in) / hesap** | ❌ yok | Sadece misafir oturumu var; cihaz veya tarayıcı verisi değişirse planlar kaybolur. |
-| **Arkadaşlar** | ❌ yok | |
-| **Yorumlar / FB tarzı thread, tepkiler** | ❌ yok | Kararı var (D-012), kodu yok. |
-| Bildirimler (biri oy verdi, plan kapandı) | ❌ yok | |
-| İngilizce + dil düğmesi | ❌ yok | Öncelik listesinde aşağıya indi, bkz. 5. |
-| Harici etkinlikler | ⚠️ | Sadece Ticketmaster. Göteborg & Co yok (anahtar yok). |
-| Veritabanı, güvenlik kuralları, canlı oy | ✅ | RLS testi geçti. Anonim giriş açık, CAPTCHA yok. |
-| Çeviri/erişilebilirlik/performans denetimi | ⚠️ | Skill denetimi geçti, **gerçek klavye/ekran okuyucu denemesi yapılmadı**. |
+| Marka, tasarım sistemi, `/design` galerisi, koyu/açık tema + **tema düğmesi** | ✅ | |
+| Ön sayfa | ✅ | Birincil eylem artık **iki tane**: "Hitta kvällen" ve **"Samla gänget"** (plan kur). Ruh hali seçilince buton "Visa dansa-kvällar" olur ve **doğrudan sonuçlara** götürür. |
+| Match (3 adım + sonuç) | ⚠️ | Çalışıyor; bütçe adımı fiyat verisi olmadığı için hâlâ anlamsız. |
+| Etkinlik sayfası | ✅ | **Fler tillfällen** (aynı gösterinin diğer tarihleri) ve **yorumlar** eklendi. |
+| **Davetli akışı** | ✅ | Davetli planın adını, tarihini, kimlerin olduğunu ve **seçenekleri** görür; favorisini seçip adını yazınca katılır ve **oyu atılır**. |
+| **Plan odası** | ✅ | Üyeler ve **kimin oy verdiği**, kartlarda "Röstat av …", plan **tarihi**, odadan **etkinlik ekleme**, plan adı/tarihi düzenleme, karar sonrası "Så röstade ni", **gruba kopyalanabilir mesaj**. |
+| **Yorumlar** (FB tarzı) | ✅ | Plan ve etkinlik thread'i, **iki seviye cevap**, 5 tepki (ikonlarla), silme (yazar/organizatör), raporlama, hız sınırı, canlı güncelleme. |
+| **Giriş / hesap** | ⚠️ | `/konto` sayfası ve header'da "Logga in" var; e-postayla şifresiz giriş ve **misafiri hesaba yükseltme** (planlar ve oylar kalır) kodlandı. **E-postanın size ulaşması için Supabase panelinde 2 ayar gerekiyor** (aşağıda). Uçtan uca denenmedi. |
+| Planlar listesi | ✅ | Küçük resim, tarih, kişi sayısı, "Du har röstat / Din röst saknas", oy sayısı. |
+| Katalog kalitesi | ✅ | Tekrar eden gösteriler tek kart (`+N datum`), 20 km dışı elendi, açıklamalardan URL temizlendi, uzak tarihler "31 dec" diye yazılır. |
+| Arkadaş listesi | ❌ | Yok. |
+| Bildirimler (oy verdi, plan kapandı) | ❌ | Yok (canlı güncelleme sadece sayfa açıkken). |
+| İngilizce + dil düğmesi | ❌ | Sıranın sonunda. |
+| Harici etkinlikler | ⚠️ | Sadece Ticketmaster; Göteborg & Co yok (anahtar yok). Fiyat yok. |
+| Güvenlik (RLS, RPC'ler) | ✅ | İki SQL testi geçti (plan kuralları + yorumlar). Anonim giriş açık, CAPTCHA yok. |
+| Erişilebilirlik / çeviri / performans denetimi | ⚠️ | Skill lint 0 hata; gerçek klavye/ekran okuyucu denemesi yapılmadı. |
 
-## 3. Bu inceleme sırasında bulunan hatalar
+### Sizin yapmanız gerekenler (kodla çözülemez)
 
-Düzeltilenler:
-- Ön sayfa cümlesinde "Ä" noktaları üstteki satırın harflerine değiyordu (satır aralığı 1.12'ye çıkarıldı).
-- Plan kartlarında kategori etiketi kartın tamamına yayılıyordu.
-- Tema düğmesi uygulamada yoktu (eklendi), 404 sayfası stilsizdi (eklendi).
+Supabase panelinde (`docs/BACKEND.md` → "Sign-in (email) setup"):
+1. **Authentication → URL Configuration:** Site URL ve Redirect URL'lere `http://localhost:3000/konto`, canlı adres `/konto` ekleyin.
+2. **Authentication → SMTP Settings:** kendi SMTP'nizi bağlayın. Varsayılan Supabase posta servisi **sadece proje ekibindeki adreslere** gönderir ve saatte birkaç e-postayla sınırlıdır; arkadaşlarınız bağlantıyı alamaz. Sadece siz test edecekseniz bu adım zorunlu değil.
 
-Açık:
-1. **Davetli ekranı** (11) neye oy vereceğini göstermiyor; gönder düğmesi ad yazılana kadar soluk, bozuk gibi duruyor.
-2. **Ön sayfadaki ruh hali çipleri** sadece cümle içindeki fotoğrafı değiştiriyor. "Dansa" basınca o ruh haline ait listeye gitmiyor. Beklenen aksiyon yok.
-3. **Plan listesi** (06) çıplak metin satırları: küçük resim yok, "senin oyun verildi mi" yok, kimlerin hangi planda olduğu yok.
-4. **Plan odası** (07, 08): sayaçlar var ama **kim neye oy verdi görünmüyor**. Oylamanın sosyal keyfi bu.
-5. **Karar sonrası** (10) oy kartları kazanan bileti de altında tekrar gösteriyor, kalabalık.
-6. **"Bu akşam" boşken** başlık "Det händer måndag" diyor (bugün pazar, bu akşam hiç etkinlik yok). Bu dürüst ama kullanıcıya değer vermiyor.
-7. **Etkinlik açıklamaları** Ticketmaster'dan ham geliyor (İngilizce, bazen URL içeriyor).
-8. **Katalog kalitesi** (bkz. 4): çoğu arena konseri ve Kungsbacka Teater, GLAMORAMA aynı mekanda her hafta ~12 kez tekrar ediyor.
+## 3. Bu turda bulunan ve düzeltilen hatalar
 
-## 4. Dürüst değerlendirme: içerik ve aksiyon yeterli mi?
+1. **Yorumlar hiç görünmüyordu** (ilişki belirsizliği; hata sessizce "yorum yok" gibi görünüyordu). Düzeltildi, artık hata olursa kullanıcıya söyleniyor.
+2. **Plan listesi boş geliyordu** aynı türden hatayla. Düzeltildi.
+3. **"torsdag" yazıyordu, oysa tarih 31 aralık:** 6 günden uzak etkinliklerde artık tarih yazıyor.
+4. Lint: tepkilerde emoji vardı (tasarım kuralı yasaklıyor). Sistem ikonlarına çevrildi.
+5. Önceki tur: Ä noktaları, plan kartı etiketi, stilsiz 404, tema düğmesi.
 
-**Uygulamanın amacını taşıyor mu?** Yarım. "Vad gör vi ikväll?" cümlesi ve canlı etkinlik güzel bir ilk izlenim veriyor. Ama ürünün asıl farkı olan **grup kararı** ilk ekranda görünmüyor: ilk ekranda tek eylem "Hitta kvällen" (Match'e gider). "Gänget'ini topla / plan kur" sayfanın 8.500 piksel altında. Bir ziyaretçi bunu bir **etkinlik listesi** sanıyor, grup aracı değil.
+Açık kalan küçük şeyler:
+- `Skicka`/`Gå med` gibi düğmeler boşken soluk (devre dışı hali). Kullanılabilir ama bozuk gibi durabilir.
+- Etkinlik açıklamaları satıcının dilinde (çoğu İngilizce).
+- Katalog: Kungsbacka gibi yerler elendi; bu bilinçli (20 km), ama "Göteborg" tanımını sizin onaylamanız gerekir.
 
-**Yeterli içerik var mı?** Hayır.
-- 70 etkinliğin büyük kısmı Scandinavium konserleri ve Kungsbacka Teater (şehir merkezine 25 km). "Bu akşam dışarı çıkıyoruz" senaryosuna uyan kulüp, bar, stand-up, canlı sahne neredeyse yok (kulüp: 3).
-- Hiçbir etkinlikte fiyat yok (Ticketmaster İsveç için vermiyor), bu yüzden her kart "Pris ej angivet" diyor ve bütçe adımı işe yaramıyor.
-- Tek kaynak. İkinci kaynak (Göteborg & Co) anahtar bekliyor.
-- Etkinlik sayfasında mekân haritası, ulaşım, "kimler gidiyor", paylaşma, takvime ekleme yok.
+## 4. Dürüst değerlendirme (güncel)
 
-**Yeterince değerli aksiyon alınabiliyor mu?** Çekirdek döngü çalışıyor ama **geri dönmek için sebep yok**:
-- Alınabilenler: gez, filtrele, Match, plan kur, link kopyala, oy ver, kapat, bileti satıcıdan al.
-- Eksik ve kritik: **giriş (planların cihazlar arası kalması)**, oyların kimden geldiği, bildirim ("Mert oy verdi", "plan kapandı"), yorum/sohbet, arkadaş listesi, planı odada düzenleme (etkinlik ekle, tarih seç).
+**Amacı taşıyor mu?** Daha iyi. Ön sayfada artık "Samla gänget" eylemi var ve plan odası bir grup aracı gibi davranıyor: kim oy verdi, ne zaman, ne konuşuyorlar. Hâlâ eksik: ilk ekran hâlâ keşif ağırlıklı, grup fikrini anlatan bir örnek yok.
 
-**Misafirlik riski:** Planlar cihazdaki anonim oturuma bağlı. Telefon tarayıcı verisini silerse veya Elif bilgisayardan açarsa plana erişemez. Bu, "çalışıyor" demek için çözülmesi gereken bir şey.
+**İçerik yeterli mi?** Düşündüğümden iyi çıktı ama hâlâ sınırlı. "Dansa" seçince **gerçek kulüp geceleri** geliyor (Push, BARDOT, Köket yılbaşı geceleri), yani katalogda kulüp var; sadece ilk 90 günün başında değiller. Zayıf yanlar: tek kaynak, fiyat yok, çoğu etkinlik arena konseri.
 
-## 5. Yeniden sıralanmış plan (önerim)
+**Geri dönüş sebebi var mı?** Bir kısmı: yorumlar ve canlı oylama bir grubu plan sürecinde tutar. Eksik: bildirim (oyu kim verdi, plan kapandı), arkadaş listesi ve e-posta ile hesap bağlantısı gerçek kullanıcıya ulaşmadıkça misafirlik riski sürer.
 
-İngilizce'yi sona aldım: çalışan, değerli bir ürün olmadan çevirisi anlamsız.
+## 5. Sıradaki plan
 
-| Sıra | İş | Neden |
+| Sıra | İş | Durum |
 |---|---|---|
-| 1 | **Davetli akışı**: katılmadan önce seçenekleri gör, oy ver; ön sayfada "plan kur" birincil aksiyon; hero ruh hali çipleri listeye gitsin | Dönüşümün gerçekleştiği yer |
-| 2 | **Plan odası zenginliği**: kimin neye oy verdiği, odadan etkinlik ekle, plan tarihi, kazananı paylaş | Ürünün kalbi |
-| 3 | **Hesap**: e-posta ile giriş, misafiri hesaba yükseltme (oylar kalır), planlar cihazlar arası | Veri kaybını önler |
-| 4 | **İçerik kalitesi**: gece hayatına uygun filtre, tekrar eden etkinlikleri grupla, merkeze uzak olanları geri çek, ikinci kaynak, fiyat dürüstlüğü | "Bu akşam" boş olmasın |
-| 5 | **Yorum thread'i** (plan + etkinlik, 2 seviye cevap, beğeni/tepki) ve **bildirimler** | Geri dönüş sebebi |
-| 6 | **Arkadaşlar** | Sosyal ağ |
-| 7 | **İngilizce + dil düğmesi** (D-011) | Ürün oturunca |
+| 1 | Davetli akışı, ön sayfada plan eylemi | ✅ |
+| 2 | Plan odası zenginliği | ✅ |
+| 3 | Hesap | ⚠️ kod hazır, panel ayarları sizde |
+| 4 | İçerik kalitesi | ✅ ilk tur; ikinci kaynak ve fiyat dürüstlüğü açık |
+| 5 | Yorumlar | ✅; **bildirimler** açık |
+| 6 | Arkadaşlar | ❌ |
+| 7 | İngilizce + dil düğmesi | ❌ |
 
 ## 6. Senaryo
 
 Pazar akşamı, bir arkadaş grubu cuma için plan yapıyor:
 - **Elif** (organizatör), **Mert**, **Selin**, **Can** arkadaşları, **Deniz** sonradan link alan davetli.
-- Elif ön sayfadan etkinlik bulup plan kuruyor: **"Fredag kväll"** (AMON AMARTH, EUROPE, GLAMORAMA). Mert, Selin, Can katıldı. Oylar: Amon Amarth 2 (Elif, Mert), Europe 1 (Selin), Can henüz vermedi, Deniz linke yeni tıkladı.
-- İkinci plan **"Lördag på Park Lane"** kapatılmış: kazanan GLAMORAMA.
-- Üçüncü plan **"Stand-up och öl"** 1–1 beraberlik: organizatör seçmek zorunda.
+- **"Fredag kväll"** (fredag 23 oktober): AMON AMARTH, EUROPE, GLAMORAMA; Elif ve Mert Amon Amarth'a, Selin Europe'a oy verdi; yorumlar ve tepkiler var. Deniz linke tıklıyor, favorisini (EUROPE) seçip katılıyor; sonra bir yorum yazıp **odadan** "WINTHER COUNTRY FESTIVAL" ekliyor.
+- **"Lördag på Park Lane"**: kapanmış, kazanan GLAMORAMA.
+- **"Stand-up och öl"**: 1–1 beraberlik.
 
 ## 7. Sayfa sayfa
 
-Her görüntüde masaüstü (1280) ve çoğunda mobil (390) var. Görüntüler uzun sayfalarda tam sayfa.
+Masaüstü 1280 px, çoğunda mobil 390 px. Uzun sayfalar tam sayfa.
 
-### 01. Ön sayfa (Utforska)
+### 01. Ön sayfa
 Masaüstü: ![](review/01-startsida-desktop.jpg)
 Mobil: ![](review/01-startsida-mobil.jpg)
-Açık tema, ilk ekran: ![](review/01-startsida-ljust-forsta-skarmen.jpg)
+Açık tema ilk ekran: ![](review/01-startsida-ljust-forsta-skarmen.jpg)
+Ruh hali seçilmiş (buton "Visa dansa-kvällar", yanında **Samla gänget**): ![](review/01-startsida-hero-humor-vald.jpg)
 
-Ne görürsün: dev "VAD GÖR VI [fotoğraf] IKVÄLL?" cümlesi, içinde dönen gerçek etkinlik; ruh hali çipleri; tek turuncu eylem; "Det händer …" listesi; MATCHA / SKICKA / RÖSTA / GÅ panelleri; arama, gün ve kategori filtreli tüm etkinlikler; "Samla gänget" kapanış cümlesi.
-Gerçek kullanımda: Elif bir ruh hali seçer, fotoğraf değişir, "Hitta kvällen" ile Match'e geçer ya da bir etkinliğe girer.
-Sorunlar: grup/plan fikri ilk ekranda yok (4). Çipler bir yere götürmüyor (3.2). Bu akşam boşsa sayfa zayıf. Çok uzun (8.500 px masaüstü, 14.700 px mobil). Hero fotoğraf poster sanatı olduğunda yazı kırpılıyor.
+Elif bir ruh hali seçer, hero'daki etkinlik değişir, tek tuşla o ruh haline uyan üç öneriye gider, ya da "Samla gänget" ile plan kurar. Sorun: sayfa çok uzun (8.500 px masaüstü).
 
-### 02. Match: üç adım
-Adım 1, tarih: ![](review/02-match-steg1-datum-desktop.jpg) mobil: ![](review/02-match-steg1-datum-mobil.jpg)
-Adım 2, his (Dansa + Livemusik seçili): ![](review/02-match-steg2-kansla-desktop.jpg)
-Adım 3, bütçe (Upp till 400 kr seçili): ![](review/02-match-steg3-budget-desktop.jpg)
+### 02. Match
+Adım 1: ![](review/02-match-steg1-datum-desktop.jpg) mobil: ![](review/02-match-steg1-datum-mobil.jpg)
+Adım 2: ![](review/02-match-steg2-kansla-desktop.jpg)
+Adım 3: ![](review/02-match-steg3-budget-desktop.jpg)
 
-Gerçek kullanımda: Elif "bu cumaya yakın bir şey" için takvimden gün seçer, ruh hali seçer, bütçe seçer.
-Sorunlar: üç adım ve bir takvim, "hızlı karar" vaadine ters. Bütçe adımı fiyat olmadığı için hiçbir şeyi ayırt etmiyor. Takvimde geçmiş günler silik ama yer kaplıyor.
+Sorunlar: üç adım ve takvim hızlı karar vaadine ters; bütçe adımı fiyat olmadığı için anlamsız.
 
 ### 03. Match sonucu
-Masaüstü: ![](review/03-match-resultat-desktop.jpg)
-Mobil: ![](review/03-match-resultat-mobil.jpg)
+![](review/03-match-resultat-desktop.jpg) mobil: ![](review/03-match-resultat-mobil.jpg)
 
-Ne görürsün: "Tre kvällar som passar", seçimlerin özeti, her biri **neden eşleştiğini** söyleyen üç kart ve "Planera med vänner".
-Sorunlar: "Pris ej angivet" her kartta. "Inom din budget" hiç çıkmıyor (dürüst ama etkisiz).
+Üç öneri, neden eşleştiğini söyler. Aynı gösterinin tekrarları artık tek kart.
 
-### 04. Etkinlik sayfası (AMON AMARTH)
-Masaüstü: ![](review/04-event-desktop.jpg)
-Mobil: ![](review/04-event-mobil.jpg)
+### 04. Etkinlik sayfası (yorumlarla)
+![](review/04-event-desktop.jpg) mobil: ![](review/04-event-mobil.jpg)
 
-Ne görürsün: büyük görsel, ad, kategori, mekân, zaman, ham açıklama, giriş/yaş/mesafe, **Planera med vänner** (turuncu) ve **Biljetter hos säljaren** (satıcıya link).
-Sorunlar: açıklama ham İngilizce. Harita, ulaşım, paylaş, yorum, "arkadaşlar bunu listelemiş" yok.
+Elif "Visa kommentarer" ile herkese açık thread'i açar (hesap gerekir), yorumunu görür. Gösterinin başka tarihleri varsa "Fler tillfällen" listesi çıkar. Mobil görüntü önceki turdan (yorum bölümü yok).
 
-### 05. Yeni plan (Elif, EUROPE etkinliğinden)
-Masaüstü: ![](review/05-ny-plan-desktop.jpg) mobil: ![](review/05-ny-plan-mobil.jpg)
+### 05. Yeni plan
+![](review/05-ny-plan-desktop.jpg) mobil: ![](review/05-ny-plan-mobil.jpg)
 
-Elif plan adını ("Kväll ut") ve kendi adını girer ya da etkinliği açık bir plana ekler.
-Sorunlar: sadece iki alan, ne için plan yapıldığı (tarih) sorulmuyor. "Mevcut plana ekle" listesi yalın metin.
+Hâlâ iki alan (ad, senin adın). Tarih odada sonradan eklenir.
 
 ### 06. Planlarım (Elif)
-Masaüstü: ![](review/06-planer-lista-desktop.jpg) mobil: ![](review/06-planer-lista-mobil.jpg)
+![](review/06-planer-lista-desktop.jpg) mobil: ![](review/06-planer-lista-mobil.jpg)
 
-Üç plan: "Stand-up och öl, 3 kişi, pågår", "Lördag på Park Lane, 3 kişi, avgjord", "Fredag kväll, 4 kişi, pågår".
-Sorunlar: küçük resim, sıradaki etkinlik, benim oyum, bekleyen oy sayısı yok. Planlar arasında ayrım zor.
+Küçük resim, "fre 23 okt, 5 personer, 4 alternativ", "Du har röstat", "4 röster hittills". Mobil görüntü önceki turdan.
 
-### 07. Plan odası: organizatör (Elif), oylama sürüyor
-Masaüstü: ![](review/07-plan-oppen-arrangor-desktop.jpg) mobil: ![](review/07-plan-oppen-arrangor-mobil.jpg)
+### 07. Plan odası: oylama sürüyor
+![](review/07-plan-oppen-arrangor-desktop.jpg) mobil: ![](review/07-plan-oppen-arrangor-mobil.jpg)
 
-Ne görürsün: plan adı, "4 personer är med: Elif, Mert, Selin, Can", davet linki (Kopiera / Dela), üç etkinlik kartı (oy sayaçları 2, 1, 0; Elif'in oyu işaretli), **Stäng omröstningen**.
-Gerçek kullanımda: Mert ve Selin oy verince Elif'in ekranı **yenilemeden** değişir (canlı).
-Sorunlar: kim neye oy verdi yok. Odadan etkinlik eklenemiyor. Tarih/saat kararı yok. Sohbet/yorum yok. Plan "bilet" gibi görünmüyor (sadece kazanan kart öyle).
+Başlık, tarih ("fredag 23 oktober, 5 personer, 1 har inte röstat"), üye çipleri (oy verenin avatarı turuncu), davet linki, kartlar ("Röstat av Elif, Mert"), **Lägg till event**, **Snacka ihop er** thread'i (iki seviye, tepkiler, Svara/Ta bort/Rapportera). Elif'te ayrıca "Ändra namn och datum". Mobil görüntü önceki turdan.
 
-### 08. Plan odası: arkadaş (Can), henüz oy vermedi
+### 08. Plan odası: arkadaş olarak (Deniz katıldıktan sonra)
 ![](review/08-plan-oppen-van-har-inte-rostat-desktop.jpg)
 
-Can üyedir, **Stäng omröstningen** göremez, oy verebilir. Sorun: arkadaşa "Elif seni davet etti, şunlar için oy ver" gibi bir karşılama yok, sayfa organizatörünkiyle aynı.
-
-### 09. Beraberlik (Elif, "Stand-up och öl")
+### 09. Beraberlik
 ![](review/09-plan-lika-roster-desktop.jpg)
 
-Organizatör **Stäng**'e basınca sistem "Lika många röster. Du bestämmer" der ve eşit seçenekleri düğme olarak sunar.
-Sorun: seçenekler etkinlik adıyla düz düğme, görsel yok.
+### 10. Karar verilmiş plan
+![](review/10-plan-avgjord-vinnare-desktop.jpg) mobil: ![](review/10-plan-avgjord-vinnare-mobil.jpg)
 
-### 10. Karar verilmiş plan (kazanan bilet)
-Masaüstü: ![](review/10-plan-avgjord-vinnare-desktop.jpg) mobil: ![](review/10-plan-avgjord-vinnare-mobil.jpg)
-
-Kazanan GLAMORAMA **kâğıt renkli bilet** olarak çıkar (iki yanda çentik), "Köp biljetter" satıcıya götürür. Altında oylama kartları devre dışı kalır.
-Sorunlar: açıklama kırpılıyor ("D…"). Oy kartları hâlâ altta, kalabalık. Bilet fikri sadece kazanan kartta, tüm oda bilet temalı değil.
+Kazanan kâğıt bilet, altında "Så röstade ni" (kim neye oy verdi), **Kopiera meddelande till gänget**, yorumlar. Oy kartları artık yok. Mobil önceki turdan.
 
 ### 11. Davetli (Deniz, üye değil)
-Masaüstü: ![](review/11-inbjudan-gast-desktop.jpg) mobil: ![](review/11-inbjudan-gast-mobil.jpg)
+Masaüstü: ![](review/11-inbjudan-gast-desktop.jpg) Mobil (avgjord plan): ![](review/11-inbjudan-gast-mobil.jpg)
 
-"Fredag kväll. Elif har bjudit in dig. 4 personer är med." + ad kutusu + "Gå med och rösta".
-**En zayıf ekran ve en kritik olanı.** Deniz neye oy vereceğini, kimlerin olduğunu, etkinlikleri göremiyor; sadece bir ad kutusu görüyor. Katılma düğmesi ad yazılana kadar soluk.
+Plan adı, "Elif har bjudit in dig till fredag 23 oktober. Med: Elif, Mert, Selin, Can.", seçenek kartları (favori seç), ad alanı, **Gå med och rösta**, "Inget konto behövs". Bu tur en çok değişen ekran.
 
 ### 12. Planı olmayan kullanıcı
 ![](review/12-planer-tom-desktop.jpg)
 
-"Hitta ett event, välj Planera med vänner…" ve "Hitta något att göra" düğmesi. Doğru ama sönük.
-
 ### 13. 404
 ![](review/13-404-desktop.jpg)
 
-Stilli, ana sayfaya dönüş var.
+### 14. Tasarım sistemi
+Koyu: ![](review/14-designsystem-morkt-desktop.jpg) Açık: ![](review/14-designsystem-ljust-desktop.jpg)
 
-### 14. Tasarım sistemi galerisi (`/design`)
-Koyu: ![](review/14-designsystem-morkt-desktop.jpg)
-Açık: ![](review/14-designsystem-ljust-desktop.jpg)
+### 15. Hesap (`/konto`)
+Giriş yapmış: ![](review/15-konto-inloggad-desktop.jpg)
+Giriş yapmamış: ![](review/15-konto-logga-in-desktop.jpg)
 
-Tüm token ve bileşenler iki temada. Açık tema artık header'daki düğmeyle de erişilebilir.
+Giriş yapmamışsa "Logga in" + e-posta alanı; misafirse "Spara dina planer"; hesap varsa e-posta ve "Logga ut". Header'da "Logga in" bağlantısı, girişten sonra baş harfin.
 
 ## 8. Doğrulanmayan şeyler
 
-- Gerçek ikinci cihaz/tarayıcıda canlı oy (bir tarayıcı, farklı oturumlarla denendi).
+- **E-postanın gerçekten gelmesi** ve bağlantıyla dönüş (panel ayarları gerekiyor). Misafiri hesaba çevirme akışı kodlandı ama uçtan uca denenmedi.
+- Gerçek ikinci cihaz/tarayıcıda canlı güncelleme (aynı tarayıcıda farklı oturumlarla denendi).
 - Klavye ve ekran okuyucu ile uçtan uca gezinme.
-- Açık temada tüm ekranlar (sadece ön sayfa ve galeri görüldü).
-- Üretimde (Vercel) davranış: ortam değişkenleri Vercel'de tanımlı değil.
+- Üretim ortamı (Vercel): ortam değişkenleri Vercel'de tanımlı değil.
+- Yorum/tepki arayüzü mobilde (sadece masaüstünde gözle bakıldı).

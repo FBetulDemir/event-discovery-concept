@@ -9,6 +9,8 @@ type VotingCardProps = {
   event: EventSnapshot;
   votes: number;
   isMine: boolean;
+  /** Names of the people who voted for this option. */
+  voters?: string[];
   /** Voting is closed once the plan is decided. */
   disabled?: boolean;
   onVote: () => void;
@@ -18,7 +20,7 @@ type VotingCardProps = {
 const dateFormatter = new Intl.DateTimeFormat('sv-SE', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
 
 /** One shortlisted option in a plan's vote. Reused for every option in the list. */
-export function VotingCard({ event, votes, isMine, disabled = false, onVote, onRemove }: VotingCardProps) {
+export function VotingCard({ event, votes, isMine, voters = [], disabled = false, onVote, onRemove }: VotingCardProps) {
   const date = dateFormatter.format(new Date(`${event.date}T12:00:00Z`)).replaceAll('.', '');
   return (
     <article className={`vote-card${isMine ? ' vote-card--mine' : ''}`} aria-labelledby={`voting-title-${event.id}`} data-reveal>
@@ -28,6 +30,7 @@ export function VotingCard({ event, votes, isMine, disabled = false, onVote, onR
         <h2 id={`voting-title-${event.id}`} className="vote-card__title">{event.title}</h2>
         <p className="muted">{event.venue}, <time dateTime={event.date}>{date}</time> {event.time.slice(0, 5)}</p>
         <p className="muted">{formatPrice(event.price)}</p>
+        {voters.length > 0 && <p className="vote-card__voters"><span className="muted">Röstat av</span> {voters.join(', ')}</p>}
         <div className="vote-card__footer">
           <span className="vote-card__count" role="status" aria-live="polite" aria-atomic="true">{votes} {votes === 1 ? 'röst' : 'röster'}</span>
           <div className="vote-card__actions">

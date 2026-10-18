@@ -27,7 +27,7 @@ export function EventCard({ event, recommendation, index = 0 }: EventCardProps) 
       <div className="event-card__body">
         <div className="event-card__line">
           <span className={`event-card__price${unknownPrice ? ' is-unknown' : ''}`}>{formatPrice(event.price)}</span>
-          <span className="muted">{event.distanceKm.toLocaleString('sv-SE')} km</span>
+          <span className="muted">{event.moreDates?.length ? `+${event.moreDates.length} datum` : `${event.distanceKm.toLocaleString('sv-SE')} km`}</span>
         </div>
         <h3 className="event-card__title">
           <Link href={`/events/${encodeURIComponent(event.id)}`} className="event-card__link">{event.title}</Link>

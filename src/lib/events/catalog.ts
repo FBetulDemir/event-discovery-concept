@@ -12,6 +12,9 @@ const sources: Record<EventSourceId, EventSource | undefined> = {
 export type SourceStatus = Pick<SourceResult, 'source' | 'status' | 'message'> & { count: number };
 export type Catalog = { events: Event[]; sources: SourceStatus[] };
 
+/** Gänget is for a night out in Göteborg: anything further from the centre is left out of the catalogue. */
+export const MAX_DISTANCE_KM = 20;
+
 export const byStart = (a: Event, b: Event) =>
   a.date.localeCompare(b.date) || a.time.localeCompare(b.time) || a.id.localeCompare(b.id);
 
@@ -33,6 +36,7 @@ export async function loadCatalog(now = new Date(), ids: EventSourceId[] = enabl
 
   const seen = new Set<string>();
   const events = results.flatMap(result => result.events)
+    .filter(event => event.distanceKm <= MAX_DISTANCE_KM)
     .filter(event => (seen.has(event.id) ? false : (seen.add(event.id), true)))
     .sort(byStart);
 

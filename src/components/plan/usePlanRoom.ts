@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { isSupabaseConfigured, ensureUser } from '@/lib/supabase/client';
 import {
-  closePlan, getPlanPreview, joinPlan, loadPlan, PlanError, removePlanEvent, setVote, subscribeToPlan,
+  addEventToPlan, closePlan, getPlanPreview, joinPlan, loadPlan, PlanError, removePlanEvent, setVote, subscribeToPlan, updatePlan,
   type PlanPreview, type PlanState,
 } from '@/lib/plans/api';
+import type { Event } from '@/types/event';
 import { nextVote } from '@/lib/voting';
 import { rememberName } from '@/lib/plans/displayName';
 
@@ -61,10 +62,25 @@ export function usePlanRoom(code: string) {
     room,
     busy,
     actionError,
-    join: (displayName: string) => act(async () => {
+    /** Joins with a name and, if one was picked on the invite screen, casts that vote straight away. */
+    join: (displayName: string, favouriteEventId?: string | null) => act(async () => {
       rememberName(displayName);
       await joinPlan(code, displayName);
+      if (favouriteEventId) {
+        const state = await loadPlan(code);
+        const entry = state?.events.find(event => event.snapshot.id === favouriteEventId);
+        const user = await ensureUser();
+        if (state && entry) await setVote(state.plan.id, user.id, entry.id);
+      }
     }),
+    addEvent: (event: Event) => {
+      if (room.status !== 'ready') return;
+      return act(() => addEventToPlan(room.state.plan.id, event, room.userId));
+    },
+    savePlan: (title: string, planDate: string | null) => {
+      if (room.status !== 'ready') return;
+      return act(() => updatePlan(room.state.plan.id, title, planDate));
+    },
     vote: (planEventId: string) => {
       if (room.status !== 'ready') return;
       const { state, userId: me } = room;

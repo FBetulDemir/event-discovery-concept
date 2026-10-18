@@ -69,6 +69,7 @@ test: `discovery.test.mjs`.
 
 - A **plan** has a private **invite code** (12 hex chars, a capability: it lets you preview and join, nothing else), one organizer, members, a shortlist of events, and at most one vote per member. Status `open → decided`.
 - **Guests** (Supabase anonymous sign-in) and **accounts** are both authenticated users. A guest session is created only when a person acts (join / create / vote), never on browsing.
+- A plan has an optional **date** (`plan_date`) set by the organizer (`update_plan`, open plans only). The **invite preview** (`get_plan_preview`) returns title, organizer, date, member names and the option snapshots, so an invitee sees what they will vote on before joining; a favourite picked there is cast as their vote on joining.
 - Shortlist: any member adds while the plan is open; the adder or the organizer removes while open. An event is `(source, external_id)` plus a small `snapshot` (§12).
 - **Votes:** one per member, enforced by the primary key `(plan_id, user_id)`. Voting for the same event again withdraws it; voting for another moves it. A vote for a non-member or for an event not on the plan's shortlist is impossible (composite FKs). Everyone in the plan sees all votes.
 - **Closing:** only the organizer, through `close_plan`. The leader wins; **a tie raises `tie` and the organizer must pick** (`close_plan(plan, plan_event)`). No silent tie-breaks. After closing, votes and shortlist changes are refused.
@@ -130,3 +131,24 @@ test: `ticketmaster.test.mjs`, `catalog.test.mjs`.
 - Privileged/atomic writes are `SECURITY DEFINER` functions with `search_path = ''` and an explicit `auth.uid()` check: `create_plan`, `join_plan`, `close_plan`, `get_plan_preview`.
 - Snapshots: ≤ 4 KB JSON object, description ≤ 280 chars. They are a reference copy of public listing metadata.
 - Never ship a `service_role`/secret key to the browser or the repo.
+
+## 13. Comments and reactions (`supabase/migrations/*plan_date_preview_comments*`, `src/components/comments`)
+
+- One `comments` table with `target_type` (`plan` | `event`) and `target_id` (the plan uuid, or the event id), threaded by `parent_id`.
+- **Depth:** root (0), reply (1), reply to a reply (2). A reply to a level-2 comment becomes its **sibling** at level 2. Enforced in `add_comment`.
+- **Who can read:** plan threads, only plan members; event threads, any signed-in user (guests included). Reading an event thread starts a guest session only when the visitor asks to see comments.
+- **Who can write:** plan threads, any member (guests included); **event threads need a real account** (not an anonymous guest): they are public, so they need a lasting identity for moderation. `add_comment` raises `account_required`.
+- Reactions: `like`, `love`, `laugh`, `fire`, `wow`; one per kind per user; shown as icons, not emoji.
+- Delete: the author, or the plan organizer for plan threads. The row stays (`deleted_at`, empty body) so replies keep their place.
+- Report: one per user per comment, written to `comment_reports`; nobody can read reports through the API (moderate in the dashboard).
+- Rate limit: at most 8 comments per user per minute (`rate_limited`).
+- All writes go through RPCs; the tables have no insert or update policies.
+
+test: `supabase/tests/comments.test.sql`.
+
+## 14. Accounts (`src/lib/supabase/auth.ts`, `/konto`)
+
+- Passwordless: an emailed link. A **guest that adds an email keeps its user id**, so its plans, memberships, votes and comments stay (Supabase converts the same user). Someone with no session just signs in; a first sign-in creates the account.
+- If the email already belongs to an account, the guest is told so and may sign in there; the guest's own data stays with the guest on that device.
+- Requirements outside the code (see `docs/BACKEND.md`): redirect URLs in Supabase Auth settings, and custom SMTP (the built-in mailer only delivers to project team members and is heavily rate-limited).
+

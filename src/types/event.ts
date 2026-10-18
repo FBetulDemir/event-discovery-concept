@@ -34,4 +34,6 @@ export type Event = {
   description: string;
   /** Where to buy tickets / read more at the source. `null` for fictional demo events. */
   ticketUrl: string | null;
+  /** Set on a series' first upcoming occurrence by `groupSeries`: the other dates of the same show. */
+  moreDates?: { id: string; date: string; time: string }[];
 };

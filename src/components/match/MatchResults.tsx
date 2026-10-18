@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { groupSeries } from '@/lib/events/series';
 import { useEvents } from '@/lib/useEvents';
 import { matchEvents } from '@/lib/matching';
 import { EventCard } from '@/components/events/EventCard';
@@ -14,7 +15,8 @@ import { MatchSummary } from './MatchSummary';
 const countWord = ['Inga', 'En', 'Två', 'Tre'];
 
 export function MatchResults() {
-  const events = useEvents();
+  const allEvents = useEvents();
+  const events = useMemo(() => groupSeries(allEvents), [allEvents]);
   const { preferences, completed } = usePreferences();
   const [now, setNow] = useState<string | null>(null);
 

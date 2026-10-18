@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/brand/Logo';
 import { usePreferences } from '@/components/match/PreferencesProvider';
 import { ThemeToggle } from './ThemeToggle';
+import { AccountLink } from './AccountLink';
 
 export const navItems = [
   { href: '/', label: 'Utforska', match: (path: string) => path === '/' || path.startsWith('/events') },
@@ -34,7 +35,7 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <div className="site-header__tools"><ThemeToggle /></div>
+        <div className="site-header__tools"><AccountLink /><ThemeToggle /></div>
       </div>
     </header>
   );

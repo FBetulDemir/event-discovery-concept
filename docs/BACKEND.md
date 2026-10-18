@@ -13,6 +13,16 @@ Supabase (Postgres, Auth, Realtime) for plans, plus server-side fetching of exte
    - `EVENT_SOURCES` — optional, e.g. `ticketmaster,demo` to show fictional events next to real ones.
    - Never add a `service_role` / secret key to the browser env or the repo.
 
+## Sign-in (email) setup
+
+Needed once before real people can sign in or save their plans with an email (`docs/CONTRACTS.md` §14):
+
+1. **Authentication → URL Configuration:** set the Site URL to the production URL and add every origin you use to *Redirect URLs* (`http://localhost:3000/konto`, `http://localhost:3100/konto`, the Vercel URL `/konto`).
+2. **Authentication → SMTP Settings:** configure a custom SMTP provider. Supabase's built-in mailer only delivers to members of your project's team and is limited to a few emails an hour, which is fine for you testing and useless for friends.
+3. Optionally customise the *Confirm email change* and *Magic link* templates to Swedish.
+
+Until then the sign-in page works up to "Skicka länk" but the email will not arrive for outsiders.
+
 ## Migrations
 
 SQL files in `supabase/migrations/` (timestamp-prefixed), applied in order. They are the source of truth: change the schema by adding a new file, apply it, then regenerate `src/lib/supabase/database.types.ts`.
@@ -21,12 +31,13 @@ SQL files in `supabase/migrations/` (timestamp-prefixed), applied in order. They
 |---|---|
 | `20261018150000_plans_votes_invites` | profiles, plans, plan_members, plan_events, votes; RLS; `create_plan`, `join_plan`, `close_plan`, `get_plan_preview`; Realtime |
 | `20261018151500_private_rls_helpers` | RLS helper functions moved to the non-exposed `private` schema; missing index |
+| `20261018170000_plan_date_preview_comments` | `plans.plan_date` + `update_plan`; richer `get_plan_preview` (members, options); `comments`, `comment_reactions`, `comment_reports` with `add_comment` / `delete_comment`; Realtime |
 
-After applying, run Supabase's advisors (security + performance). The only expected security warnings are the four intentional client RPCs listed above.
+After applying, run Supabase's advisors (security + performance). Expected warnings: the intentional client RPCs (`create_plan`, `join_plan`, `close_plan`, `get_plan_preview`, `update_plan`, `add_comment`, `delete_comment`), "anonymous access policies" on every table (guests are `authenticated` by design; the `anon` role has nothing), and "leaked password protection" (we have no passwords).
 
 ## Testing the database rules
 
-`supabase/tests/plans_rls.test.sql` exercises membership, voting, ties, closing and the `anon` role with throwaway users and rolls everything back. Run it in the SQL editor; a result of `ALL_OK: …` means every check passed, any other message names the failing check.
+`supabase/tests/plans_rls.test.sql` (membership, voting, ties, closing, `anon`) and `supabase/tests/comments.test.sql` (plan date, invite preview, threads, permissions, reactions, delete, rate limit, reports) use throwaway users and roll everything back. Run it in the SQL editor; a result of `ALL_OK: …` means every check passed, any other message names the failing check.
 
 ## Event sources
 

@@ -1,10 +1,13 @@
 'use client';
 
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
+import type { Event } from '@/types/event';
+import { groupSeries } from '@/lib/events/series';
 import type { Catalog } from '@/lib/events/catalog';
 import { useCatalog } from '@/lib/useEvents';
 
-type Value = Catalog & { loading: boolean };
+/** `events` is everything; `listed` collapses repeating shows into one card each. */
+type Value = Catalog & { loading: boolean; listed: Event[] };
 const CatalogContext = createContext<Value | null>(null);
 
 /**
@@ -13,7 +16,8 @@ const CatalogContext = createContext<Value | null>(null);
  */
 export function CatalogProvider({ initial, children }: { initial: Catalog; children: ReactNode }) {
   const catalog = useCatalog(initial);
-  return <CatalogContext.Provider value={catalog}>{children}</CatalogContext.Provider>;
+  const listed = useMemo(() => groupSeries(catalog.events), [catalog.events]);
+  return <CatalogContext.Provider value={{ ...catalog, listed }}>{children}</CatalogContext.Provider>;
 }
 
 export function useHomeCatalog(): Value {

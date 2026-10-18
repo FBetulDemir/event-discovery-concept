@@ -68,3 +68,10 @@ test('cancelled, off-sale and postponed events are marked unavailable', () => {
 test('a missing end time is fine: the event keeps a start-only time', () => {
   assert.equal(normalizeTicketmasterEvent(raw()).time, '22:00');
 });
+
+test('descriptions lose pasted links but keep the prose', async () => {
+  const { cleanDescription } = await import('./ticketmaster.ts');
+  assert.equal(cleanDescription('Doors open 6 PM. Read more here: https://gotevent.se/en/phone-free-show/ Thanks'), 'Doors open 6 PM. Read more here: Thanks');
+  assert.equal(cleanDescription('  Plain text.  '), 'Plain text.');
+  assert.equal(normalizeTicketmasterEvent(raw({ info: 'Info https://x.se/a' })).description, 'Info');
+});

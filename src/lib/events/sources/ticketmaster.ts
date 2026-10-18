@@ -93,9 +93,14 @@ export function normalizeTicketmasterEvent(raw: TicketmasterEvent): Event | null
     moods: mapped.moods,
     ageRestriction: null,
     available: !['cancelled', 'offsale', 'postponed'].includes(raw.dates?.status?.code ?? ''),
-    description: (raw.info ?? raw.pleaseNote ?? '').trim(),
+    description: cleanDescription(raw.info ?? raw.pleaseNote ?? ''),
     ticketUrl: raw.url ?? null,
   };
+}
+
+/** Sellers paste links and line noise into descriptions; keep the prose. */
+export function cleanDescription(text: string): string {
+  return text.replace(/https?:\/\/\S+/g, '').replace(/\s{2,}/g, ' ').replace(/\s+([.,;:])/g, '$1').trim();
 }
 
 const utcStamp = (date: Date) => date.toISOString().replace(/\.\d{3}Z$/, 'Z');

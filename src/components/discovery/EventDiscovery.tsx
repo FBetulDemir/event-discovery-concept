@@ -15,7 +15,7 @@ const PAGE_SIZE = 12;
 
 /** Browse everything: search, day, category, free entry. Search and filters combine (docs/CONTRACTS.md section 5). */
 export function EventDiscovery() {
-  const { events } = useHomeCatalog();
+  const { listed: events } = useHomeCatalog();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<EventCategory | 'Alla event'>('Alla event');
   const [date, setDate] = useState('all');

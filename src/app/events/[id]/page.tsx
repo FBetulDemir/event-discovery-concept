@@ -1,19 +1,24 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowUpRight, Users } from 'lucide-react';
-import { findEvent } from '@/lib/events/catalog';
+import { loadCatalog } from '@/lib/events/catalog';
+import { otherDates } from '@/lib/events/series';
 import { formatAge, formatPricePerPerson } from '@/lib/format';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { EventMeta } from '@/components/events/EventMeta';
 import { ButtonLink } from '@/components/ui/Button';
 import { Tag } from '@/components/ui/Tag';
 import { BackLink } from '@/components/ui/BackLink';
+import { CommentThread } from '@/components/comments/CommentThread';
 
 export const dynamic = 'force-dynamic';
 
 export default async function EventPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const event = await findEvent(decodeURIComponent(id));
+  const catalog = await loadCatalog();
+  const event = catalog.events.find(candidate => candidate.id === decodeURIComponent(id));
   if (!event) notFound();
+  const more = otherDates(event, catalog.events);
   const date = new Intl.DateTimeFormat('sv-SE', { dateStyle: 'full', timeZone: 'UTC' }).format(new Date(`${event.date}T12:00:00Z`));
   const age = formatAge(event.ageRestriction);
 
@@ -31,6 +36,16 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
           <p className="lead" data-reveal style={{ '--i': 3 } as React.CSSProperties}><time dateTime={event.date}>{date}</time></p>
           {event.source === 'demo' && <p className="muted">Exempelevent som återkommer varje vecka. Nästa tillfälle visas ovan.</p>}
           {event.description && <p className="event-detail__description measure">{event.description}</p>}
+          {more.length > 0 && (
+            <section className="event-detail__dates" aria-labelledby="more-dates" data-reveal>
+              <h2 id="more-dates" className="lead">Fler tillfällen</h2>
+              <ul>
+                {more.map(date => (
+                  <li key={date.id}><Link href={`/events/${encodeURIComponent(date.id)}`}>{new Intl.DateTimeFormat('sv-SE', { weekday: 'short', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${date.date}T12:00:00Z`))}, {date.time.slice(0, 5)}</Link></li>
+                ))}
+              </ul>
+            </section>
+          )}
           <dl className="facts" data-reveal style={{ '--i': 4 } as React.CSSProperties}>
             <div><dt>Entré</dt><dd>{formatPricePerPerson(event.price)}</dd></div>
             {age && <div><dt>Åldersgräns</dt><dd>{age}</dd></div>}
@@ -44,6 +59,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
               </a>
             )}
           </div>
+          <CommentThread target={{ type: 'event', id: event.id }} title="Kommentarer" startClosed />
         </div>
       </div>
     </PageContainer>

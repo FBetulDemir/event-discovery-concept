@@ -99,3 +99,14 @@ Template:
 - Decision: Tokens in `src/styles/tokens.css` (primitive → semantic → scales), hand-written BEM-ish CSS split into base/components/screens, Tailwind v4 only as the base layer and token bridge. A theme is a `data-theme` on `<html>`.
 - Consequences: One palette, two themes, no raw values in components; a new look is a token change. Utility classes are not used, so the CSS files grow with the app (split per feature when they pass ~1,000 lines).
 
+## D-016 — Comments: members (guests included) in plan threads, accounts only on event threads
+- Date: 2026-10-18 · Status: accepted (deviates from D-008 for plan threads; confirm) · Deciders: Claude, to confirm with Eralp
+- Context: D-008 said friends and comments need an account. In practice a friend who joined as a guest and cannot say a word in the plan thread is a worse product, and plan threads are private to members.
+- Decision: any plan member may comment in the plan thread; **public event threads require a real account**. Reactions are icons from the system, not emoji. Depth, delete, report and rate limit as in `docs/CONTRACTS.md` §13.
+- Consequences: a guest's comments live with the guest identity until they add an email (same user id, nothing lost). If guests in plan threads turn out to be an abuse vector, require accounts there too.
+
+## D-017 — Catalogue quality gates
+- Date: 2026-10-18 · Status: accepted · Deciders: Claude, to confirm
+- Decision: events further than 20 km from the centre are left out; a repeating show is one card with `+N datum` and the other dates on its event page (`groupSeries`); raw URLs are stripped from seller descriptions. Dates further than a week away are labelled with the date, not a weekday.
+- Consequences: the catalogue is smaller but each card is a real choice. Revisit the 20 km limit when other cities are added.
+

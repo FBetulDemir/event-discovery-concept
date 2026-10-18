@@ -2,13 +2,16 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowUpRight } from 'lucide-react';
 import { defaultPreferences } from '@/data/match-options';
 import { matchEvents } from '@/lib/matching';
-import { formatPrice } from '@/lib/format';
+import { formatPrice, formatWhen } from '@/lib/format';
+import { todayInGothenburg } from '@/lib/dates';
 import type { Mood } from '@/types/preferences';
 import { Chip } from '@/components/ui/Chip';
-import { ButtonLink } from '@/components/ui/Button';
+import { Button, ButtonLink } from '@/components/ui/Button';
+import { usePreferences } from '@/components/match/PreferencesProvider';
 import { useHomeCatalog } from './CatalogProvider';
 import { useNow } from './useNow';
 
@@ -21,7 +24,9 @@ const CYCLE_MS = 5000;
  * Without script the server already renders the first real event.
  */
 export function HeroSentence() {
-  const { events } = useHomeCatalog();
+  const { listed: events } = useHomeCatalog();
+  const router = useRouter();
+  const { setPreferences, setCompleted, resetPreferences } = usePreferences();
   const now = useNow();
   const [mood, setMood] = useState<Mood | null>(null);
   const [index, setIndex] = useState(0);
@@ -49,7 +54,7 @@ export function HeroSentence() {
   }, [paused, reduced, picks.length]);
 
   const current = picks[index % Math.max(picks.length, 1)]?.event;
-  const when = current ? `${current.date === now?.slice(0, 10) ? 'Ikväll' : new Intl.DateTimeFormat('sv-SE', { weekday: 'long', timeZone: 'UTC' }).format(new Date(`${current.date}T12:00:00Z`))} ${current.time.slice(0, 5)}` : '';
+  const when = current && now ? `${formatWhen(current.date, todayInGothenburg(new Date(now)))} ${current.time.slice(0, 5)}` : '';
 
   return (
     <section className="hero" aria-labelledby="hero-title">
@@ -85,7 +90,20 @@ export function HeroSentence() {
           </div>
 
           <div className="hero__act">
-            <ButtonLink href="/match">Hitta kvällen<ArrowUpRight size={18} aria-hidden="true" /></ButtonLink>
+            <div className="hero__buttons">
+              <Button onClick={() => {
+                if (mood) {
+                  // A chosen mood is a finished search: go straight to the three explained picks.
+                  setPreferences({ ...defaultPreferences, distance: 15, moods: [mood] });
+                  setCompleted(true);
+                  router.push('/match/results');
+                } else {
+                  resetPreferences();
+                  router.push('/match');
+                }
+              }}>{mood ? `Visa ${mood.toLowerCase()}-kvällar` : 'Hitta kvällen'}<ArrowUpRight size={18} aria-hidden="true" /></Button>
+              <ButtonLink href="/plan/new" variant="secondary">Samla gänget</ButtonLink>
+            </div>
             {current && (
               <p className="hero__now" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
                 <span className="muted">{when} · {current.venue}</span>

@@ -3,19 +3,16 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { todayInGothenburg } from '@/lib/dates';
-import { formatPrice } from '@/lib/format';
+import { formatPrice, formatWhen } from '@/lib/format';
 import { useHomeCatalog } from './CatalogProvider';
 import { useNow } from './useNow';
 
 const shortDay = (date: string) =>
   new Intl.DateTimeFormat('sv-SE', { weekday: 'short', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`)).replaceAll('.', '');
 
-const dayName = (date: string) =>
-  new Intl.DateTimeFormat('sv-SE', { weekday: 'long', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`));
-
 /** The next evening with events, as a schedule: when, what and where, what it costs. */
 export function TonightList() {
-  const { events } = useHomeCatalog();
+  const { listed: events } = useHomeCatalog();
   const now = useNow();
   const today = now ? todayInGothenburg(new Date(now)) : null;
 
@@ -25,7 +22,8 @@ export function TonightList() {
   const sameDay = upcoming.filter(event => event.date === first);
   const rows = (sameDay.length >= 5 ? sameDay : upcoming).slice(0, 8);
   const isToday = first !== undefined && first === today;
-  const heading = !today || (isToday && sameDay.length >= 5) ? 'Det händer ikväll' : isToday ? 'Det händer snart' : `Det händer ${dayName(first ?? today)}`;
+  const label = today && first ? formatWhen(first, today) : 'Ikväll';
+  const heading = !today || (isToday && sameDay.length >= 5) ? 'Det händer ikväll' : isToday ? 'Det händer snart' : label === 'Imorgon' ? 'Det händer imorgon' : /^\d/.test(label) ? `Det händer ${label}` : `Det händer ${label}`;
   const lead = rows[0];
 
   return (

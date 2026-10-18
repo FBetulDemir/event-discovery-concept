@@ -13,7 +13,7 @@ _Last updated: 2026-10-18 by Eralp (with Claude) — design system branch._
 
 ## Honest status
 
-The design system and the core loop work; the product is **not finished**. Missing: sign-in, comments, friends, notifications, a richer plan room, an invitee screen that shows what to vote on, and better event content. Full review with screenshots: [`design/REVIEW.md`](design/REVIEW.md). Reordered plan: that file, section 5 (English comes last).
+The core loop is now a social tool: invitee screen that shows the options, a plan room with who-voted-what, date, add-event and a two-level comment thread with reactions, accounts by email link (guest upgrade keeps plans), richer plan list, catalogue quality gates. **Still missing:** friends list, notifications, English, a second event source and prices. **Needs you:** Supabase redirect URLs and custom SMTP before real people can sign in (`docs/BACKEND.md`). Full review with screenshots (Turkish): [`design/REVIEW.md`](design/REVIEW.md).
 
 ## In flight
 
@@ -21,8 +21,8 @@ The design system and the core loop work; the product is **not finished**. Missi
 |---|---|---|---|
 | `feat/backend-foundation` | Eralp | PR1 backend + event sources + plans | Committed locally; not pushed |
 | `feat/design-system` | Eralp | Design PR: brand, system, front door, Match, event | Built, committed locally, verified in a production build; not pushed |
-| (next) i18n `/sv` `/en` + toggle | Eralp | D-011, on the new components | Not started |
-| (next) accounts, friends, comment threads | Eralp | D-008, D-012 | Not started |
+| (next) friends list, notifications | Eralp | D-008 | Not started |
+| (next) i18n `/sv` `/en` + toggle | Eralp | D-011, last in the order | Not started |
 | (next) plan room as a full ticket | Eralp | D-014 | Winner card is a ticket; the rest of the room is plain |
 
 ## Next up
