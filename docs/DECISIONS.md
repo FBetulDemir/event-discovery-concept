@@ -66,7 +66,7 @@ Template:
 - Date: 2026-10-18 · Status: accepted (provisional, flip if product disagrees) · Deciders: proposed by Claude, to confirm
 - Context: Sources often omit prices; the old model required a number.
 - Decision: `price: number | null`. With a capped budget an unknown-price event stays eligible, earns no budget points and is labelled "Pris ej angivet" (never "Inom din budget"); it never passes free-only. Likewise `time` may be start-only and `ageRestriction` may be null.
-- Consequences: Keeps the transparency promise. Risk: a user with a low budget may see events that turn out pricier; if that proves annoying, switch to excluding unknown prices when a budget is set.
+- Consequences: Keeps the transparency promise. **In practice every Ticketmaster event is unknown-price** (verified live: it publishes none for Sweden), so budget filtering effectively does not apply to real events until a source supplies prices; see roadmap issue 13. Risk: a user with a low budget may see events that turn out pricier; if that proves annoying, switch to excluding unknown prices when a budget is set.
 
 ## D-010 — Plans keep an event snapshot
 - Date: 2026-10-18 · Status: accepted · Deciders: Claude (to confirm against provider terms)

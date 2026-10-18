@@ -32,7 +32,7 @@ After applying, run Supabase's advisors (security + performance). The only expec
 
 | Source | Status | Notes |
 |---|---|---|
-| `ticketmaster` | adapter written, unit-tested on documented sample data | Needs `TICKETMASTER_API_KEY`. Free key, ~5,000 calls/day. Not yet verified against a live response; Göteborg coverage of small clubs/bars is unknown until tried. Only Music and Comedy are requested; items that are not club / live music / stand-up are dropped. Price only when quoted in SEK. |
+| `ticketmaster` | **live-verified 2026-10-18** (key in `.env.local`) | Free key, ~5,000 calls/day. Göteborg query (40 km, next 90 days, Music + Comedy) returned 70 mappable events: 61 live music, 6 stand-up, 3 club, at venues like Scandinavium, Filmstudion, Park Lane, plus Kungsbacka/Partille. **Ticketmaster publishes no prices for Sweden** (0 of 178 events had `priceRanges`), so `price` is always `null`; `ageRestrictions` is absent too; descriptions (`info`) are present. Few clubs: club nights mostly come as Music/Rock, so only 3 are `Klubb`. Items that are not music or comedy (47 "Spectacular", theatre, holiday, food) are dropped; so are events with no start time (`timeTBA`). |
 | `goteborgco` | not written | Göteborg & Co GraphQL API; needs a subscription key and its schema. Reuse/licensing terms unknown. |
 | `demo` | fictional | Fallback and tests. Weekly recurring seeds in `src/data/events.ts`. |
 

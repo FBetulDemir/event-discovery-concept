@@ -45,7 +45,8 @@ Goal: two phones can vote on the same plan.
 | 5 | ~~Invalid `?event=` ids~~ | — | `NewPlan` only offers an event found in the catalogue |
 | 6 | No `test` script / CI existed; tests need Node ≥ 22.18 | `package.json` | Fixed in Phase 0 |
 | 11 | Anonymous sign-in has no CAPTCHA; guests are cheap to create | Supabase Auth | Enable Turnstile/hCaptcha before launch |
-| 12 | Ticketmaster adapter not verified on a live response; Göteborg & Co adapter missing | `lib/events/sources` | Add key, run, fix mapping |
+| 12 | Göteborg & Co adapter missing (Ticketmaster is live-verified) | `lib/events/sources` | Needs a subscription key |
+| 13 | Real events have **no price** (Ticketmaster publishes none for Sweden), so the Monkey Match budget step cannot filter them: a cap only drops the budget-points factor, and "Fri entré" returns nothing | `matching.ts`, `BudgetStep` | Decide: keep as is (D-009), hide the budget step while no source supplies prices, or ask Göteborg & Co / another source for prices |
 | 7 | README says "Tailwind CSS" but styling is mostly hand-written token CSS | `README.md`, `globals.css` | Document (done in `ARCHITECTURE.md`); decide whether to converge |
 | 8 | Distance is from a fixed city-centre point, not the user's location | `lib/events/geo.ts` | Phase 2 (user location, multi-city) |
 | 9 | Plain `<img>` instead of `next/image`; images are not optimised | many components | Switch when images become dynamic |
