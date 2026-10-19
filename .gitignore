@@ -5,6 +5,7 @@ node_modules/
 
 # env and local tooling
 .env
+.env.local
 .env.*
 !.env.example
 .DS_Store
