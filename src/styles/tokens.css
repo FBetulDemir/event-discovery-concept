@@ -1,0 +1,131 @@
+/*
+ * Gänget design tokens. Source of truth: docs/brand/GUIDELINES.md (change both together).
+ * Layers: 1 primitives (raw values, never used by components) -> 2 semantic roles per theme
+ * (what components read) -> 3 scales shared by both themes (type, space, motion, layers).
+ * Dark is the default theme. A theme is chosen by data-theme on <html>.
+ */
+
+:root {
+  /* ---- 1. Primitives ---- */
+  --n-50: #F2F4F5;
+  --n-100: #E8EBED;
+  --n-200: #DDE1E4;
+  --n-300: #CFD5D9;
+  --n-400: #A3ADB6;
+  --n-500: #7B8590;
+  --n-550: #7A858F;
+  --n-600: #56606A;
+  --n-700: #28313A;
+  --n-800: #1E252C;
+  --n-850: #161B21;
+  --n-900: #0F1317;
+  --white: #FFFFFF;
+  --signal-500: #FF4A1F;
+  --signal-700: #C2310A;
+  --red-400: #FF6B6B;
+  --red-700: #C62828;
+  --green-400: #4CC38A;
+  --green-700: #1B7F4B;
+  --amber-400: #F2C14E;
+  --amber-700: #8A5A00;
+}
+
+/* ---- 2. Semantic roles ---- */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: var(--n-900);
+  --surface-1: var(--n-850);
+  --surface-2: var(--n-800);
+  --surface-3: var(--n-700);
+  --ink: var(--n-50);
+  --ink-muted: var(--n-400);
+  /* Decorative or 18px+ only: below 4.5:1 on surface-2. */
+  --ink-subtle: var(--n-500);
+  --accent: var(--signal-500);
+  --accent-ink: var(--n-900);
+  --accent-text: var(--signal-500);
+  --paper: var(--n-50);
+  --paper-ink: var(--n-900);
+  --danger: var(--red-400);
+  --success: var(--green-400);
+  --warning: var(--amber-400);
+  --focus: var(--signal-500);
+  --scrim: rgb(15 19 23 / 72%);
+  --overlay: rgb(15 19 23 / 80%);
+  --shadow-overlay: 0 12px 32px rgb(0 0 0 / 45%);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: var(--n-50);
+  --surface-1: var(--n-100);
+  --surface-2: var(--n-200);
+  --surface-3: var(--n-300);
+  --ink: var(--n-900);
+  --ink-muted: var(--n-600);
+  --ink-subtle: var(--n-550);
+  --accent: var(--signal-500);
+  --accent-ink: var(--n-900);
+  --accent-text: var(--signal-700);
+  --paper: var(--white);
+  --paper-ink: var(--n-900);
+  --danger: var(--red-700);
+  --success: var(--green-700);
+  --warning: var(--amber-700);
+  --focus: var(--signal-700);
+  --scrim: rgb(242 244 245 / 78%);
+  --overlay: rgb(15 19 23 / 55%);
+  --shadow-overlay: 0 12px 32px rgb(15 19 23 / 22%);
+}
+
+/* ---- 3. Scales shared by both themes ---- */
+:root {
+  /* Type. Five steps only (docs/brand/GUIDELINES.md). */
+  --font-display: var(--font-anton), "Arial Narrow", Impact, sans-serif;
+  --font-text: var(--font-work-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-head: clamp(2.5rem, 1.2rem + 5vw, 5.5rem);
+  --step-display: clamp(4rem, 2rem + 11vw, 11rem);
+  --leading-display: 1.12;
+  --leading-body: 1.5;
+  --tracking-display: -0.01em;
+
+  /* Space: 4px base. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 10rem;
+  --margin: clamp(1rem, 0.5rem + 2vw, 2rem);
+  --measure: 62ch;
+  --page-max: 90rem;
+
+  /* Shape: square. The notch is the one motif. */
+  --radius: 0;
+  --notch: 0.5rem;
+  --control-h: 3rem;
+  --focus-width: 2px;
+  --focus-offset: 3px;
+
+  /* Motion. Breakpoints (not usable in var()): 640px, 960px, 1280px. */
+  --dur-fast: 120ms;
+  --dur-base: 240ms;
+  --dur-slow: 600ms;
+  --dur-shutter: 1100ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-snap: cubic-bezier(0.3, 1.4, 0.5, 1);
+  --stagger: 70ms;
+
+  /* Layers */
+  --z-nav: 20;
+  --z-overlay: 50;
+  --z-skip: 100;
+}

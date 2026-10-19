@@ -1,4 +1,5 @@
 import type { DateSelection } from '@/types/preferences';
+import { intlLocale, type Locale, type Translator } from './i18n/locale.ts';
 
 /** Calendar dates use UTC arithmetic, independent of DST or the browser timezone. */
 export function parseDate(value: string): Date {
@@ -25,6 +26,7 @@ export function addMonths(value: string, months: number): string {
   return isoDate(date);
 }
 
+/** `sv-SE` is used here only because it formats as YYYY-MM-DD; it says nothing about the UI language. */
 export function todayInGothenburg(now = new Date()): string {
   return new Intl.DateTimeFormat('sv-SE', {
     timeZone: 'Europe/Stockholm', year: 'numeric', month: '2-digit', day: '2-digit',
@@ -49,6 +51,11 @@ export function upcomingWeekend(today: string): DateSelection {
   return { mode: 'range', start, end: addDays(start, (7 - parseDate(start).getUTCDay()) % 7) };
 }
 
+/** A plain YYYY-MM-DD day in the visitor's language, e.g. `{ weekday: 'long', day: 'numeric', month: 'long' }`. Formatted as UTC so the device's time zone never moves the day. */
+export function formatDay(value: string, locale: Locale, options: Intl.DateTimeFormatOptions): string {
+  return new Intl.DateTimeFormat(intlLocale(locale), { ...options, timeZone: 'UTC' }).format(parseDate(value));
+}
+
 export function selectDay(selection: DateSelection, day: string): DateSelection {
   if (selection.mode !== 'range') return { mode: 'single', start: day };
   if (selection.start === null || selection.end !== null) return { mode: 'range', start: day, end: null };
@@ -59,13 +66,13 @@ export function dateSelectionComplete(selection: DateSelection): boolean {
   return selection.mode !== 'range' || (selection.start !== null && selection.end !== null);
 }
 
-export function formatDateSelection(selection: DateSelection): string {
-  if (selection.mode === 'flexible') return 'Flexibelt – alla datum';
-  if (selection.start === null) return 'Välj start- och slutdatum';
-  const format = (value: string) => new Intl.DateTimeFormat('sv-SE', {
+export function formatDateSelection(selection: DateSelection, locale: Locale, t: Translator): string {
+  if (selection.mode === 'flexible') return t('dates.flexible');
+  if (selection.start === null) return t('dates.pickRange');
+  const format = (value: string) => new Intl.DateTimeFormat(intlLocale(locale), {
     day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC',
   }).format(parseDate(value));
   if (selection.mode === 'single') return format(selection.start);
-  if (!selection.end) return `${format(selection.start)} – välj slutdatum`;
+  if (!selection.end) return t('dates.pickEnd', { start: format(selection.start) });
   return selection.start === selection.end ? format(selection.start) : `${format(selection.start)} – ${format(selection.end)}`;
 }

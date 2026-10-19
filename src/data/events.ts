@@ -1,7 +1,13 @@
 import type { Event } from '@/types/event';
 
-/** Fictional prototype listings. Photos illustrate atmosphere, not the named venues. */
-export const eventTemplates: Event[] = [
+/** What a demo listing declares; `getEvents` adds the source fields every `Event` carries. */
+type EventTemplate = Omit<Event, 'source' | 'externalId' | 'ticketUrl'>;
+
+/**
+ * Fictional prototype listings: the `demo` event source (src/lib/events/sources/demo.ts).
+ * Photos illustrate atmosphere, not the named venues. Real events come from the other sources.
+ */
+export const eventTemplates: EventTemplate[] = [
   {
     id: 'yaki-da', slug: 'yaki-da-all-night-long', title: 'All night long',
     image: '/images/club.jpg', imageAlt: 'En bartender blandar en drink i färgstarkt barljus',
@@ -100,6 +106,12 @@ export function getEvents(now = new Date()): Event[] {
     if (days === 0 && `${event.time.slice(0, 5)}:00` <= clock) days = 7;
     const next = new Date(base);
     next.setUTCDate(next.getUTCDate() + days);
-    return { ...event, date: next.toISOString().slice(0, 10) };
+    return {
+      ...event,
+      source: 'demo' as const,
+      externalId: event.id,
+      ticketUrl: null,
+      date: next.toISOString().slice(0, 10),
+    };
   }).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time) || a.id.localeCompare(b.id));
 }

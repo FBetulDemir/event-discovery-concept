@@ -11,7 +11,7 @@ type SelectionCardProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | '
 /** Native inputs preserve radio-group arrow keys and checkbox keyboard behavior. */
 export function SelectionCard({ title, description, icon: Icon, className = '', ...inputProps }: SelectionCardProps) {
   return (
-    <label className={`selection-card ${className}`}>
+    <label className={`selection-card ${className}`} data-reveal>
       <input {...inputProps} className="sr-only" />
       <span className="selection-card__body">
         {Icon && <Icon className="selection-card__icon" size={25} aria-hidden="true" />}

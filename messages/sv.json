@@ -1,0 +1,707 @@
+{
+  "shell": {
+    "meta": {
+      "title": "Gänget: vad gör vi ikväll?",
+      "description": "Hitta kvällen i Göteborg, låt gänget rösta och köp biljetterna hos säljaren."
+    },
+    "skipLink": "Hoppa till innehåll",
+    "header": {
+      "homeLabel": "Gänget, startsida",
+      "mainNav": "Huvudnavigation",
+      "news": "{count, plural, one {# nyhet} other {# nyheter}}"
+    },
+    "nav": {
+      "explore": "Utforska",
+      "match": "Match",
+      "plans": "Planer"
+    },
+    "account": {
+      "signIn": "Logga in",
+      "label": "Konto: {email}"
+    },
+    "theme": {
+      "toLight": "Byt till ljust tema",
+      "toDark": "Byt till mörkt tema"
+    },
+    "language": {
+      "label": "Språk",
+      "sv": "Svenska",
+      "en": "Engelska"
+    },
+    "footer": {
+      "sellers": "Evenemangen kommer från säljarna, i dag Ticketmaster. Vi säljer inga biljetter, vi hjälper gänget att bestämma.",
+      "independent": "Gänget är ett oberoende koncept och är inte kopplat till någon biljettsäljare.",
+      "photos": "Foton: Matthew Skinner, Robin Röcker, Israel Sundseth, Riley Briggs via Unsplash.",
+      "privacy": "Integritet och data",
+      "city": "Göteborg {year}",
+      "toTop": "Till toppen",
+      "navLabel": "Sidfot",
+      "seeYouLabel": "Vi ses ute",
+      "seeYou1": "Vi ses",
+      "seeYou2": "ute."
+    },
+    "notFound": {
+      "title": "Sidan finns inte",
+      "heading": "Den här sidan finns inte",
+      "body": "Länken kan vara fel, eller så har eventet försvunnit från säljaren.",
+      "home": "Till startsidan"
+    },
+    "titles": {
+      "match": "Hitta din kväll",
+      "matchResults": "Dina matchningar",
+      "plans": "Dina planer",
+      "newPlan": "Ny plan",
+      "plan": "Plan",
+      "account": "Konto",
+      "friends": "Vänner",
+      "privacy": "Integritet",
+      "design": "Designsystem",
+      "event": "Event"
+    }
+  },
+  "format": {
+    "free": "Fri entré",
+    "priceUnknown": "Pris ej angivet",
+    "price": "{price} kr",
+    "pricePerPerson": "{price} kr / person",
+    "age": "{age} år",
+    "tonight": "Ikväll",
+    "tomorrow": "Imorgon",
+    "noBudgetLimit": "Ingen prisgräns",
+    "upTo": "Upp till {budget} kr",
+    "moreDates": "+{count} datum",
+    "km": "{km} km"
+  },
+  "reasons": {
+    "label": "Därför passar eventet",
+    "mood": "Matchar {mood}",
+    "withinBudget": "Inom din budget",
+    "free": "Fri entré",
+    "priceUnknown": "Pris ej angivet",
+    "distance": "{km} km bort",
+    "tonight": "Ikväll",
+    "today": "Idag",
+    "tomorrow": "Imorgon",
+    "date": "{date} kl. {time}",
+    "inRange": "Inom din valda period"
+  },
+  "moods": {
+    "Dansa": "Dansa",
+    "Livemusik": "Livemusik",
+    "Skratta": "Skratta",
+    "Hänga": "Hänga"
+  },
+  "categories": {
+    "Klubb": "Klubb",
+    "Livemusik": "Livemusik",
+    "Stand-up": "Stand-up",
+    "Bar & häng": "Bar & häng",
+    "all": "Alla event"
+  },
+  "dates": {
+    "flexible": "Flexibelt – alla datum",
+    "pickRange": "Välj start- och slutdatum",
+    "pickEnd": "{start} – välj slutdatum"
+  },
+  "news": {
+    "decided": "Planen är avgjord",
+    "votes": "{count, plural, one {# ny röst} other {# nya röster}}",
+    "comments": "{count, plural, one {# ny kommentar} other {# nya kommentarer}}",
+    "events": "{count, plural, one {# nytt alternativ} other {# nya alternativ}}",
+    "members": "{count, plural, one {# ny medlem} other {# nya medlemmar}}"
+  },
+  "home": {
+    "hero": {
+      "line1": "Vad gör vi",
+      "line2": "ikväll?",
+      "lead": "Riktiga kvällar i Göteborg. Välj känsla, skicka länken, låt gänget rösta.",
+      "moodsLabel": "Vad är du sugen på?",
+      "anything": "Allt",
+      "showMood": "Visa {mood}-kvällar",
+      "find": "Hitta kvällen",
+      "gather": "Samla gänget",
+      "status": "{count} förslag",
+      "statusMood": "{count} förslag för {mood}"
+    },
+    "tonight": {
+      "headingTonight": "Det händer ikväll",
+      "headingSoon": "Det händer snart",
+      "headingTomorrow": "Det händer imorgon",
+      "headingOn": "Det händer {when}",
+      "empty": "Inget på listan just nu. Titta på alla event längre ner.",
+      "listLabel": "Kvällens event"
+    },
+    "how": {
+      "heading": "Så funkar Gänget: matcha, skicka, rösta, gå",
+      "matchVerb": "Matcha",
+      "matchText": "Berätta vad du är sugen på. Vi visar tre kvällar och säger varför de passar.",
+      "sendVerb": "Skicka",
+      "sendText": "Samla gänget i en plan och skicka länken. Ingen behöver skapa ett konto.",
+      "voteVerb": "Rösta",
+      "voteText": "Alla röstar, arrangören stänger. Blir det lika bestämmer du.",
+      "goVerb": "Gå",
+      "goText": "Vi skickar dig till säljaren för biljetten. Resten är kvällen."
+    },
+    "cta": {
+      "lead": "Samla gänget:",
+      "fieldLabel": "Vad ska planen heta?",
+      "placeholder": "Fredag kväll",
+      "submit": "Skapa",
+      "note": "Du får en länk att skicka. Vännerna röstar utan konto."
+    },
+    "browse": {
+      "heading": "Alla event",
+      "count": "{count} event",
+      "searchLabel": "Sök event eller ställe",
+      "searchPlaceholder": "Till exempel Scandinavium",
+      "clearSearch": "Rensa sökning",
+      "dayLabel": "Dag",
+      "allDays": "Alla dagar",
+      "filterGroup": "Filtrera event",
+      "showMore": "Visa fler ({count} kvar)",
+      "emptyTitle": "Ingen träff den här gången",
+      "emptyBody": "Testa ett annat sökord eller färre filter.",
+      "reset": "Rensa filter"
+    }
+  },
+  "events": {
+    "planWithFriends": "Planera med vänner"
+  },
+  "match": {
+    "steps": {
+      "where": {
+        "label": "När och var",
+        "title": "Var börjar din kväll?",
+        "description": "En plats och en dag. Resten hittar vi tillsammans."
+      },
+      "mood": {
+        "label": "Din känsla",
+        "title": "Vad är du sugen på?",
+        "description": "Dansgolv eller skönt häng? Det finns inget fel svar."
+      },
+      "budget": {
+        "label": "Din budget",
+        "title": "Vad får kvällen kosta?",
+        "description": "Hitta något som känns rätt, även för plånboken."
+      }
+    },
+    "flow": {
+      "review": "Din kväll hittills",
+      "toEvents": "Till event",
+      "back": "Tillbaka",
+      "opening": "Öppnar…",
+      "show": "Visa mina matchningar",
+      "continue": "Fortsätt",
+      "skipMood": "Hoppa över, jag är öppen för allt",
+      "skipBudget": "Hoppa över, ingen prisgräns"
+    },
+    "progress": {
+      "label": "Dina val",
+      "valueText": "Steg {step} av {total}: {label}"
+    },
+    "mood": {
+      "legend": "Välj en eller flera känslor",
+      "help": "Öppen för allt? Fortsätt utan att välja, eller hoppa över.",
+      "Dansa": "En låt till. Och en till.",
+      "Livemusik": "Nära scenen, mitt i känslan.",
+      "Skratta": "Släpp veckan med ett skratt.",
+      "Hänga": "Bra snack och skön stämning."
+    },
+    "location": {
+      "whenLegend": "När vill du gå ut?",
+      "whenHelp": "Andra datum kan ge färre eller inga träffar.",
+      "whereLabel": "Var börjar kvällen?",
+      "whereHint": "Just nu bara Göteborg.",
+      "distanceLegend": "Hur långt vill du ta dig?",
+      "distance": "{distance} km",
+      "distanceHelp": "Avstånd från Göteborgs centrum."
+    },
+    "budget": {
+      "legend": "Biljettpris per person",
+      "help": "Gäller entré eller biljett. Mat, dryck och resa ingår inte.",
+      "freeDescription": "Mer kvar till resten av kvällen.",
+      "cheapDescription": "En bra kväll till ett bra pris.",
+      "moreDescription": "Lite mer utrymme för upplevelser.",
+      "anyDescription": "Visa alla alternativ."
+    },
+    "results": {
+      "loading": "Letar efter kvällar",
+      "none": "Ingen perfekt kväll just här",
+      "found": "{count, plural, =1 {En kväll som passar} =2 {Två kvällar som passar} other {Tre kvällar som passar}}",
+      "change": "Ändra mina val",
+      "leadDone": "Du gav oss känslan. Här är kvällarna som passar.",
+      "leadFirst": "En första känsla för vad som finns. Gör dina val för personliga matchningar.",
+      "status": "{count, plural, one {# matchning} other {# matchningar}}",
+      "fetching": "Hämtar dina matchningar",
+      "emptyTitle": "Inga event passar alla dina val",
+      "emptyBody": "Prova ett annat datum, en större radie eller en annan budget. Event som redan har börjat visas inte.",
+      "footnote": "Sorterat efter känsla, tid, budget och avstånd. Inga sponsrade placeringar."
+    },
+    "summary": {
+      "when": "När",
+      "where": "Var",
+      "mood": "Känsla",
+      "budget": "Budget",
+      "within": "{city}, inom {distance} km",
+      "open": "Öppen för allt"
+    },
+    "datePicker": {
+      "loading": "Öppnar kalendern…",
+      "modesLegend": "Välj hur flexibel du är med datum",
+      "single": "En dag",
+      "range": "En period",
+      "flexible": "Flexibelt",
+      "shortcuts": "Snabbval för datum",
+      "today": "Idag",
+      "tomorrow": "Imorgon",
+      "weekend": "I helgen",
+      "previousMonth": "Föregående månad",
+      "nextMonth": "Nästa månad",
+      "helpStart": "Välj startdatum och sedan slutdatum.",
+      "helpEnd": "Välj slutdatum. Du kan också välja en tidigare dag.",
+      "helpChange": "Välj en ny startdag för att ändra perioden.",
+      "helpSingle": "Välj den dag du vill gå ut.",
+      "toToday": "Till dagens datum",
+      "clear": "Rensa"
+    }
+  },
+  "cities": {
+    "Göteborg": "Göteborg"
+  },
+  "event": {
+    "backToAll": "Alla event",
+    "demoNote": "Exempelevent som återkommer varje vecka. Nästa tillfälle visas ovan.",
+    "moreDates": "Fler tillfällen",
+    "entry": "Entré",
+    "ageLimit": "Åldersgräns",
+    "fromCentre": "Från centrum",
+    "planWithFriends": "Planera med vänner",
+    "tickets": "Biljetter hos säljaren",
+    "newTab": " (öppnas i ny flik)",
+    "comments": "Kommentarer"
+  },
+  "common": {
+    "back": "Tillbaka",
+    "generic": "Något gick fel, försök igen.",
+    "newTab": " (öppnas i ny flik)",
+    "loading": "Laddar…"
+  },
+  "plan": {
+    "backend": {
+      "title": "Planering är inte påslagen här",
+      "body": "Den här versionen saknar koppling till databasen. Ställ in Supabase-variablerna (se .env.example) och starta om."
+    },
+    "list": {
+      "title": "Dina planer",
+      "failed": "Kunde inte hämta dina planer just nu. Ladda om sidan.",
+      "emptyLead": "Hitta ett event, välj ”Planera med vänner” och skicka länken. Alla röstar, en vinnare utses.",
+      "findSomething": "Hitta något att göra",
+      "people": "{count, plural, one {# person} other {# personer}}",
+      "options": "{count, plural, one {# alternativ} other {# alternativ}}",
+      "decided": "Avgjord",
+      "youVoted": "Du har röstat",
+      "voteMissing": "Din röst saknas",
+      "noOptions": "Inga alternativ än",
+      "votesSoFar": "{count, plural, one {# röst hittills} other {# röster hittills}}",
+      "news": "Nytt: {news}"
+    },
+    "invitations": {
+      "title": "Inbjudningar",
+      "text": "{from} bjuder in dig, {options}",
+      "textDated": "{from} bjuder in dig, {date}, {options}",
+      "join": "Gå med",
+      "decline": "Avböj"
+    },
+    "new": {
+      "title": "Ny plan",
+      "loadingEvent": "Hämtar eventet…",
+      "lead": "Skapa en plan och lägg till event efteråt.",
+      "defaultTitle": "Kväll ut",
+      "titleLabel": "Namn på planen",
+      "yourName": "Ditt namn",
+      "creating": "Skapar…",
+      "create": "Skapa plan",
+      "failed": "Det gick inte att spara. Försök igen.",
+      "addToExisting": "Eller lägg till i en pågående plan"
+    },
+    "room": {
+      "loading": "Hämtar planen…",
+      "errorTitle": "Något gick fel",
+      "errorBody": "Det gick inte att öppna planen. Försök igen om en stund.",
+      "toPlans": "Till dina planer",
+      "yourPlans": "Dina planer",
+      "noDate": "Inget datum än",
+      "notVoted": "{count, plural, one {# har inte röstat} other {# har inte röstat}}",
+      "noEvents": "Inga event i planen än. Lägg till ett nedan, eller <link>bläddra bland alla event</link>.",
+      "resultsTitle": "Så röstade ni",
+      "votes": "{count, plural, one {# röst} other {# röster}}",
+      "closedNote": "Omröstningen är stängd.",
+      "tieChoose": "Lika många röster. Välj vinnare:",
+      "close": "Stäng omröstningen",
+      "waitOrganizer": "Arrangören stänger omröstningen och utser vinnaren.",
+      "commentsTitle": "Snacka ihop er"
+    },
+    "errors": {
+      "tie": "Lika många röster. Välj själv vilket event som vinner.",
+      "closed": "Omröstningen är stängd.",
+      "forbidden": "Bara arrangören kan göra det.",
+      "plan_not_found": "Planen hittades inte.",
+      "already_decided": "Planen är redan avgjord.",
+      "no_events": "Lägg till minst ett event först."
+    },
+    "invite": {
+      "label": "Bjud in vänner med länken",
+      "copy": "Kopiera",
+      "copied": "Kopierad",
+      "share": "Dela",
+      "copiedStatus": "Länken är kopierad."
+    },
+    "share": {
+      "button": "Kopiera meddelande till gänget",
+      "copied": "Kopierat",
+      "text": "{title}: vi går på {event}, {venue}, {when} kl. {time}. {price}.",
+      "tickets": " Biljetter: {url}"
+    },
+    "winner": {
+      "kicker": "Vi har en vinnare, {count, plural, one {# röst} other {# röster}}",
+      "when": "När",
+      "entry": "Entré",
+      "buy": "Köp biljetter"
+    },
+    "vote": {
+      "votedBy": "Röstat av",
+      "count": "{count, plural, one {# röst} other {# röster}}",
+      "removeEvent": "Ta bort {title} från listan",
+      "removeVote": "Ta bort din röst för {title}",
+      "voteFor": "Rösta på {title}",
+      "yourVote": "Din röst",
+      "vote": "Rösta"
+    },
+    "members": {
+      "label": "Med i planen",
+      "organizer": "arrangör",
+      "hasVoted": "har röstat",
+      "notVoted": "har inte röstat"
+    },
+    "settings": {
+      "summary": "Ändra namn och datum",
+      "day": "Vilken dag gäller planen?",
+      "dayHint": "Valfritt. Visas för alla i planen.",
+      "save": "Spara"
+    },
+    "inviteFriends": {
+      "none": "Har du vänner i Gänget kan du bjuda in dem direkt. <link>Lägg till vänner</link>",
+      "title": "Bjud in vänner",
+      "invited": "Inbjuden",
+      "invite": "Bjud in",
+      "failed": "Kunde inte skicka inbjudan, försök igen."
+    },
+    "addEvent": {
+      "summary": "Lägg till event",
+      "search": "Sök event eller ställe",
+      "placeholder": "Till exempel Park Lane",
+      "loading": "Hämtar event…",
+      "none": "Inget som matchar.",
+      "add": "Lägg till"
+    },
+    "join": {
+      "notFoundTitle": "Planen hittades inte",
+      "notFoundBody": "Länken kan vara fel eller så har planen tagits bort.",
+      "invited": "{organizer} har bjudit in dig.",
+      "invitedOn": "{organizer} har bjudit in dig till {when}.",
+      "with": " Med: {names}.",
+      "optionsClosed": "Alternativen",
+      "pick": "Vad vill du göra? Välj din favorit.",
+      "changeVote": "Du kan ändra din röst när du är med.",
+      "closed": "Planen är avgjord. Du kan ändå gå med och se vem som vann.",
+      "nameRequired": "Skriv ditt namn så vet gänget vem du är.",
+      "joining": "Går med…",
+      "joinAndVote": "Gå med och rösta",
+      "join": "Gå med",
+      "noAccount": "Inget konto behövs. Du kan spara dina planer med en e-postadress senare."
+    }
+  },
+  "comments": {
+    "errors": {
+      "rate_limited": "Du skriver för snabbt. Vänta en minut.",
+      "account_required": "Du behöver ett konto för att kommentera event.",
+      "forbidden": "Du kan inte kommentera här.",
+      "invalid_body": "Skriv något först (högst 1000 tecken)."
+    },
+    "now": "just nu",
+    "show": "Visa kommentarer",
+    "loadFailed": "Kunde inte hämta kommentarerna just nu.",
+    "empty": "Inga kommentarer än. Skriv den första.",
+    "replyingTo": "Svarar {name}.",
+    "cancel": "Avbryt",
+    "commentLabel": "Kommentar",
+    "placeholder": "Vad tycker du?",
+    "send": "Skicka",
+    "signIn": "<link>Logga in</link> för att kommentera. Event-kommentarer är offentliga, därför krävs ett konto.",
+    "removed": "Kommentaren är borttagen.",
+    "reactionsGroup": "Reaktioner",
+    "reactionLabel": "{label}, {count}",
+    "reactions": {
+      "like": "Gilla",
+      "love": "Älskar",
+      "laugh": "Skratt",
+      "fire": "Eld",
+      "wow": "Wow"
+    },
+    "reply": "Svara",
+    "delete": "Ta bort",
+    "report": "Rapportera"
+  },
+  "friends": {
+    "title": "Vänner",
+    "lead": "Lägg till vänner en gång, bjud sedan in dem till planer med ett klick.",
+    "results": {
+      "requested": "Vänförfrågan skickad.",
+      "accepted": "Ni är vänner nu.",
+      "already_friends": "Ni är redan vänner.",
+      "already_requested": "Du har redan skickat en förfrågan."
+    },
+    "errors": {
+      "friend_not_found": "Ingen hittades med den koden.",
+      "cannot_add_self": "Det är din egen kod.",
+      "display_name_required": "Välj ett namn först.",
+      "loadFailed": "Kunde inte hämta dina vänner just nu."
+    },
+    "needAccount": {
+      "lead": "Vänner kräver ett konto, så att listan finns kvar nästa gång. Det tar en halv minut.",
+      "cta": "Skapa konto eller logga in"
+    },
+    "incoming": {
+      "wants": "<b>{name}</b> vill bli vän med dig.",
+      "add": "Lägg till {name}"
+    },
+    "name": {
+      "label": "Vad ska vännerna kalla dig?",
+      "save": "Spara namn"
+    },
+    "link": {
+      "label": "Din vänlänk",
+      "hint": "Eller kod: {code}",
+      "copy": "Kopiera",
+      "copied": "Kopierad"
+    },
+    "enter": {
+      "label": "Lägg till med kod eller länk",
+      "add": "Lägg till"
+    },
+    "groups": {
+      "requests": "Förfrågningar",
+      "yours": "Dina vänner ({count})",
+      "empty": "Inga vänner än. Dela din länk, eller klistra in en väns.",
+      "waiting": "Väntar på svar"
+    },
+    "actions": {
+      "accept": "Acceptera",
+      "decline": "Avböj",
+      "remove": "Ta bort",
+      "undo": "Ångra"
+    },
+    "footer": "Planerna hittar du under <plans>Planer</plans>. <account>Kontoinställningar</account>"
+  },
+  "account": {
+    "problems": {
+      "bad_credentials": "Fel e-post eller lösenord.",
+      "weak_password": "Lösenordet måste vara minst {min} tecken.",
+      "invalid_email": "Kontrollera e-postadressen.",
+      "unknown": "Något gick fel, försök igen.",
+      "fill": "Fyll i e-post och lösenord.",
+      "taken": "Den e-postadressen har redan ett konto. Logga in i stället."
+    },
+    "notice": "Vi skickade en bekräftelselänk till {email}. Öppna den, så är kontot klart.",
+    "in": {
+      "title": "Ditt konto",
+      "lead": "Du är inloggad som {email}. Dina planer följer med på alla enheter.",
+      "friends": "Mina vänner",
+      "signOut": "Logga ut"
+    },
+    "titleGuest": "Spara dina planer",
+    "titleLogin": "Logga in",
+    "titleCreate": "Skapa konto",
+    "leadGuest": "Du är gäst på den här enheten. Skapa ett konto så följer dina planer och röster med dig, och du kan kommentera event och lägga till vänner.",
+    "lead": "Med ett konto sparas dina planer på alla enheter, och du kan kommentera event och lägga till vänner.",
+    "modeGroup": "Konto",
+    "modeCreate": "Skapa konto",
+    "modeLogin": "Jag har redan ett",
+    "email": "E-post",
+    "emailPlaceholder": "du@exempel.se",
+    "password": "Lösenord",
+    "passwordHint": "Minst {min} tecken.",
+    "busy": "Ett ögonblick…",
+    "submitLogin": "Logga in",
+    "submitCreate": "Skapa konto"
+  },
+  "privacy": {
+    "title": "Så hanterar vi din data",
+    "lead": "Kort och rakt. Vi samlar det som behövs för att gänget ska kunna bestämma, inget mer.",
+    "stored": {
+      "title": "Vad vi sparar",
+      "guest": "<b>Gästsession:</b> när du skapar eller går med i en plan får du ett anonymt konto på den här enheten, med ett slumpat id.",
+      "name": "<b>Namn:</b> det namn du skriver när du går med. Det visas för de andra i planen.",
+      "plans": "<b>Planer, röster och kommentarer</b> du gör, och vilka event som lagts i en plan.",
+      "account": "<b>E-post och lösenord</b> om du skapar ett konto. Lösenordet sparas krypterat (hashat) av vår inloggningstjänst, aldrig i klartext.",
+      "browser": "<b>I din webbläsare:</b> ditt senast använda namn, valt tema (mörkt eller ljust) och valt språk. Språket sparas i en enda funktionell kaka (NEXT_LOCALE). Inget annat, inga reklam- eller spårningscookies."
+    },
+    "who": {
+      "title": "Vem ser vad",
+      "plan": "En plan, dess röster och dess kommentarer ser bara de som är med i planen. Den som har länken kan se planens namn, datum, vilka som är med och alternativen innan hen går med.",
+      "comments": "Kommentarer på event är offentliga för inloggade besökare och kräver konto.",
+      "sell": "Vi säljer inte data och visar ingen reklam."
+    },
+    "events": {
+      "title": "Event och biljetter",
+      "body": "Evenemangen hämtas från säljarnas öppna listor, i dag Ticketmaster. Vi säljer inga biljetter: du skickas till säljaren, och köpet följer deras villkor och integritetspolicy. När ett event läggs i en plan sparar vi en liten kopia av dess uppgifter (namn, plats, tid, bild-länk, pris och biljettlänk) så att planen fungerar även om säljaren ändrar eller tar bort listan. Vi tar bort säljarens uppgifter om säljaren eller arrangören ber oss göra det."
+    },
+    "where": {
+      "title": "Var datan finns",
+      "body": "Databasen och inloggningen drivs av Supabase i Stockholm (EU). Sidan körs på Vercel. Båda är våra underleverantörer och behandlar data enbart för vår räkning."
+    },
+    "choices": {
+      "title": "Dina val",
+      "body": "Du kan be om att få se, rätta eller radera din data, och du kan när som helst sluta använda tjänsten. Raderar vi ditt konto försvinner även dina röster och kommentarer. Kontaktuppgifter publiceras när tjänsten lanseras."
+    },
+    "footnote": "Gänget är ett oberoende koncept under utveckling. Den här texten beskriver hur det fungerar i dag och uppdateras när det ändras."
+  },
+  "design": {
+    "title": "Gänget designsystem",
+    "lead": "Tokens och komponenter på ett ställe. Källa: <code>src/styles/tokens.css</code> och <code>docs/brand/GUIDELINES.md</code>.",
+    "theme": {
+      "group": "Tema",
+      "dark": "Mörkt (standard)",
+      "light": "Ljust"
+    },
+    "brand": "Märke",
+    "colour": "Färg: roller",
+    "type": {
+      "title": "Typografi: fem steg",
+      "display": "Vad gör vi ikväll?",
+      "head": "Det händer ikväll",
+      "lead": "Riktiga kvällar i Göteborg.",
+      "body": "Välj känsla, skicka länken, låt gänget rösta. Löpande text i 17 till 19 pixlar.",
+      "small": "Pris ej angivet · 1,3 km"
+    },
+    "actions": {
+      "title": "Knappar och val",
+      "primary": "Hitta kvällen",
+      "secondary": "Kopiera",
+      "ghost": "Tillbaka",
+      "disabled": "Avstängd",
+      "asLink": "Som länk",
+      "remove": "Ta bort",
+      "new": "Ny"
+    },
+    "fields": {
+      "title": "Fält",
+      "name": "Ditt namn",
+      "namePlaceholder": "Alex",
+      "withHint": "Med hjälptext",
+      "hint": "Visas för alla i planen.",
+      "hintValue": "Fredag kväll",
+      "withError": "Med fel",
+      "error": "Skriv ett namn.",
+      "readonly": "Skrivskyddat",
+      "searchNote": "Sökfält och val följer samma stil."
+    },
+    "cards": {
+      "title": "Kort",
+      "unknownPrice": "Event utan angivet pris"
+    },
+    "language": {
+      "title": "Språk",
+      "note": "Växlaren i sidhuvudet byter mellan svenska och engelska och behåller sidan."
+    },
+    "states": "Tillstånd"
+  },
+  "demoEvents": {
+    "base": {
+      "yaki-da": {
+        "title": "All night long",
+        "imageAlt": "En bartender blandar en drink i färgstarkt barljus",
+        "description": "Ett hus, flera dansgolv och en kväll att försvinna in i. House, disco och nya favoriter hela vägen till sista låten."
+      },
+      "tradgarn": {
+        "title": "Under bar himmel",
+        "imageAlt": "Publik framför en upplyst konsertscen",
+        "description": "Stora refränger och den där känslan när hela publiken sjunger med. Samla vännerna för en kväll fylld av livemusik."
+      },
+      "standup": {
+        "title": "Ett riktigt gott skratt",
+        "imageAlt": "En mikrofon i scenljus, redo för kvällens framträdande",
+        "description": "Lämna veckan vid dörren. En intim stand-up-kväll med nya röster, skarpa observationer och gott om skratt."
+      },
+      "pustervik": {
+        "title": "Indie hearts club",
+        "imageAlt": "En utomhusscen och en stor publik i kvällsljus",
+        "description": "Gitarrer, nya upptäckter och låtar du kan utantill. En kärleksförklaring till indiemusiken mitt i Göteborg."
+      },
+      "takbaren": {
+        "title": "Above the city",
+        "imageAlt": "En stämningsfull bar med varma lampor och dukade bord",
+        "description": "En avslappnad kväll, sköna DJ-set och tid att faktiskt prata med varandra. Kom tidigt och stanna en stund till."
+      },
+      "oceanen": {
+        "title": "Soul on a Saturday",
+        "imageAlt": "Närbild på en musiker som spelar trumpet i varmt ljus",
+        "description": "Varm soul och nära till scenen. Låt lördagen ta sin tid med levande musik och skönt häng i Majorna."
+      }
+    },
+    "weekly": {
+      "0": {
+        "0": "Sunday disco",
+        "1": "Söndagssoul",
+        "2": "Söndagsskratt",
+        "3": "Söndagshäng"
+      },
+      "1": {
+        "0": "Monday grooves",
+        "1": "Akustisk måndag",
+        "2": "Måndag på micken",
+        "3": "Quiz & kompisar"
+      },
+      "2": {
+        "0": "Tisdag på dansgolvet",
+        "1": "Jazz på tisdag",
+        "2": "Nya röster",
+        "3": "Spelkväll"
+      },
+      "3": {
+        "0": "Disco mitt i veckan",
+        "1": "Onsdag unplugged",
+        "2": "Lillördag med skratt",
+        "3": "Vinyl & vänner"
+      },
+      "4": {
+        "0": "Thursday house",
+        "1": "Torsdagsjam",
+        "2": "Torsdagskomik",
+        "3": "After work vid vattnet"
+      },
+      "5": {
+        "0": "Friday fever",
+        "1": "Fredag live",
+        "2": "Fredagens skrattfest",
+        "3": "Fredag med vänner"
+      },
+      "6": {
+        "0": "Saturday beats",
+        "1": "Lördag med soul",
+        "2": "Lördag på scen",
+        "3": "Lördagslounge"
+      }
+    },
+    "weekdays": {
+      "0": "söndag",
+      "1": "måndag",
+      "2": "tisdag",
+      "3": "onsdag",
+      "4": "torsdag",
+      "5": "fredag",
+      "6": "lördag"
+    },
+    "weeklyDescription": "{title} varje {weekday}. {description}"
+  }
+}

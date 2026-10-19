@@ -32,3 +32,12 @@ test('an unmatched query produces no results and resetting restores listings', (
   assert.equal(filterEvents(events, { ...defaults, query: 'no-such-event' }).length, 0);
   assert.equal(filterEvents(events, defaults).length, 6);
 });
+
+test('search also matches the display name of a category in the visitor\'s language', () => {
+  const label = category => (category === 'Klubb' ? 'Nightclub' : category);
+  assert.equal(filterEvents(events, { ...defaults, query: 'nightclub' }).length, 0);
+  assert.deepEqual(
+    filterEvents(events, { ...defaults, query: 'nightclub' }, { locale: 'en', categoryLabel: label }).map(e => e.category),
+    ['Klubb'],
+  );
+});

@@ -1,4 +1,5 @@
 import type { Preferences } from '@/types/preferences';
+import type { Translator } from '@/lib/i18n/locale';
 
 export const defaultPreferences: Preferences = {
   location: 'Göteborg',
@@ -8,7 +9,7 @@ export const defaultPreferences: Preferences = {
   budget: null,
 };
 
-export function formatBudget(budget: number | null): string {
-  if (budget === null) return 'Ingen prisgräns';
-  return budget === 0 ? 'Fri entré' : `Upp till ${budget} kr`;
+export function formatBudget(budget: number | null, t: Translator): string {
+  if (budget === null) return t('format.noBudgetLimit');
+  return budget === 0 ? t('format.free') : t('format.upTo', { budget });
 }

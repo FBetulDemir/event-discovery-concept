@@ -7,6 +7,7 @@ Two maintainers (and their agents) work here in parallel. The repo is **public**
 ```bash
 nvm use          # Node 24 from .nvmrc (≥ 22.18 required)
 npm ci
+cp .env.example .env.local   # then fill it in; see docs/BACKEND.md
 npm run dev
 ```
 

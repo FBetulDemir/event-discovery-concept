@@ -1,0 +1,707 @@
+{
+  "shell": {
+    "meta": {
+      "title": "Gänget: what are we doing tonight?",
+      "description": "Find your night out in Gothenburg, let the gang vote and buy the tickets from the seller."
+    },
+    "skipLink": "Skip to content",
+    "header": {
+      "homeLabel": "Gänget, home",
+      "mainNav": "Main navigation",
+      "news": "{count, plural, one {# update} other {# updates}}"
+    },
+    "nav": {
+      "explore": "Explore",
+      "match": "Match",
+      "plans": "Plans"
+    },
+    "account": {
+      "signIn": "Sign in",
+      "label": "Account: {email}"
+    },
+    "theme": {
+      "toLight": "Switch to light theme",
+      "toDark": "Switch to dark theme"
+    },
+    "language": {
+      "label": "Language",
+      "sv": "Swedish",
+      "en": "English"
+    },
+    "footer": {
+      "sellers": "Events come from the sellers, today Ticketmaster. We don't sell tickets, we help the gang decide.",
+      "independent": "Gänget is an independent concept and is not affiliated with any ticket seller.",
+      "photos": "Photos: Matthew Skinner, Robin Röcker, Israel Sundseth, Riley Briggs via Unsplash.",
+      "privacy": "Privacy and data",
+      "city": "Gothenburg {year}",
+      "toTop": "Back to top",
+      "navLabel": "Footer",
+      "seeYouLabel": "See you out there",
+      "seeYou1": "See you",
+      "seeYou2": "out there."
+    },
+    "notFound": {
+      "title": "Page not found",
+      "heading": "This page doesn't exist",
+      "body": "The link may be wrong, or the event has disappeared from the seller.",
+      "home": "Back to the start"
+    },
+    "titles": {
+      "match": "Find your night",
+      "matchResults": "Your matches",
+      "plans": "Your plans",
+      "newPlan": "New plan",
+      "plan": "Plan",
+      "account": "Account",
+      "friends": "Friends",
+      "privacy": "Privacy",
+      "design": "Design system",
+      "event": "Event"
+    }
+  },
+  "format": {
+    "free": "Free entry",
+    "priceUnknown": "Price not stated",
+    "price": "{price} SEK",
+    "pricePerPerson": "{price} SEK per person",
+    "age": "{age}+",
+    "tonight": "Tonight",
+    "tomorrow": "Tomorrow",
+    "noBudgetLimit": "No price limit",
+    "upTo": "Up to {budget} SEK",
+    "moreDates": "+{count} more dates",
+    "km": "{km} km"
+  },
+  "reasons": {
+    "label": "Why this fits",
+    "mood": "Matches {mood}",
+    "withinBudget": "Within your budget",
+    "free": "Free entry",
+    "priceUnknown": "Price not stated",
+    "distance": "{km} km away",
+    "tonight": "Tonight",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "date": "{date} at {time}",
+    "inRange": "Within your chosen dates"
+  },
+  "moods": {
+    "Dansa": "Dance",
+    "Livemusik": "Live music",
+    "Skratta": "Laugh",
+    "Hänga": "Hang out"
+  },
+  "categories": {
+    "Klubb": "Club",
+    "Livemusik": "Live music",
+    "Stand-up": "Stand-up",
+    "Bar & häng": "Bar & hangout",
+    "all": "All events"
+  },
+  "dates": {
+    "flexible": "Flexible – any date",
+    "pickRange": "Pick a start and end date",
+    "pickEnd": "{start} – pick an end date"
+  },
+  "news": {
+    "decided": "The plan is decided",
+    "votes": "{count, plural, one {# new vote} other {# new votes}}",
+    "comments": "{count, plural, one {# new comment} other {# new comments}}",
+    "events": "{count, plural, one {# new option} other {# new options}}",
+    "members": "{count, plural, one {# new member} other {# new members}}"
+  },
+  "home": {
+    "hero": {
+      "line1": "What are we",
+      "line2": "doing tonight?",
+      "lead": "Real nights out in Gothenburg. Pick a mood, send the link, let the gang vote.",
+      "moodsLabel": "What are you in the mood for?",
+      "anything": "Anything",
+      "showMood": "Show {mood} nights",
+      "find": "Find the night",
+      "gather": "Gather the gang",
+      "status": "{count, plural, one {# suggestion} other {# suggestions}}",
+      "statusMood": "{count, plural, one {# suggestion} other {# suggestions}} for {mood}"
+    },
+    "tonight": {
+      "headingTonight": "Happening tonight",
+      "headingSoon": "Happening soon",
+      "headingTomorrow": "Happening tomorrow",
+      "headingOn": "Happening {when}",
+      "empty": "Nothing on the list right now. Have a look at all events further down.",
+      "listLabel": "Tonight's events"
+    },
+    "how": {
+      "heading": "How Gänget works: match, send, vote, go",
+      "matchVerb": "Match",
+      "matchText": "Tell us what you're in the mood for. We show three nights and say why they fit.",
+      "sendVerb": "Send",
+      "sendText": "Gather the gang in a plan and send the link. Nobody needs an account.",
+      "voteVerb": "Vote",
+      "voteText": "Everyone votes, the organiser closes it. If it's a tie, you decide.",
+      "goVerb": "Go",
+      "goText": "We send you to the seller for the ticket. The rest is the night."
+    },
+    "cta": {
+      "lead": "Gather the gang:",
+      "fieldLabel": "What should the plan be called?",
+      "placeholder": "Friday night",
+      "submit": "Create",
+      "note": "You get a link to send. Your friends vote without an account."
+    },
+    "browse": {
+      "heading": "All events",
+      "count": "{count, plural, one {# event} other {# events}}",
+      "searchLabel": "Search events or venues",
+      "searchPlaceholder": "For example Scandinavium",
+      "clearSearch": "Clear search",
+      "dayLabel": "Day",
+      "allDays": "All days",
+      "filterGroup": "Filter events",
+      "showMore": "Show more ({count} left)",
+      "emptyTitle": "No match this time",
+      "emptyBody": "Try another search term or fewer filters.",
+      "reset": "Clear filters"
+    }
+  },
+  "events": {
+    "planWithFriends": "Plan with friends"
+  },
+  "match": {
+    "steps": {
+      "where": {
+        "label": "When and where",
+        "title": "Where does your night start?",
+        "description": "A place and a day. We'll work out the rest together."
+      },
+      "mood": {
+        "label": "Your mood",
+        "title": "What are you in the mood for?",
+        "description": "Dance floor or a laid-back hang? There's no wrong answer."
+      },
+      "budget": {
+        "label": "Your budget",
+        "title": "What can the night cost?",
+        "description": "Find something that feels right, wallet included."
+      }
+    },
+    "flow": {
+      "review": "Your night so far",
+      "toEvents": "To events",
+      "back": "Back",
+      "opening": "Opening…",
+      "show": "Show my matches",
+      "continue": "Continue",
+      "skipMood": "Skip, I'm open to anything",
+      "skipBudget": "Skip, no price limit"
+    },
+    "progress": {
+      "label": "Your choices",
+      "valueText": "Step {step} of {total}: {label}"
+    },
+    "mood": {
+      "legend": "Pick one or more moods",
+      "help": "Open to anything? Continue without choosing, or skip.",
+      "Dansa": "One more song. And another.",
+      "Livemusik": "Close to the stage, right in the feeling.",
+      "Skratta": "Let go of the week with a laugh.",
+      "Hänga": "Good chat and a good vibe."
+    },
+    "location": {
+      "whenLegend": "When do you want to go out?",
+      "whenHelp": "Other dates may give fewer or no matches.",
+      "whereLabel": "Where does the night start?",
+      "whereHint": "Only Gothenburg for now.",
+      "distanceLegend": "How far do you want to go?",
+      "distance": "{distance} km",
+      "distanceHelp": "Distance from Gothenburg city centre."
+    },
+    "budget": {
+      "legend": "Ticket price per person",
+      "help": "Covers entry or ticket. Food, drinks and travel are not included.",
+      "freeDescription": "More left for the rest of the night.",
+      "cheapDescription": "A good night at a good price.",
+      "moreDescription": "A bit more room for experiences.",
+      "anyDescription": "Show all options."
+    },
+    "results": {
+      "loading": "Looking for nights",
+      "none": "No perfect night right here",
+      "found": "{count, plural, =1 {One night that fits} =2 {Two nights that fit} other {Three nights that fit}}",
+      "change": "Change my choices",
+      "leadDone": "You gave us the feeling. Here are the nights that fit.",
+      "leadFirst": "A first feel for what's on. Make your choices for personal matches.",
+      "status": "{count, plural, one {# match} other {# matches}}",
+      "fetching": "Fetching your matches",
+      "emptyTitle": "No events fit all your choices",
+      "emptyBody": "Try another date, a wider radius or a different budget. Events that have already started are not shown.",
+      "footnote": "Sorted by mood, time, budget and distance. No sponsored placements."
+    },
+    "summary": {
+      "when": "When",
+      "where": "Where",
+      "mood": "Mood",
+      "budget": "Budget",
+      "within": "{city}, within {distance} km",
+      "open": "Open to anything"
+    },
+    "datePicker": {
+      "loading": "Opening the calendar…",
+      "modesLegend": "Choose how flexible you are with dates",
+      "single": "One day",
+      "range": "A period",
+      "flexible": "Flexible",
+      "shortcuts": "Date shortcuts",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "weekend": "This weekend",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "helpStart": "Pick a start date, then an end date.",
+      "helpEnd": "Pick an end date. You can also pick an earlier day.",
+      "helpChange": "Pick a new start day to change the period.",
+      "helpSingle": "Pick the day you want to go out.",
+      "toToday": "Go to today",
+      "clear": "Clear"
+    }
+  },
+  "cities": {
+    "Göteborg": "Gothenburg"
+  },
+  "event": {
+    "backToAll": "All events",
+    "demoNote": "Example event that repeats every week. The next date is shown above.",
+    "moreDates": "More dates",
+    "entry": "Entry",
+    "ageLimit": "Age limit",
+    "fromCentre": "From the centre",
+    "planWithFriends": "Plan with friends",
+    "tickets": "Tickets at the seller",
+    "newTab": " (opens in a new tab)",
+    "comments": "Comments"
+  },
+  "common": {
+    "back": "Back",
+    "generic": "Something went wrong, please try again.",
+    "newTab": " (opens in a new tab)",
+    "loading": "Loading…"
+  },
+  "plan": {
+    "backend": {
+      "title": "Planning isn't switched on here",
+      "body": "This version has no connection to the database. Set the Supabase variables (see .env.example) and restart."
+    },
+    "list": {
+      "title": "Your plans",
+      "failed": "Couldn't load your plans right now. Reload the page.",
+      "emptyLead": "Find an event, choose “Plan with friends” and send the link. Everyone votes, a winner is picked.",
+      "findSomething": "Find something to do",
+      "people": "{count, plural, one {# person} other {# people}}",
+      "options": "{count, plural, one {# option} other {# options}}",
+      "decided": "Decided",
+      "youVoted": "You've voted",
+      "voteMissing": "Your vote is missing",
+      "noOptions": "No options yet",
+      "votesSoFar": "{count, plural, one {# vote so far} other {# votes so far}}",
+      "news": "New: {news}"
+    },
+    "invitations": {
+      "title": "Invitations",
+      "text": "{from} invites you, {options}",
+      "textDated": "{from} invites you, {date}, {options}",
+      "join": "Join",
+      "decline": "Decline"
+    },
+    "new": {
+      "title": "New plan",
+      "loadingEvent": "Fetching the event…",
+      "lead": "Create a plan and add events afterwards.",
+      "defaultTitle": "Night out",
+      "titleLabel": "Plan name",
+      "yourName": "Your name",
+      "creating": "Creating…",
+      "create": "Create plan",
+      "failed": "Couldn't save. Try again.",
+      "addToExisting": "Or add to a plan in progress"
+    },
+    "room": {
+      "loading": "Fetching the plan…",
+      "errorTitle": "Something went wrong",
+      "errorBody": "Couldn't open the plan. Try again in a moment.",
+      "toPlans": "To your plans",
+      "yourPlans": "Your plans",
+      "noDate": "No date yet",
+      "notVoted": "{count, plural, one {# hasn't voted} other {# haven't voted}}",
+      "noEvents": "No events in the plan yet. Add one below, or <link>browse all events</link>.",
+      "resultsTitle": "How you voted",
+      "votes": "{count, plural, one {# vote} other {# votes}}",
+      "closedNote": "Voting is closed.",
+      "tieChoose": "A tie. Pick the winner:",
+      "close": "Close voting",
+      "waitOrganizer": "The organiser closes voting and picks the winner.",
+      "commentsTitle": "Talk it over"
+    },
+    "errors": {
+      "tie": "A tie. Pick which event wins yourself.",
+      "closed": "Voting is closed.",
+      "forbidden": "Only the organiser can do that.",
+      "plan_not_found": "The plan wasn't found.",
+      "already_decided": "The plan is already decided.",
+      "no_events": "Add at least one event first."
+    },
+    "invite": {
+      "label": "Invite friends with the link",
+      "copy": "Copy",
+      "copied": "Copied",
+      "share": "Share",
+      "copiedStatus": "The link is copied."
+    },
+    "share": {
+      "button": "Copy message to the gang",
+      "copied": "Copied",
+      "text": "{title}: we're going to {event}, {venue}, {when} at {time}. {price}.",
+      "tickets": " Tickets: {url}"
+    },
+    "winner": {
+      "kicker": "We have a winner, {count, plural, one {# vote} other {# votes}}",
+      "when": "When",
+      "entry": "Entry",
+      "buy": "Buy tickets"
+    },
+    "vote": {
+      "votedBy": "Voted by",
+      "count": "{count, plural, one {# vote} other {# votes}}",
+      "removeEvent": "Remove {title} from the list",
+      "removeVote": "Remove your vote for {title}",
+      "voteFor": "Vote for {title}",
+      "yourVote": "Your vote",
+      "vote": "Vote"
+    },
+    "members": {
+      "label": "In the plan",
+      "organizer": "organiser",
+      "hasVoted": "has voted",
+      "notVoted": "hasn't voted"
+    },
+    "settings": {
+      "summary": "Change name and date",
+      "day": "Which day is the plan for?",
+      "dayHint": "Optional. Shown to everyone in the plan.",
+      "save": "Save"
+    },
+    "inviteFriends": {
+      "none": "If you have friends on Gänget you can invite them directly. <link>Add friends</link>",
+      "title": "Invite friends",
+      "invited": "Invited",
+      "invite": "Invite",
+      "failed": "Couldn't send the invitation, try again."
+    },
+    "addEvent": {
+      "summary": "Add event",
+      "search": "Search events or venues",
+      "placeholder": "For example Park Lane",
+      "loading": "Fetching events…",
+      "none": "Nothing matches.",
+      "add": "Add"
+    },
+    "join": {
+      "notFoundTitle": "Plan not found",
+      "notFoundBody": "The link may be wrong or the plan has been removed.",
+      "invited": "{organizer} has invited you.",
+      "invitedOn": "{organizer} has invited you for {when}.",
+      "with": " With: {names}.",
+      "optionsClosed": "The options",
+      "pick": "What do you want to do? Pick your favourite.",
+      "changeVote": "You can change your vote once you're in.",
+      "closed": "The plan is decided. You can still join and see who won.",
+      "nameRequired": "Write your name so the gang knows who you are.",
+      "joining": "Joining…",
+      "joinAndVote": "Join and vote",
+      "join": "Join",
+      "noAccount": "No account needed. You can save your plans with an email address later."
+    }
+  },
+  "comments": {
+    "errors": {
+      "rate_limited": "You're writing too fast. Wait a minute.",
+      "account_required": "You need an account to comment on events.",
+      "forbidden": "You can't comment here.",
+      "invalid_body": "Write something first (at most 1000 characters)."
+    },
+    "now": "just now",
+    "show": "Show comments",
+    "loadFailed": "Couldn't load the comments right now.",
+    "empty": "No comments yet. Write the first one.",
+    "replyingTo": "Replying to {name}.",
+    "cancel": "Cancel",
+    "commentLabel": "Comment",
+    "placeholder": "What do you think?",
+    "send": "Send",
+    "signIn": "<link>Sign in</link> to comment. Event comments are public, which is why an account is required.",
+    "removed": "The comment has been removed.",
+    "reactionsGroup": "Reactions",
+    "reactionLabel": "{label}, {count}",
+    "reactions": {
+      "like": "Like",
+      "love": "Love",
+      "laugh": "Haha",
+      "fire": "Fire",
+      "wow": "Wow"
+    },
+    "reply": "Reply",
+    "delete": "Delete",
+    "report": "Report"
+  },
+  "friends": {
+    "title": "Friends",
+    "lead": "Add friends once, then invite them to plans with one click.",
+    "results": {
+      "requested": "Friend request sent.",
+      "accepted": "You're friends now.",
+      "already_friends": "You're already friends.",
+      "already_requested": "You've already sent a request."
+    },
+    "errors": {
+      "friend_not_found": "Nobody was found with that code.",
+      "cannot_add_self": "That's your own code.",
+      "display_name_required": "Choose a name first.",
+      "loadFailed": "Couldn't load your friends right now."
+    },
+    "needAccount": {
+      "lead": "Friends need an account, so the list is still there next time. It takes half a minute.",
+      "cta": "Create an account or sign in"
+    },
+    "incoming": {
+      "wants": "<b>{name}</b> wants to be your friend.",
+      "add": "Add {name}"
+    },
+    "name": {
+      "label": "What should your friends call you?",
+      "save": "Save name"
+    },
+    "link": {
+      "label": "Your friend link",
+      "hint": "Or code: {code}",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "enter": {
+      "label": "Add with a code or link",
+      "add": "Add"
+    },
+    "groups": {
+      "requests": "Requests",
+      "yours": "Your friends ({count})",
+      "empty": "No friends yet. Share your link, or paste a friend's.",
+      "waiting": "Waiting for a reply"
+    },
+    "actions": {
+      "accept": "Accept",
+      "decline": "Decline",
+      "remove": "Remove",
+      "undo": "Withdraw"
+    },
+    "footer": "You'll find your plans under <plans>Plans</plans>. <account>Account settings</account>"
+  },
+  "account": {
+    "problems": {
+      "bad_credentials": "Wrong email or password.",
+      "weak_password": "The password must be at least {min} characters.",
+      "invalid_email": "Check the email address.",
+      "unknown": "Something went wrong, please try again.",
+      "fill": "Fill in email and password.",
+      "taken": "That email address already has an account. Sign in instead."
+    },
+    "notice": "We sent a confirmation link to {email}. Open it and the account is ready.",
+    "in": {
+      "title": "Your account",
+      "lead": "You're signed in as {email}. Your plans follow you on every device.",
+      "friends": "My friends",
+      "signOut": "Sign out"
+    },
+    "titleGuest": "Save your plans",
+    "titleLogin": "Sign in",
+    "titleCreate": "Create an account",
+    "leadGuest": "You're a guest on this device. Create an account and your plans and votes follow you, and you can comment on events and add friends.",
+    "lead": "With an account your plans are saved on every device, and you can comment on events and add friends.",
+    "modeGroup": "Account",
+    "modeCreate": "Create account",
+    "modeLogin": "I already have one",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordHint": "At least {min} characters.",
+    "busy": "One moment…",
+    "submitLogin": "Sign in",
+    "submitCreate": "Create account"
+  },
+  "privacy": {
+    "title": "How we handle your data",
+    "lead": "Short and plain. We collect what the gang needs to decide, nothing more.",
+    "stored": {
+      "title": "What we store",
+      "guest": "<b>Guest session:</b> when you create or join a plan you get an anonymous account on this device, with a random id.",
+      "name": "<b>Name:</b> the name you type when you join. It is shown to the others in the plan.",
+      "plans": "<b>Plans, votes and comments</b> you make, and which events have been added to a plan.",
+      "account": "<b>Email and password</b> if you create an account. The password is stored encrypted (hashed) by our sign-in service, never in plain text.",
+      "browser": "<b>In your browser:</b> the name you last used, your chosen theme (dark or light) and your chosen language. The language is kept in a single functional cookie (NEXT_LOCALE). Nothing else, no advertising or tracking cookies."
+    },
+    "who": {
+      "title": "Who sees what",
+      "plan": "A plan, its votes and its comments are only seen by the people in the plan. Whoever has the link can see the plan's name, date, who is in and the options before they join.",
+      "comments": "Comments on events are public to signed-in visitors and require an account.",
+      "sell": "We don't sell data and we show no advertising."
+    },
+    "events": {
+      "title": "Events and tickets",
+      "body": "Events are fetched from the sellers' open listings, today Ticketmaster. We don't sell tickets: you are sent to the seller, and the purchase follows their terms and privacy policy. When an event is added to a plan we store a small copy of its details (name, place, time, image link, price and ticket link) so the plan keeps working even if the seller changes or removes the listing. We remove the seller's details if the seller or the organiser asks us to."
+    },
+    "where": {
+      "title": "Where the data lives",
+      "body": "The database and sign-in run on Supabase in Stockholm (EU). The site runs on Vercel. Both are our subprocessors and handle data only on our behalf."
+    },
+    "choices": {
+      "title": "Your choices",
+      "body": "You can ask to see, correct or delete your data, and you can stop using the service at any time. If we delete your account, your votes and comments disappear too. Contact details will be published when the service launches."
+    },
+    "footnote": "Gänget is an independent concept under development. This text describes how it works today and is updated when that changes."
+  },
+  "design": {
+    "title": "Gänget design system",
+    "lead": "Tokens and components in one place. Source: <code>src/styles/tokens.css</code> and <code>docs/brand/GUIDELINES.md</code>.",
+    "theme": {
+      "group": "Theme",
+      "dark": "Dark (default)",
+      "light": "Light"
+    },
+    "brand": "Mark",
+    "colour": "Colour: roles",
+    "type": {
+      "title": "Typography: five steps",
+      "display": "What are we doing tonight?",
+      "head": "Happening tonight",
+      "lead": "Real nights out in Gothenburg.",
+      "body": "Pick a mood, send the link, let the gang vote. Running text at 17 to 19 pixels.",
+      "small": "Price not stated · 1.3 km"
+    },
+    "actions": {
+      "title": "Buttons and choices",
+      "primary": "Find the night",
+      "secondary": "Copy",
+      "ghost": "Back",
+      "disabled": "Disabled",
+      "asLink": "As a link",
+      "remove": "Remove",
+      "new": "New"
+    },
+    "fields": {
+      "title": "Fields",
+      "name": "Your name",
+      "namePlaceholder": "Alex",
+      "withHint": "With hint",
+      "hint": "Shown to everyone in the plan.",
+      "hintValue": "Friday night",
+      "withError": "With error",
+      "error": "Write a name.",
+      "readonly": "Read-only",
+      "searchNote": "Search fields and choices follow the same style."
+    },
+    "cards": {
+      "title": "Cards",
+      "unknownPrice": "Event without a stated price"
+    },
+    "language": {
+      "title": "Language",
+      "note": "The switch in the header toggles between Swedish and English and keeps the page."
+    },
+    "states": "States"
+  },
+  "demoEvents": {
+    "base": {
+      "yaki-da": {
+        "title": "All night long",
+        "imageAlt": "A bartender mixes a drink in colourful bar light",
+        "description": "One house, several dance floors and a night to disappear into. House, disco and new favourites all the way to the last song."
+      },
+      "tradgarn": {
+        "title": "Under the open sky",
+        "imageAlt": "A crowd in front of a lit concert stage",
+        "description": "Big choruses and that feeling when the whole crowd sings along. Gather your friends for a night full of live music."
+      },
+      "standup": {
+        "title": "A really good laugh",
+        "imageAlt": "A microphone in stage light, ready for tonight’s performance",
+        "description": "Leave the week at the door. An intimate stand-up night with new voices, sharp observations and plenty of laughs."
+      },
+      "pustervik": {
+        "title": "Indie hearts club",
+        "imageAlt": "An outdoor stage and a big crowd in evening light",
+        "description": "Guitars, new discoveries and songs you know by heart. A love letter to indie music in the middle of Gothenburg."
+      },
+      "takbaren": {
+        "title": "Above the city",
+        "imageAlt": "An atmospheric bar with warm lamps and set tables",
+        "description": "A relaxed evening, smooth DJ sets and time to actually talk to each other. Come early and stay a little longer."
+      },
+      "oceanen": {
+        "title": "Soul on a Saturday",
+        "imageAlt": "Close-up of a musician playing trumpet in warm light",
+        "description": "Warm soul and close to the stage. Let Saturday take its time with live music and a good hang in Majorna."
+      }
+    },
+    "weekly": {
+      "0": {
+        "0": "Sunday disco",
+        "1": "Sunday soul",
+        "2": "Sunday laughs",
+        "3": "Sunday hangout"
+      },
+      "1": {
+        "0": "Monday grooves",
+        "1": "Acoustic Monday",
+        "2": "Monday at the mic",
+        "3": "Quiz & friends"
+      },
+      "2": {
+        "0": "Tuesday on the dance floor",
+        "1": "Jazz on Tuesday",
+        "2": "New voices",
+        "3": "Game night"
+      },
+      "3": {
+        "0": "Midweek disco",
+        "1": "Wednesday unplugged",
+        "2": "Little Saturday with laughs",
+        "3": "Vinyl & friends"
+      },
+      "4": {
+        "0": "Thursday house",
+        "1": "Thursday jam",
+        "2": "Thursday comedy",
+        "3": "After work by the water"
+      },
+      "5": {
+        "0": "Friday fever",
+        "1": "Friday live",
+        "2": "Friday’s laugh fest",
+        "3": "Friday with friends"
+      },
+      "6": {
+        "0": "Saturday beats",
+        "1": "Saturday with soul",
+        "2": "Saturday on stage",
+        "3": "Saturday lounge"
+      }
+    },
+    "weekdays": {
+      "0": "Sunday",
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday"
+    },
+    "weeklyDescription": "{title} every {weekday}. {description}"
+  }
+}

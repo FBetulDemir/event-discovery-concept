@@ -1,27 +1,46 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { AudioLines, MapPin } from 'lucide-react';
-import { usePreferences } from '@/components/monkey-match/PreferencesProvider';
+import { useTranslations } from 'next-intl';
+import { Link, usePathname } from '@/i18n/navigation';
+import { Logo } from '@/components/brand/Logo';
+import { usePreferences } from '@/components/match/PreferencesProvider';
+import { ThemeToggle } from './ThemeToggle';
+import { AccountLink } from './AccountLink';
+import { LanguageToggle } from './LanguageToggle';
+import { useNotifications } from '@/components/notifications/NotificationsProvider';
+
+export const navItems = [
+  { href: '/', label: 'explore', match: (path: string) => path === '/' || path.startsWith('/events') },
+  { href: '/match', label: 'match', match: (path: string) => path.startsWith('/match') },
+  { href: '/plan', label: 'plans', match: (path: string) => path.startsWith('/plan') },
+] as const;
 
 export function Header() {
   const { resetPreferences } = usePreferences();
   const pathname = usePathname();
-  const onMatchFlow = pathname === '/monkey-match' || pathname === '/matches' || pathname.startsWith('/plan');
+  const { total } = useNotifications();
+  const t = useTranslations('shell');
 
   return (
     <header className="site-header">
-      <div className="header-inner">
-        <Link className="brand" href="/" aria-label="VIP Monkey startsida">
-          <img src="/images/cropped-VIP_Monkey_Liggande_RGB_neg-on-white-scaled-1.png.webp" alt="VIP Monkey" width={200} height={50} />
+      <div className="page site-header__inner">
+        <Link href="/" className="site-header__brand" aria-label={t('header.homeLabel')}>
+          <Logo />
         </Link>
-        <nav className="header-nav" aria-label="Huvudnavigation">
-          <Link href="/" aria-current={pathname === '/' ? 'page' : undefined}>Upptäck</Link>
-          {/* Entry point for starting a brand-new search: clear any earlier picks (e.g. moods) instead of carrying them over. */}
-          <Link href="/monkey-match" onClick={resetPreferences} aria-current={onMatchFlow ? 'page' : undefined}><AudioLines size={16} aria-hidden="true" /> Monkey Match</Link>
+        <nav className="site-header__nav" aria-label={t('header.mainNav')}>
+          {navItems.map(item => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={item.href === '/match' ? resetPreferences : undefined}
+              aria-current={item.match(pathname) ? 'page' : undefined}
+            >
+              {t(`nav.${item.label}`)}
+              {item.href === '/plan' && total > 0 && <span className="nav-badge" role="status" aria-label={t('header.news', { count: total })}>{total}</span>}
+            </Link>
+          ))}
         </nav>
-        <span className="header-location"><MapPin size={16} aria-hidden="true" /> Göteborg</span>
+        <div className="site-header__tools"><AccountLink /><LanguageToggle /><ThemeToggle /></div>
       </div>
     </header>
   );

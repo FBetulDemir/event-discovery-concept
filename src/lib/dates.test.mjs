@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { addDays, addMonths, todayInGothenburg, monthDays, upcomingWeekend, selectDay, dateSelectionComplete, formatDateSelection } from './dates.ts';
+import { translatorFor } from '../i18n/testing.mjs';
+
+const sv = translatorFor('sv');
+const en = translatorFor('en');
 
 test('calendar weeks begin on Monday and include every date once', () => {
   const days = monthDays('2026-09-01');
@@ -49,9 +53,15 @@ test('a same-day range is valid and flexible selection becomes a specific day on
 });
 
 test('summary describes flexible, incomplete, single, and range selections', () => {
-  assert.equal(formatDateSelection({ mode: 'flexible' }), 'Flexibelt – alla datum');
-  assert.equal(formatDateSelection({ mode: 'range', start: null, end: null }), 'Välj start- och slutdatum');
-  assert.match(formatDateSelection({ mode: 'range', start: '2026-09-25', end: null }), /välj slutdatum/);
-  assert.match(formatDateSelection({ mode: 'single', start: '2026-09-25' }), /25 sep.*2026/);
-  assert.match(formatDateSelection({ mode: 'range', start: '2026-09-25', end: '2026-10-02' }), /25 sep.*2 okt/);
+  assert.equal(formatDateSelection({ mode: 'flexible' }, 'sv', sv), 'Flexibelt – alla datum');
+  assert.equal(formatDateSelection({ mode: 'range', start: null, end: null }, 'sv', sv), 'Välj start- och slutdatum');
+  assert.match(formatDateSelection({ mode: 'range', start: '2026-09-25', end: null }, 'sv', sv), /välj slutdatum/);
+  assert.match(formatDateSelection({ mode: 'single', start: '2026-09-25' }, 'sv', sv), /25 sep.*2026/);
+  assert.match(formatDateSelection({ mode: 'range', start: '2026-09-25', end: '2026-10-02' }, 'sv', sv), /25 sep.*2 okt/);
+});
+
+test('date selection summary in English', () => {
+  assert.equal(formatDateSelection({ mode: 'flexible' }, 'en', en), 'Flexible – any date');
+  assert.match(formatDateSelection({ mode: 'range', start: '2026-09-25', end: null }, 'en', en), /pick an end date/);
+  assert.match(formatDateSelection({ mode: 'range', start: '2026-09-25', end: '2026-10-02' }, 'en', en), /25 Sept?.*2026.*2 Oct/);
 });

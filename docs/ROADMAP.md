@@ -4,7 +4,7 @@
 
 ## Where we are
 
-Front-end prototype: discovery with filters, 3-step Monkey Match, transparent ranking, local shortlist + voting + winner screen. Fictional data, in-memory state, no backend, dead ticket button. 31 unit tests on pure logic; no CI until this setup PR.
+Gänget: a real-event front door, a 3-step Match with transparent ranking, plans with live voting on a Supabase backend, ticket link-out, a tokenized dark/light design system. Accounts, friends, notifications, comments and English (`/en`) are built.
 
 ## Phases
 
@@ -13,11 +13,11 @@ Agent docs, contracts, CI, PR workflow, project skills. **Done when:** merged an
 
 ### Phase 1 — Make it real for one group (the core promise)
 Goal: two phones can vote on the same plan.
-- Pick backend (leading candidate: Supabase — Postgres + Realtime + anonymous auth). *Decision needed.*
-- `Plan`, `Member`, `Vote` data model; create plan from a match; shareable invite link (`/plan/<id>`); anonymous join with a display name; one vote per member; live tally.
-- Deterministic tie rule + explicit "close voting" by the organiser.
-- Remove hard-coded "4 vänner" / "Fredag kväll"; derive from plan data (name + date).
-- Contract §6 rewritten for the real model; tests for tally/tie logic in `src/lib`.
+- **Done in PR1 (`feat/backend-foundation`):** Supabase schema + RLS + RPCs, guest auth, plans / members / shortlist / votes / invite links / organizer close with explicit tie-break, live updates, external event adapters (Ticketmaster, demo) with `/api/events`, ticket link-out, docs and contracts (D-006…D-010).
+- **Design PR (this branch):** brand, tokens, primitives, `/design`, front door, Match, event page, join/plan screens (D-013 to D-015).
+- **PR2:** i18n `/sv` `/en` with toggle (D-011): built on `feat/i18n`.
+- **PR3 (built on the design branch):** accounts (email + password, D-018), friends, invitations and notifications (D-019), comment threads with reactions on plans and events, moderation basics (D-008, D-012). Google sign-in, password reset and email/push notifications are still open.
+- **Needs a key/decision:** Göteborg & Co adapter; verify Ticketmaster against the live API; enable anonymous sign-ins + CAPTCHA.
 
 ### Phase 2 — Real events
 - Event source: VIP Monkey API/feed if available, otherwise a CMS/seed pipeline we own. *Needs a conversation with VIP Monkey (see open questions).*
@@ -39,21 +39,24 @@ Goal: two phones can vote on the same plan.
 
 | # | Issue | Where | Suggested fix |
 |---|---|---|---|
-| 1 | Vote ties resolve to the earliest shortlisted event, silently | `ResultExperience.tsx` (`reduce` with `>`) | Explicit tie rule + UI ("lika många röster") |
-| 2 | "4 vänner har gått med" and "Fredag kväll" are hard-coded | `PlanExperience.tsx`, `ResultExperience.tsx` | Derive from plan state (Phase 1) |
-| 3 | Seed votes are fabricated so the demo looks alive | `ShortlistProvider.tsx` | Remove with real plans; keep behind a demo flag if needed |
-| 4 | "Köp biljetter" does nothing | `ResultExperience.tsx` | Phase 3 |
-| 5 | Shortlist may contain IDs that disappear (e.g. `?event=` typo) and are silently dropped from the list but kept in state | `PlanExperience.tsx` | Validate ID against catalogue before adding |
+| 1 | ~~Vote ties resolve silently~~ | — | Fixed in PR1: organizer must break a tie (`close_plan`, `voting.ts`) |
+| 2 | ~~Hard-coded "4 vänner" / "Fredag kväll"~~ | — | Fixed in PR1: derived from the plan |
+| 3 | ~~Fabricated seed votes~~ | — | Removed in PR1 |
+| 4 | ~~"Köp biljetter" does nothing~~ | — | Now links to the seller when the source provides a URL; demo events have none |
+| 5 | ~~Invalid `?event=` ids~~ | — | `NewPlan` only offers an event found in the catalogue |
 | 6 | No `test` script / CI existed; tests need Node ≥ 22.18 | `package.json` | Fixed in Phase 0 |
+| 11 | Anonymous sign-in has no CAPTCHA; guests are cheap to create | Supabase Auth | Enable Turnstile/hCaptcha before launch |
+| 12 | Göteborg & Co adapter missing (Ticketmaster is live-verified) | `lib/events/sources` | Needs a subscription key |
+| 13 | Real events have **no price** (Ticketmaster publishes none for Sweden), so the Monkey Match budget step cannot filter them: a cap only drops the budget-points factor, and "Fri entré" returns nothing | `matching.ts`, `BudgetStep` | Decide: keep as is (D-009), hide the budget step while no source supplies prices, or ask Göteborg & Co / another source for prices |
 | 7 | README says "Tailwind CSS" but styling is mostly hand-written token CSS | `README.md`, `globals.css` | Document (done in `ARCHITECTURE.md`); decide whether to converge |
-| 8 | `distanceKm` is a static number, not computed | `events.ts` | Phase 2 |
+| 8 | Distance is from a fixed city-centre point, not the user's location | `lib/events/geo.ts` | Phase 2 (user location, multi-city) |
 | 9 | Plain `<img>` instead of `next/image`; images are not optimised | many components | Switch when images become dynamic |
 | 10 | No lint/format tooling | repo | Add ESLint (next config) + Prettier once both maintainers agree on style |
 
 ## Open questions (need a human decision)
 
-1. **Brand & permission.** The README says this is an unaffiliated concept built for a job application, yet the repo ships VIP Monkey's name and logo (`public/images/`). Before we productise or promote it: do we have VIP Monkey's blessing, or do we rename/rebrand the product ("Monkey Match" as its own brand)? Until answered, keep the disclaimer in the README.
-2. **Who is the customer?** A white-label feature for VIP Monkey, or an independent product that links out to tickets (any provider)?
+1. ~~Brand & permission~~ **Resolved (D-013):** independent product, name Gänget, new identity. Still open: trademark search (PRV/EUIPO) and a domain.
+2. **Who is the customer?** Working answer: an independent product that links out to the seller's tickets (D-007, D-013). Revisit if a seller partnership appears.
 3. **Backend choice** (Phase 1) and hosting/cost ownership.
 4. **Licence** for the public repo (none today ⇒ all rights reserved by default).
 5. **Analytics & consent** approach (GDPR; Swedish audience).
