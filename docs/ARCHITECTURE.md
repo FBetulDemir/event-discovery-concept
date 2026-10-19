@@ -35,7 +35,7 @@ messages/     sv.json · en.json (every UI string, typed from sv.json)
 components/   feature folders; ui/ = primitives (Button, Chip, DatePicker, …)
 app/          routes, layout (fonts, theme, providers, header/footer/nav)
 styles/       tokens.css (semantic roles, 2 themes, scales) · base.css · components.css · screens.css
-supabase/     migrations (schema source of truth) · tests/plans_rls.test.sql
+supabase/     migrations (schema source of truth) · tests/plans_rls.test.sql · functions/ticketmaster-events
 ```
 
 ### Languages
@@ -47,9 +47,9 @@ Dependency direction: `app → components → lib/data → types`. `lib` must no
 ## Data flow
 
 ```
-Ticketmaster API ─┐                                     (server, cached 10 min per upstream fetch)
-Göteborg & Co  ───┼─► sources/*.ts ─► Event[] ─► catalog.loadCatalog() ─► GET /api/events
-demo seeds ───────┘   (normalize or drop)         merge · dedupe by id · sort          │
+Ticketmaster API ─ Supabase Edge Function (holds API key) ┐ (Next caches function response for 10 min)
+Göteborg & Co  ───────────────────────────────────────────┼─► sources/*.ts ─► Event[] ─► catalog.loadCatalog() ─► GET /api/events
+demo seeds ───────────────────────────────────────────────┘   (normalize or drop)         merge · dedupe by id · sort          │
                                                                                       ▼
                                           useCatalog() in the browser (focus + every 5 min)
                                                  │

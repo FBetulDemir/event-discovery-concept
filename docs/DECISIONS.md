@@ -138,3 +138,9 @@ Template:
 - Decision: the URL prefix decides; an unprefixed URL falls back to the `NEXT_LOCALE` cookie (set by the toggle) and then to Swedish. The browser's `Accept-Language` is deliberately ignored (stripped in `src/proxy.ts`; next-intl cannot read the cookie without also reading that header, hence `localeDetection: true` plus the strip). Route slugs stay Swedish under `/en`.
 - Consequences: a shared Swedish link never redirects by itself; someone who chose English and opens an unprefixed link is sent to the `/en` version of it. One functional cookie, disclosed on `/integritet`. Translating slugs later (`pathnames`) means touching every internal link, friend link and redirect.
 
+## D-023 — Ticketmaster key lives in Supabase Edge Function Secrets
+- Date: 2026-10-19 · Status: accepted · Deciders: Eralp
+- Context: The Ticketmaster key was in Next's local/server environment; the owner asked to move it to Supabase.
+- Decision: a small Edge Function holds `TICKETMASTER_API_KEY` and runs the fixed Göteborg Discovery API query. The Next adapter calls it with the existing Supabase publishable key and still normalizes events locally. No database schema, application route, or new package is needed.
+- Consequences: the function and secret must be deployed to each Supabase project. The publishable key is public, so the function only permits the fixed catalogue query; a separate rate limit may be needed if direct calls exhaust Ticketmaster's quota. The application falls back to labelled demo events if the function is unavailable.
+

@@ -1,0 +1,2 @@
+[functions.ticketmaster-events]
+verify_jwt = false
