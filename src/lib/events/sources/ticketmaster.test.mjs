@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { normalizeTicketmasterEvent } from './ticketmaster.ts';
+import { normalizeTicketmasterEvent, ticketmasterSource } from './ticketmaster.ts';
 
 // Shape follows the documented Discovery API v2 response; not yet verified against a live call.
 const raw = (patch = {}) => ({
@@ -74,4 +74,38 @@ test('descriptions lose pasted links but keep the prose', async () => {
   assert.equal(cleanDescription('Doors open 6 PM. Read more here: https://gotevent.se/en/phone-free-show/ Thanks'), 'Doors open 6 PM. Read more here: Thanks');
   assert.equal(cleanDescription('  Plain text.  '), 'Plain text.');
   assert.equal(normalizeTicketmasterEvent(raw({ info: 'Info https://x.se/a' })).description, 'Info');
+});
+
+test('the adapter calls the Supabase function without reading the local Ticketmaster key', async () => {
+  const previous = {
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    publishableKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    ticketmasterKey: process.env.TICKETMASTER_API_KEY,
+  };
+  const originalFetch = globalThis.fetch;
+  process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://example.supabase.co';
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = 'publishable';
+  delete process.env.TICKETMASTER_API_KEY;
+  try {
+    globalThis.fetch = async (url, options) => {
+      assert.equal(url.origin, 'https://example.supabase.co');
+      assert.equal(url.pathname, '/functions/v1/ticketmaster-events');
+      assert.equal(url.searchParams.get('start'), '2026-10-19T12:00:00Z');
+      assert.equal(options.headers.apikey, 'publishable');
+      return Response.json({ _embedded: { events: [raw()] } });
+    };
+    const result = await ticketmasterSource.load(new Date('2026-10-19T12:00:00Z'));
+    assert.equal(result.status, 'ok');
+    assert.equal(result.events[0].id, 'tm-Z7r9jZ1A7aaa');
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const [name, value] of Object.entries({
+      NEXT_PUBLIC_SUPABASE_URL: previous.url,
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: previous.publishableKey,
+      TICKETMASTER_API_KEY: previous.ticketmasterKey,
+    })) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+  }
 });

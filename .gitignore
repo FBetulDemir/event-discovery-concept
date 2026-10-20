@@ -14,3 +14,4 @@ node_modules/
 .claude/launch.json
 .taste-skill/
 .playwright-mcp/
+supabase/.temp/

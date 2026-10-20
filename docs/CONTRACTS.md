@@ -119,10 +119,10 @@ Must hold on every page:
 - Adapters map to the §1 `Event` or **drop** the item. They never fabricate a price, time, coordinate or image.
 - Data is fetched server-side, reused for `SOURCE_REVALIDATE_SECONDS` (10 min) and reaches the browser via `/api/events`; a page refresh after that window shows source changes. Plans keep a snapshot so they survive changes at the source.
 - `EVENT_SOURCES` (default `ticketmaster,goteborgco`) picks sources. If nothing real returns, the fictional `demo` source fills in and the `sources` field of the response says so. The UI must not present demo events as real.
-- API keys are server-only env vars; error messages and logs must never include a request URL (it carries the key).
+- Provider API keys stay in server-only environments. Ticketmaster's key is a Supabase Edge Function secret; Next calls that function with its publishable key. Error messages and logs must never include a Ticketmaster request URL (it carries the key).
 - Respect each provider's terms (attribution, caching, storage limits) when adding a source; note them in `docs/BACKEND.md`.
 
-test: `ticketmaster.test.mjs`, `catalog.test.mjs`.
+test: `ticketmaster.test.mjs`, `handler.test.mjs`, `catalog.test.mjs`.
 
 ## 12. Backend & access control (`supabase/`)
 

@@ -2,9 +2,6 @@ import type { Event, EventCategory } from '@/types/event';
 import { distanceKm, GOTEBORG_CENTRE } from '../geo.ts';
 import { SOURCE_REVALIDATE_SECONDS, type EventSource, type SourceResult } from '../source.ts';
 
-const ENDPOINT = 'https://app.ticketmaster.com/discovery/v2/events.json';
-const HORIZON_DAYS = 90;
-
 /** The subset of a Discovery API v2 event this adapter reads. Everything is optional on purpose. */
 export type TicketmasterEvent = {
   id?: string;
@@ -108,26 +105,18 @@ const utcStamp = (date: Date) => date.toISOString().replace(/\.\d{3}Z$/, 'Z');
 export const ticketmasterSource: EventSource = {
   id: 'ticketmaster',
   async load(now): Promise<SourceResult> {
-    const apiKey = process.env.TICKETMASTER_API_KEY;
-    if (!apiKey) return { source: 'ticketmaster', status: 'not-configured', events: [], message: 'TICKETMASTER_API_KEY is not set' };
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+    if (!supabaseUrl || !publishableKey) return { source: 'ticketmaster', status: 'not-configured', events: [], message: 'Supabase is not configured' };
 
-    const params = new URLSearchParams({
-      apikey: apiKey,
-      countryCode: 'SE',
-      latlong: `${GOTEBORG_CENTRE.lat},${GOTEBORG_CENTRE.lng}`,
-      radius: '40',
-      unit: 'km',
-      classificationName: 'Music,Comedy',
-      sort: 'date,asc',
-      size: '200',
-      locale: '*',
-      startDateTime: utcStamp(now),
-      endDateTime: utcStamp(new Date(now.getTime() + HORIZON_DAYS * 86_400_000)),
-    });
+    const url = new URL('/functions/v1/ticketmaster-events', supabaseUrl);
+    url.searchParams.set('start', utcStamp(now));
 
     try {
-      const response = await fetch(`${ENDPOINT}?${params}`, { next: { revalidate: SOURCE_REVALIDATE_SECONDS } });
-      // Never put the URL in a message: it carries the API key.
+      const response = await fetch(url, {
+        headers: { apikey: publishableKey },
+        next: { revalidate: SOURCE_REVALIDATE_SECONDS },
+      });
       if (!response.ok) return { source: 'ticketmaster', status: 'error', events: [], message: `HTTP ${response.status}` };
       const body = (await response.json()) as { _embedded?: { events?: TicketmasterEvent[] } };
       const events = (body._embedded?.events ?? [])

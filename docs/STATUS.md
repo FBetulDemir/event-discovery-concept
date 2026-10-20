@@ -2,7 +2,11 @@
 
 Living handoff note. **Update it at the end of any session that leaves work open** (the `handoff` skill does this). Keep it short; history lives in git.
 
-_Last updated: 2026-10-18 by Eralp (with Claude) — i18n branch._
+_Last updated: 2026-10-19 by Codex — Ticketmaster key move on `fix/ticketmaster-supabase-secret`._
+
+`fix/ticketmaster-supabase-secret` is stacked on `feat/i18n`. Ticketmaster now goes through `supabase/functions/ticketmaster-events`, with its key read from Supabase Edge Function Secrets (D-023). The function was deployed to `monkey-match` on 2026-10-19; the owner added the secret, and the old `TICKETMASTER_API_KEY` line was removed from `.env.local`. If the key is also set in the Next hosting environment, remove it there. The code is not yet merged or deployed with the Next app.
+
+Verification for this branch: `npm test` (83 passing), `npm run typecheck`, `npm run build`. With the secret present, the hosted function returned HTTP 200 and 102 raw events; the local production `/api/events` endpoint returned `ticketmaster: ok` (70 mapped events, 50 within the catalogue's 20 km limit) without the local key.
 
 ## Now
 

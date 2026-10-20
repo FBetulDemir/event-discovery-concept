@@ -9,9 +9,17 @@ Supabase (Postgres, Auth, Realtime) for plans, plus server-side fetching of exte
    Recommended before launch: enable CAPTCHA (Auth → Attack Protection) because anonymous sign-in is open to scripts.
 3. **Env vars** (`.env.local` locally; Vercel → Project → Settings → Environment Variables for the deployed site). See `.env.example`.
    - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` — browser-safe, access is enforced by RLS.
-   - `TICKETMASTER_API_KEY` — server only. `GOTEBORGCO_API_KEY` — server only, adapter not written yet.
+   - `GOTEBORGCO_API_KEY` — server only, adapter not written yet. The Ticketmaster key is stored in Supabase Edge Function Secrets, not in the Next environment.
    - `EVENT_SOURCES` — optional, e.g. `ticketmaster,demo` to show fictional events next to real ones.
    - Never add a `service_role` / secret key to the browser env or the repo.
+
+### Ticketmaster key in Supabase
+
+1. Open the `monkey-match` project in Supabase Dashboard → **Edge Functions → Secrets**. Add `TICKETMASTER_API_KEY` with the existing Ticketmaster Discovery API key as its value. Do not paste the key into the repo or a chat. This requires an Owner or Administrator role.
+2. The function was deployed to `monkey-match` on 2026-10-19. For another project or after changing its code, deploy with `supabase functions deploy ticketmaster-events --project-ref uryyxixgdhomhddnanvh --no-verify-jwt`. The function checks the project's publishable key in the `apikey` header itself. If the CLI is not authenticated, run `supabase login` first. Adding or rotating the secret does not require a redeploy.
+3. Keep `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local` and in Vercel. Next calls the hosted function with the publishable key; the function calls Ticketmaster with its Supabase secret. No extra Next secret is needed. The old `TICKETMASTER_API_KEY` line was removed from `.env.local` on 2026-10-19; remove it from Vercel if present.
+
+The function lives at `supabase/functions/ticketmaster-events/`. It only accepts a fixed Göteborg Music/Comedy query and returns event data without the secret. If the function or secret is missing, `/api/events` reports the source error and uses labelled fictional demo events. For a local Supabase stack, put the key in ignored `supabase/functions/.env` and start the functions locally; the default `.env.local` here instead calls the hosted function.
 
 ## Sign-in setup
 
@@ -43,7 +51,7 @@ After applying, run Supabase's advisors (security + performance). Expected warni
 
 | Source | Status | Notes |
 |---|---|---|
-| `ticketmaster` | **live-verified 2026-10-18** (key in `.env.local`) | Free key, ~5,000 calls/day. Göteborg query (40 km, next 90 days, Music + Comedy) returned 70 mappable events: 61 live music, 6 stand-up, 3 club, at venues like Scandinavium, Filmstudion, Park Lane, plus Kungsbacka/Partille. **Ticketmaster publishes no prices for Sweden** (0 of 178 events had `priceRanges`), so `price` is always `null`; `ageRestrictions` is absent too; descriptions (`info`) are present. Few clubs: club nights mostly come as Music/Rock, so only 3 are `Klubb`. Items that are not music or comedy (47 "Spectacular", theatre, holiday, food) are dropped; so are events with no start time (`timeTBA`). |
+| `ticketmaster` | **Supabase proxy live-verified 2026-10-19** | Free key, ~5,000 calls/day. Göteborg query (40 km, next 90 days, Music + Comedy) returned 70 mappable events (50 within the app's 20 km catalogue limit) through the proxy. **Ticketmaster publishes no prices for Sweden** (0 of 178 events in the earlier direct call had `priceRanges`), so `price` is `null`; `ageRestrictions` is absent too. Items that are not music or comedy or have no start time (`timeTBA`) are dropped. |
 | `goteborgco` | not written | Göteborg & Co GraphQL API; needs a subscription key and its schema. Reuse/licensing terms unknown. |
 | `demo` | fictional | Fallback and tests. Weekly recurring seeds in `src/data/events.ts`. |
 
