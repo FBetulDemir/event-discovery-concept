@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
 // The "no Swedish hard-coded in the UI" gate (D-011). Every user-facing string lives in
 // messages/*.json; what is left in source is code, comments and data identifiers.
-const root = new URL('../../', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../../', import.meta.url));
 const SKIP_FILES = new Set(['src/data/events.ts']); // fictional seed data, translated through demoEvents.* messages
 const EXTENSIONS = /\.(ts|tsx)$/;
 
@@ -56,7 +57,7 @@ const looksSwedish = text => {
 test('no Swedish copy is hard-coded in components, pages or lib', () => {
   const problems = [];
   for (const file of ['src/components', 'src/app', 'src/lib', 'src/data'].flatMap(dir => [...walk(join(root, dir))])) {
-    const name = relative(root, file);
+    const name = relative(root, file).replaceAll('\\', '/');
     if (SKIP_FILES.has(name) || name.endsWith('.test.mjs')) continue;
     for (const { line, text } of candidates(readFileSync(file, 'utf8'))) {
       if (looksSwedish(text)) problems.push(`${name}:${line}  ${text.trim().slice(0, 70)}`);

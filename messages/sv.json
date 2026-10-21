@@ -437,7 +437,7 @@
     "commentLabel": "Kommentar",
     "placeholder": "Vad tycker du?",
     "send": "Skicka",
-    "signIn": "<link>Logga in</link> för att kommentera. Event-kommentarer är offentliga, därför krävs ett konto.",
+    "signIn": "<link>Logga in</link> för att kommentera eller svara. Event-kommentarer är offentliga, därför krävs ett konto.",
     "removed": "Kommentaren är borttagen.",
     "reactionsGroup": "Reaktioner",
     "reactionLabel": "{label}, {count}",
@@ -450,7 +450,10 @@
     },
     "reply": "Svara",
     "delete": "Ta bort",
-    "report": "Rapportera"
+    "report": "Rapportera",
+    "reported": "Kommentaren har rapporterats.",
+    "nameRequired": "Välj ett namn för att reagera.",
+    "saveAndContinue": "Spara namn och reagera"
   },
   "friends": {
     "title": "Vänner",

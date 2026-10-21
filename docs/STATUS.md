@@ -2,7 +2,11 @@
 
 Living handoff note. **Update it at the end of any session that leaves work open** (the `handoff` skill does this). Keep it short; history lives in git.
 
-_Last updated: 2026-10-19 by Codex — Ticketmaster key move on `fix/ticketmaster-supabase-secret`._
+_Last updated: 2026-10-21 by Codex — comment action feedback on `fix/comment-actions`._
+
+Comment action fix (local branch; not pushed): event replies still require an account (D-016); guest Reply now focuses explicit sign-in guidance, and account Reply focuses the composer. Missing-profile reaction failures prompt for a name using the existing `set_display_name` RPC, then retry the reaction. Duplicate reactions refresh normally; reports show confirmation, including already-reported comments. Action errors are visible to guests too. No schema, RLS, or auth-model changes.
+
+Verification: `npm run check` passes (85 tests, typecheck, build). Fixed the existing Windows URL-to-path bug in the hard-coded-copy test without relaxing its assertions. Browser checks against the local dev app with mocked Supabase responses cover guest reply guidance, profile setup and like/unlike, duplicate reaction/report handling, account keyboard reply and parent id, and Swedish/English at 390px and desktop. The design skill's `lint.mjs`/`inspect.mjs` are not installed at the documented path; no live Supabase writes or screen-reader session were performed. Next: push/open a PR and verify the deployed flow with a fresh guest session. The user's reported HTTP 409 fits the reproduced profile/duplicate cases; its actual response body was not available.
 
 `fix/ticketmaster-supabase-secret` is stacked on `feat/i18n`. Ticketmaster now goes through `supabase/functions/ticketmaster-events`, with its key read from Supabase Edge Function Secrets (D-023). The function was deployed to `monkey-match` on 2026-10-19; the owner added the secret, and the old `TICKETMASTER_API_KEY` line was removed from `.env.local`. If the key is also set in the Next hosting environment, remove it there. The code is not yet merged or deployed with the Next app.
 
