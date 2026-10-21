@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Flame, Flag, Heart, Laugh, Reply, Sparkles, ThumbsUp, Trash2, type LucideIcon } from 'lucide-react';
@@ -11,6 +11,7 @@ import {
 } from '@/lib/plans/api';
 import { rememberedName } from '@/lib/plans/displayName';
 import { useAuth } from '@/lib/useAuth';
+import { setDisplayName } from '@/lib/social/api';
 import type { Locale, Translator } from '@/lib/i18n/locale';
 import { Button } from '@/components/ui/Button';
 import { Field } from '@/components/ui/Field';
@@ -52,6 +53,11 @@ export function CommentThread({ target, organizerId, title, startClosed = false 
   const [error, setError] = useState<string | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] = useState<(() => Promise<void>) | null>(null);
+  const composer = useRef<HTMLTextAreaElement>(null);
+  const nameInput = useRef<HTMLInputElement>(null);
+  const accountPrompt = useRef<HTMLParagraphElement>(null);
 
   const userId = auth.status === 'guest' || auth.status === 'account' ? auth.userId : me;
   const canWrite = target.type === 'plan' ? userId !== null : auth.status === 'account';
@@ -76,18 +82,41 @@ export function CommentThread({ target, organizerId, title, startClosed = false 
   }, [open, target, userId, refresh]);
 
   useEffect(() => { setName(rememberedName()); }, []);
+  useEffect(() => { if (needsName) nameInput.current?.focus(); }, [needsName, pendingAction]);
 
-  async function run(action: () => Promise<void>) {
-    setBusy(true); setError(null);
+  async function run(action: () => Promise<void>, retryAfterName = false) {
+    setBusy(true); setError(null); setNotice(null);
     try { await action(); await refresh(); }
     catch (cause) {
       const code = cause instanceof CommentError ? cause.code : 'unknown';
-      if (code === 'display_name_required') setNeedsName(true);
+      if (code === 'display_name_required') {
+        setNeedsName(true);
+        if (retryAfterName) setPendingAction(() => action);
+      }
       else {
         const known = KNOWN_ERRORS.find(candidate => candidate === code);
         setError(known ? t(`errors.${known}`) : all('common.generic'));
       }
     } finally { setBusy(false); }
+  }
+
+  function reply(id: string) {
+    if (!canWrite) {
+      accountPrompt.current?.focus();
+      return;
+    }
+    setReplyTo(id);
+    composer.current?.focus();
+  }
+
+  function saveName(event: FormEvent) {
+    event.preventDefault();
+    if (!name.trim() || !pendingAction) return;
+    void run(async () => {
+      await setDisplayName(name.trim());
+      await pendingAction();
+      setPendingAction(null); setNeedsName(false);
+    });
   }
 
   function submit(event: FormEvent) {
@@ -121,27 +150,37 @@ export function CommentThread({ target, organizerId, title, startClosed = false 
         <ul className="comments__list">
           {nodes.map(node => (
             <Comment key={node.id} node={node} userId={userId} organizerId={organizerId} busy={busy}
-              onReply={setReplyTo} onReact={(id, kind, already) => run(() => toggleReaction(id, userId!, kind, already))}
-              onDelete={id => run(() => deleteComment(id))} onReport={id => run(() => reportComment(id, userId!))} />
+              onReply={reply} onReact={(id, kind, already) => run(() => toggleReaction(id, userId!, kind, already), true)}
+              onDelete={id => run(() => deleteComment(id))} onReport={id => run(async () => { await reportComment(id, userId!); setNotice(t('reported')); })} />
           ))}
         </ul>
+      )}
+
+      {error && <p className="plan-notice" role="alert">{error}</p>}
+      {notice && <p role="status">{notice}</p>}
+      {pendingAction && (
+        <form className="comments__composer" onSubmit={saveName}>
+          <p role="status">{t('nameRequired')}</p>
+          <Field ref={nameInput} label={all('plan.new.yourName')} value={name} onChange={e => setName(e.target.value)} maxLength={40} autoComplete="given-name" />
+          <Button type="submit" disabled={busy || !name.trim()}>{t('saveAndContinue')}</Button>
+          <Button variant="secondary" type="button" disabled={busy} onClick={() => { setPendingAction(null); setNeedsName(false); }}>{t('cancel')}</Button>
+        </form>
       )}
 
       {canWrite ? (
         <form className="comments__composer" onSubmit={submit}>
           {replyingTo && (
-            <p className="small muted">{t('replyingTo', { name: replyingTo.authorName })} <button type="button" className="link-button" onClick={() => setReplyTo(null)}>{t('cancel')}</button></p>
+            <p className="small muted" role="status">{t('replyingTo', { name: replyingTo.authorName })} <button type="button" className="link-button" onClick={() => setReplyTo(null)}>{t('cancel')}</button></p>
           )}
-          {needsName && <Field label={all('plan.new.yourName')} value={name} onChange={e => setName(e.target.value)} maxLength={40} autoComplete="given-name" />}
+          {needsName && !pendingAction && <Field ref={nameInput} label={all('plan.new.yourName')} value={name} onChange={e => setName(e.target.value)} maxLength={40} autoComplete="given-name" />}
           <div className="field">
             <label htmlFor={`comment-body-${target.id}`}>{t('commentLabel')}</label>
-            <textarea id={`comment-body-${target.id}`} value={body} onChange={e => setBody(e.target.value)} rows={3} maxLength={1000} placeholder={t('placeholder')} />
+            <textarea ref={composer} id={`comment-body-${target.id}`} value={body} onChange={e => setBody(e.target.value)} rows={3} maxLength={1000} placeholder={t('placeholder')} />
           </div>
-          {error && <p className="plan-notice" role="alert">{error}</p>}
-          <Button type="submit" disabled={busy || !body.trim()}>{t('send')}</Button>
+          <Button type="submit" disabled={busy || !!pendingAction || !body.trim()}>{t('send')}</Button>
         </form>
       ) : target.type === 'event' ? (
-        <p className="muted">
+        <p ref={accountPrompt} tabIndex={-1} className="muted">
           {t.rich('signIn', { link: chunks => <Link href="/konto">{chunks}</Link> })}
         </p>
       ) : null}
@@ -191,9 +230,9 @@ function Comment({ node, userId, organizerId, busy, onReply, onReact, onDelete, 
               );
             })}
           </div>
-          <button type="button" className="link-button" onClick={() => onReply(node.id)}><Reply size={16} aria-hidden="true" />{t('reply')}</button>
-          {canDelete && <button type="button" className="link-button" onClick={() => onDelete(node.id)}><Trash2 size={16} aria-hidden="true" />{t('delete')}</button>}
-          {!mine && userId && <button type="button" className="link-button" onClick={() => onReport(node.id)}><Flag size={16} aria-hidden="true" />{t('report')}</button>}
+          <button type="button" className="link-button" disabled={busy} onClick={() => onReply(node.id)}><Reply size={16} aria-hidden="true" />{t('reply')}</button>
+          {canDelete && <button type="button" className="link-button" disabled={busy} onClick={() => onDelete(node.id)}><Trash2 size={16} aria-hidden="true" />{t('delete')}</button>}
+          {!mine && userId && <button type="button" className="link-button" disabled={busy} onClick={() => onReport(node.id)}><Flag size={16} aria-hidden="true" />{t('report')}</button>}
         </div>
       )}
 

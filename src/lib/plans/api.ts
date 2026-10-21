@@ -1,4 +1,5 @@
 import type { Event } from '@/types/event';
+import { reactionNeedsProfile } from '@/lib/comment-errors';
 import { ensureUser, getSupabase } from '@/lib/supabase/client';
 import type { Json } from '@/lib/supabase/database.types';
 import { toSnapshot, type EventSnapshot } from './snapshot';
@@ -303,6 +304,9 @@ export async function toggleReaction(commentId: string, userId: string, kind: Re
   const { error } = already
     ? await supabase.from('comment_reactions').delete().eq('comment_id', commentId).eq('user_id', userId).eq('emoji', kind)
     : await supabase.from('comment_reactions').insert({ comment_id: commentId, user_id: userId, emoji: kind });
+  if (error && reactionNeedsProfile(error)) throw new CommentError('display_name_required');
+  // Another tab may already have added it; refresh the counts instead of failing.
+  if (!already && error?.code === '23505') return;
   if (error) failComment(error);
 }
 

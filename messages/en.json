@@ -437,7 +437,7 @@
     "commentLabel": "Comment",
     "placeholder": "What do you think?",
     "send": "Send",
-    "signIn": "<link>Sign in</link> to comment. Event comments are public, which is why an account is required.",
+    "signIn": "<link>Sign in</link> to comment or reply. Event comments are public, which is why an account is required.",
     "removed": "The comment has been removed.",
     "reactionsGroup": "Reactions",
     "reactionLabel": "{label}, {count}",
@@ -450,7 +450,10 @@
     },
     "reply": "Reply",
     "delete": "Delete",
-    "report": "Report"
+    "report": "Report",
+    "reported": "Comment reported.",
+    "nameRequired": "Choose a name to add your reaction.",
+    "saveAndContinue": "Save name and react"
   },
   "friends": {
     "title": "Friends",

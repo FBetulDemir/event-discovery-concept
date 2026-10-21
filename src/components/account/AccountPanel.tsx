@@ -19,7 +19,7 @@ type Problem = AuthProblem | 'fill' | 'taken';
 export function AccountPanel() {
   const auth = useAuth();
   const t = useTranslations('account');
-  const [mode, setMode] = useState<Mode>('create');
+  const [mode, setMode] = useState<Mode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -64,17 +64,15 @@ export function AccountPanel() {
   const guest = auth.status === 'guest';
   return (
     <section className="page plan enter" aria-labelledby="account-title">
-      <h1 id="account-title" className="head">{guest ? t('titleGuest') : mode === 'login' ? t('titleLogin') : t('titleCreate')}</h1>
+      <h1 id="account-title" className="head">{mode === 'login' ? t('titleLogin') : guest ? t('titleGuest') : t('titleCreate')}</h1>
       <p className="lead muted measure">
-        {guest ? t('leadGuest') : t('lead')}
+        {guest && mode === 'create' ? t('leadGuest') : t('lead')}
       </p>
 
-      {!guest && (
-        <div className="design__row" role="group" aria-label={t('modeGroup')}>
-          <Chip selected={mode === 'create'} onClick={() => { setMode('create'); setError(null); }}>{t('modeCreate')}</Chip>
-          <Chip selected={mode === 'login'} onClick={() => { setMode('login'); setError(null); }}>{t('modeLogin')}</Chip>
-        </div>
-      )}
+      <div className="design__row" role="group" aria-label={t('modeGroup')}>
+        <Chip selected={mode === 'login'} disabled={busy} onClick={() => { setMode('login'); setError(null); setNoticeEmail(null); }}>{t('modeLogin')}</Chip>
+        <Chip selected={mode === 'create'} disabled={busy} onClick={() => { setMode('create'); setError(null); setNoticeEmail(null); }}>{t('modeCreate')}</Chip>
+      </div>
 
       {noticeEmail ? (
         <p className="lead" role="status">{t('notice', { email: noticeEmail })}</p>
@@ -84,7 +82,7 @@ export function AccountPanel() {
           <Field label={t('password')} type="password" value={password} onChange={e => setPassword(e.target.value)}
             autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
             hint={mode === 'create' ? t('passwordHint', { min: MIN_PASSWORD_LENGTH }) : undefined} error={error ? t(`problems.${error}`, { min: MIN_PASSWORD_LENGTH }) : null} />
-          <Button type="submit" disabled={busy}>{busy ? t('busy') : mode === 'login' && !guest ? t('submitLogin') : t('submitCreate')}</Button>
+          <Button type="submit" disabled={busy}>{busy ? t('busy') : mode === 'login' ? t('submitLogin') : t('submitCreate')}</Button>
         </form>
       )}
     </section>
