@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useState, useSyncExternalStore, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { isSupabaseConfigured } from '@/lib/supabase/client';
@@ -11,6 +11,8 @@ import { Chip } from '@/components/ui/Chip';
 import { Field } from '@/components/ui/Field';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { BackendNotice } from '@/components/plan/BackendNotice';
+import { PasswordRecovery } from './PasswordRecovery';
+import { dismissRecovery, getRecoveryState, subscribeRecovery } from '@/lib/supabase/recovery-state';
 
 type Mode = 'create' | 'login';
 
@@ -25,8 +27,14 @@ export function AccountPanel() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<Problem | null>(null);
   const [noticeEmail, setNoticeEmail] = useState<string | null>(null);
+  const [resetRequested, setResetRequested] = useState(false);
+  const recovery = useSyncExternalStore(subscribeRecovery, getRecoveryState, () => 'idle' as const);
 
   if (!isSupabaseConfigured) return <BackendNotice />;
+  if (resetRequested || recovery !== 'idle') {
+    return <PasswordRecovery key={resetRequested ? 'request' : recovery} state={resetRequested ? 'request' : recovery} initialEmail={email}
+      onBack={() => { setResetRequested(false); dismissRecovery(); }} />;
+  }
   if (auth.status === 'loading') return <section className="page plan" aria-busy="true"><Skeleton className="skeleton--row" /></section>;
 
   if (auth.status === 'account') {
@@ -83,6 +91,7 @@ export function AccountPanel() {
             autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
             hint={mode === 'create' ? t('passwordHint', { min: MIN_PASSWORD_LENGTH }) : undefined} error={error ? t(`problems.${error}`, { min: MIN_PASSWORD_LENGTH }) : null} />
           <Button type="submit" disabled={busy}>{busy ? t('busy') : mode === 'login' ? t('submitLogin') : t('submitCreate')}</Button>
+          {mode === 'login' && <Button type="button" variant="ghost" disabled={busy} onClick={() => setResetRequested(true)}>{t('reset.forgot')}</Button>}
         </form>
       )}
     </section>

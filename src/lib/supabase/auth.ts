@@ -1,4 +1,6 @@
 import { getSupabase } from './client';
+import { recoveryRedirect } from '../password-recovery';
+import { finishRecovery, getRecoveryState, isRecoveryUser } from './recovery-state';
 
 /**
  * Account actions: email + password. A guest that signs up keeps its user id (Supabase upgrades the
@@ -8,7 +10,7 @@ import { getSupabase } from './client';
  * once it is opened; with it off (the simple setup, docs/BACKEND.md) no email is involved at all.
  */
 export type SignUpResult = 'signed_in' | 'needs_confirmation' | 'email_taken';
-export type AuthProblem = 'bad_credentials' | 'weak_password' | 'invalid_email' | 'unknown';
+export type AuthProblem = 'bad_credentials' | 'weak_password' | 'invalid_email' | 'same_password' | 'rate_limited' | 'unknown';
 
 export const MIN_PASSWORD_LENGTH = 8;
 
@@ -18,8 +20,10 @@ export class AuthFailure extends Error {
 
 function classify(error: { message: string; code?: string }): AuthProblem {
   const text = `${error.code ?? ''} ${error.message}`.toLowerCase();
+  if (error.code === 'same_password') return 'same_password';
+  if (error.code === 'over_email_send_rate_limit' || error.code === 'over_request_rate_limit') return 'rate_limited';
   if (text.includes('invalid login') || text.includes('invalid_credentials') || text.includes('invalid credentials')) return 'bad_credentials';
-  if (text.includes('weak_password') || text.includes('password')) return 'weak_password';
+  if (text.includes('weak_password')) return 'weak_password';
   if (text.includes('email_address_invalid') || text.includes('invalid') && text.includes('email')) return 'invalid_email';
   return 'unknown';
 }
@@ -56,4 +60,19 @@ export async function signIn(email: string, password: string): Promise<void> {
 
 export async function signOut(): Promise<void> {
   await getSupabase().auth.signOut();
+}
+
+export async function requestPasswordReset(email: string, origin: string, locale: string): Promise<void> {
+  const { error } = await getSupabase().auth.resetPasswordForEmail(email, { redirectTo: recoveryRedirect(origin, locale) });
+  if (error) throw new AuthFailure(classify(error));
+}
+
+export async function saveRecoveredPassword(password: string): Promise<void> {
+  if (getRecoveryState() !== 'ready') throw new AuthFailure('unknown');
+  const supabase = getSupabase();
+  const { data, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError || !isRecoveryUser(data.session?.user ?? null)) throw new AuthFailure('unknown');
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) throw new AuthFailure(classify(error));
+  finishRecovery();
 }

@@ -1,5 +1,6 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from './database.types';
+import { initializeRecovery, observeRecovery } from './recovery-state';
 
 let client: SupabaseClient<Database> | null = null;
 
@@ -14,7 +15,11 @@ export function getSupabase(): SupabaseClient<Database> {
   if (!url || !publishableKey) {
     throw new Error('Supabase is not configured: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (see .env.example).');
   }
-  client ??= createClient<Database>(url, publishableKey);
+  if (!client) {
+    initializeRecovery();
+    client = createClient<Database>(url, publishableKey);
+    client.auth.onAuthStateChange((event, session) => observeRecovery(event, session?.user ?? null));
+  }
   return client;
 }
 

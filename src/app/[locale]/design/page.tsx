@@ -13,6 +13,7 @@ import { Chip } from '@/components/ui/Chip';
 import { Tag } from '@/components/ui/Tag';
 import { Field } from '@/components/ui/Field';
 import { IconButton } from '@/components/ui/IconButton';
+import { PasswordRecoveryDemo } from '@/components/design/PasswordRecoveryDemo';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { EventCard } from '@/components/events/EventCard';
@@ -112,6 +113,11 @@ export default async function DesignPage({ params }: LocaleParams) {
         <section aria-labelledby="d-language" className="design__section">
           <h2 id="d-language" className="lead">{t('language.title')}</h2>
           <div className="design__row"><LanguageToggle /><p className="muted">{t('language.note')}</p></div>
+        </section>
+
+        <section aria-labelledby="d-recovery" className="design__section">
+          <h2 id="d-recovery" className="lead">{all('account.reset.title')}</h2>
+          <PasswordRecoveryDemo />
         </section>
 
         <section aria-labelledby="d-states" className="design__section">

@@ -513,7 +513,9 @@
       "invalid_email": "Check the email address.",
       "unknown": "Something went wrong, please try again.",
       "fill": "Fill in email and password.",
-      "taken": "That email address already has an account. Sign in instead."
+      "taken": "That email address already has an account. Sign in instead.",
+      "same_password": "Choose a different password from your current one.",
+      "rate_limited": "Too many attempts. Please wait a few minutes and try again."
     },
     "notice": "We sent a confirmation link to {email}. Open it and the account is ready.",
     "in": {
@@ -536,7 +538,27 @@
     "passwordHint": "At least {min} characters.",
     "busy": "One moment…",
     "submitLogin": "Sign in",
-    "submitCreate": "Create account"
+    "submitCreate": "Create account",
+    "reset": {
+      "forgot": "Forgot password?",
+      "invalidDemo": "Expired link",
+      "title": "Reset your password",
+      "lead": "Enter your account email and we will send you a reset link.",
+      "emailRequired": "Enter your email address.",
+      "send": "Send reset link",
+      "sent": "If an account exists for this email, you will receive a password reset link. Check your inbox and spam folder.",
+      "checking": "Checking your reset link…",
+      "invalid": "This reset link is invalid or has expired. Request a new link below.",
+      "newTitle": "Choose a new password",
+      "newLead": "Enter and confirm your new password.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "mismatch": "The passwords do not match.",
+      "save": "Save new password",
+      "completeTitle": "Password updated",
+      "complete": "Your password has been updated. You can now use it to sign in.",
+      "back": "Back to account"
+    }
   },
   "privacy": {
     "title": "How we handle your data",
@@ -547,7 +569,7 @@
       "name": "<b>Name:</b> the name you type when you join. It is shown to the others in the plan.",
       "plans": "<b>Plans, votes and comments</b> you make, and which events have been added to a plan.",
       "account": "<b>Email and password</b> if you create an account. The password is stored encrypted (hashed) by our sign-in service, never in plain text.",
-      "browser": "<b>In your browser:</b> the name you last used, your chosen theme (dark or light) and your chosen language. The language is kept in a single functional cookie (NEXT_LOCALE). Nothing else, no advertising or tracking cookies."
+      "browser": "<b>In your browser:</b> the name you last used, your chosen theme (dark or light) and your chosen language. The language is kept in a single functional cookie (NEXT_LOCALE). Nothing else, no advertising or tracking cookies. During password recovery, this tab temporarily remembers the account id so reloading keeps the reset form open; it is cleared on completion, cancellation or sign-out."
     },
     "who": {
       "title": "Who sees what",
