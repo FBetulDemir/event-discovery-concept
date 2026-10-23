@@ -513,7 +513,9 @@
       "invalid_email": "Kontrollera e-postadressen.",
       "unknown": "Något gick fel, försök igen.",
       "fill": "Fyll i e-post och lösenord.",
-      "taken": "Den e-postadressen har redan ett konto. Logga in i stället."
+      "taken": "Den e-postadressen har redan ett konto. Logga in i stället.",
+      "same_password": "Välj ett annat lösenord än ditt nuvarande.",
+      "rate_limited": "För många försök. Vänta några minuter och försök igen."
     },
     "notice": "Vi skickade en bekräftelselänk till {email}. Öppna den, så är kontot klart.",
     "in": {
@@ -536,7 +538,27 @@
     "passwordHint": "Minst {min} tecken.",
     "busy": "Ett ögonblick…",
     "submitLogin": "Logga in",
-    "submitCreate": "Skapa konto"
+    "submitCreate": "Skapa konto",
+    "reset": {
+      "forgot": "Glömt lösenord?",
+      "invalidDemo": "Utgången länk",
+      "title": "Återställ ditt lösenord",
+      "lead": "Ange kontots e-postadress så skickar vi en återställningslänk.",
+      "emailRequired": "Ange din e-postadress.",
+      "send": "Skicka återställningslänk",
+      "sent": "Om det finns ett konto med den här e-postadressen får du en länk för att återställa lösenordet. Kontrollera inkorgen och skräpposten.",
+      "checking": "Kontrollerar din återställningslänk…",
+      "invalid": "Länken är ogiltig eller har gått ut. Begär en ny länk nedan.",
+      "newTitle": "Välj ett nytt lösenord",
+      "newLead": "Ange och bekräfta ditt nya lösenord.",
+      "newPassword": "Nytt lösenord",
+      "confirmPassword": "Bekräfta nytt lösenord",
+      "mismatch": "Lösenorden stämmer inte överens.",
+      "save": "Spara nytt lösenord",
+      "completeTitle": "Lösenordet har uppdaterats",
+      "complete": "Ditt lösenord har uppdaterats. Du kan nu använda det för att logga in.",
+      "back": "Tillbaka till kontot"
+    }
   },
   "privacy": {
     "title": "Så hanterar vi din data",
@@ -547,7 +569,7 @@
       "name": "<b>Namn:</b> det namn du skriver när du går med. Det visas för de andra i planen.",
       "plans": "<b>Planer, röster och kommentarer</b> du gör, och vilka event som lagts i en plan.",
       "account": "<b>E-post och lösenord</b> om du skapar ett konto. Lösenordet sparas krypterat (hashat) av vår inloggningstjänst, aldrig i klartext.",
-      "browser": "<b>I din webbläsare:</b> ditt senast använda namn, valt tema (mörkt eller ljust) och valt språk. Språket sparas i en enda funktionell kaka (NEXT_LOCALE). Inget annat, inga reklam- eller spårningscookies."
+      "browser": "<b>I din webbläsare:</b> ditt senast använda namn, valt tema (mörkt eller ljust) och valt språk. Språket sparas i en enda funktionell kaka (NEXT_LOCALE). Inget annat, inga reklam- eller spårningscookies. Under lösenordsåterställningen sparar fliken tillfälligt kontots id så att formuläret finns kvar efter en omladdning. Det tas bort när du är klar, avbryter eller loggar ut."
     },
     "who": {
       "title": "Vem ser vad",

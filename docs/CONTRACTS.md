@@ -151,7 +151,9 @@ test: `supabase/tests/comments.test.sql`.
 - Plain **email + password** (min. 8 characters). No email is sent when *Confirm email* is switched off in the Supabase dashboard (Authentication → Sign In / Providers → Email); the code also handles the "needs confirmation" case if it is on.
 - A **guest that signs up keeps its user id** (`updateUser({ email, password })` on the anonymous user), so its plans, memberships, votes and comments stay. Someone with no session gets a normal sign-up; signing in is `signInWithPassword`.
 - If the email already belongs to an account, the guest is told so and may sign in there; the guest's own data stays with the guest on that device.
-- No password reset yet: it needs custom SMTP (the built-in mailer only delivers to project team members). See `docs/BACKEND.md`.
+- Password recovery uses Supabase email links and the existing localized `/konto` page (D-024). Only a verified `PASSWORD_RECOVERY` event, or the same account resuming that flow in this tab, opens password update. URL flags alone never authorize it. Requests show a neutral confirmation; passwords must match and meet the existing minimum. Delivery requires configured SMTP and allowed redirect URLs; see `docs/BACKEND.md`.
+
+test: `password-recovery.test.mjs`, `recovery-state.test.mjs`.
 
 ## 15. Notifications, friends and invitations (`supabase/migrations/*notifications_friends*`, `src/lib/social`, `src/components/notifications`, `/vanner`)
 

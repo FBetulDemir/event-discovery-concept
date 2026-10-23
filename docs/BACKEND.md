@@ -23,11 +23,11 @@ The function lives at `supabase/functions/ticketmaster-events/`. It only accepts
 
 ## Sign-in setup
 
-Accounts are email + password (`docs/CONTRACTS.md` §14). One dashboard setting decides whether any email is sent:
+Accounts are email + password (`docs/CONTRACTS.md` §14). Email confirmation and password recovery are configured separately:
 
 1. **Authentication → Sign In / Providers → Email:** switch **Confirm email OFF** for sign-up without email. With it ON, every sign-up sends a confirmation link, which the built-in mailer only delivers to project team members (a few per hour).
 2. **Authentication → Sign In / Providers:** keep **Allow anonymous sign-ins** ON (guests).
-3. Password reset ("glömt lösenord") is **not built**: it needs a custom SMTP provider (Authentication → SMTP Settings) and a reset page. Until then a lost password means a new account.
+3. Password reset is implemented on `/konto` and `/en/konto`. Configure a custom SMTP provider under Authentication → SMTP Settings for delivery to non-team users. Turning Confirm email off does not disable recovery email.
 4. Before launch: CAPTCHA (Turnstile) on sign-ups and anonymous sign-ins.
 
 ## Migrations
@@ -63,5 +63,9 @@ Before storing any provider data beyond the plan snapshot, check that provider's
 
 ## Language and auth redirects
 
-Auth is email + password, so no Supabase redirect URL depends on the language. If a magic-link or confirmation-email flow is added later, build `emailRedirectTo` with `getPathname` from `@/i18n/navigation` so it returns the person to their own language, and add both `/…` and `/en/…` to the dashboard's redirect allow-list. Database error codes are language-neutral; the UI maps them to messages (`plan.errors.*`, `friends.errors.*`, `comments.errors.*`, `account.problems.*`).
+Password recovery returns to `/konto` (Swedish) or `/en/konto` (English) on the requesting origin. In Authentication → URL Configuration, set the production Site URL and allow both exact URLs: `https://event-discovery-concept.vercel.app/konto` and `https://event-discovery-concept.vercel.app/en/konto`. For development, add `http://localhost:3000/konto` and `http://localhost:3000/en/konto`; add the corresponding URLs for any preview deployment used for testing. Keep the recovery email template linked to Supabase's `{{ .ConfirmationURL }}` so it verifies the token before redirecting. No additional Vercel environment variable is required. Database error codes are language-neutral; the UI maps them to messages (`plan.errors.*`, `friends.errors.*`, `comments.errors.*`, `account.problems.*`).
 
+
+### Verify password recovery after deployment
+
+Use a dedicated account: request a reset in each language, open the delivered link, reload the form, save a new password, then sign out and sign in with it. Check an expired/reused link and confirm that the old password no longer works. Never paste email tokens into logs or issue comments. Local browser checks mock the auth endpoint; they do not prove SMTP delivery or hosted redirect configuration. See [Supabase password auth](https://supabase.com/docs/guides/auth/passwords) and [redirect configuration](https://supabase.com/docs/guides/auth/redirect-urls).

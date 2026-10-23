@@ -144,3 +144,8 @@ Template:
 - Decision: a small Edge Function holds `TICKETMASTER_API_KEY` and runs the fixed Göteborg Discovery API query. The Next adapter calls it with the existing Supabase publishable key and still normalizes events locally. No database schema, application route, or new package is needed.
 - Consequences: the function and secret must be deployed to each Supabase project. The publishable key is public, so the function only permits the fixed catalogue query; a separate rate limit may be needed if direct calls exhaust Ticketmaster's quota. The application falls back to labelled demo events if the function is unavailable.
 
+
+## D-024 — Password recovery on the existing account page
+- Date: 2026-10-23 · Status: accepted · Deciders: user (authorized the next missing item), Codex
+- Decision: add Supabase email password recovery to `/konto` and `/en/konto`, keeping the existing email/password model and eight-character minimum. No new route, dependency, schema or RLS policy.
+- Consequences: custom SMTP and localized redirect allow-list entries are deployment prerequisites. The browser waits for SDK-verified recovery, keeps a tab-local account-id marker for reloads, and clears it on completion, cancellation or sign-out. Requests use neutral confirmation copy; expired links offer another request. Live email delivery remains a separate deployment check.
